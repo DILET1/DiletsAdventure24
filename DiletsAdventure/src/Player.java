@@ -16,5 +16,16 @@ public class Player {
     int getY(){
         return this.y;
     }
-
+    boolean canRight(WorldObject a){
+        return true;
+    }
+    boolean canLeft(WorldObject a){
+        return true;
+    }
+    boolean canUp(WorldObject a){
+        return true;
+    }
+    boolean canDown(WorldObject a){
+        return true;
+    }
 }
