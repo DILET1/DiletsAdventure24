@@ -1,8 +1,9 @@
 public class Player {
-    private int x, y;
+    private int x, y, radius;
     public Player(){
         this.x = 0;
         this.y = 0;
+        this.radius = 15;
     }
     void moveX(int amt){
         this.x+=amt;
@@ -17,15 +18,15 @@ public class Player {
         return this.y;
     }
     boolean canRight(WorldObject a){
-        return true;
+        return this.x + radius != a.getLowx() || this.y +radius <= a.getLowy() || this.y - radius >= a.getHiy();
     }
     boolean canLeft(WorldObject a){
-        return true;
+        return this.x - radius != a.getHix() || this.y +radius <= a.getLowy() || this.y - radius >= a.getHiy();
     }
     boolean canUp(WorldObject a){
-        return true;
+        return this.y - radius != a.getHiy() || this.x + radius <= a.getLowx() || this.x - radius >= a.getHix();
     }
     boolean canDown(WorldObject a){
-        return true;
+        return this.y + radius != a.getLowy() || this.x + radius <= a.getLowx() || this.x - radius >= a.getHix();
     }
 }

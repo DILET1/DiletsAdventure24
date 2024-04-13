@@ -1,16 +1,18 @@
 import processing.core.*;
 import java.util.*;
 public class Main extends PApplet{
-    WorldObject w = new WorldObject(200,200,300,300);
+    static ArrayList<Zone> zoneList = new ArrayList<>();
+    static ArrayList<WorldObject> objList = new ArrayList<>();
     Player Dilet = new Player();
-    Zone startArea = new Zone("Startarea");
+    static Zone startArea = new Zone("Startarea");
     Zone curZone = startArea;
-    public void loadAreas(){
-        startArea.addObj(w);
+    public static void loadAreas(){
+
     }
     boolean up, left, right, down;
     public static void main(String[] args)
     {
+        loadAreas();
         PApplet.main("Main");
     }
     public void settings(){
@@ -20,13 +22,15 @@ public class Main extends PApplet{
         background(0,0,0);
         noStroke();
         drawPlayer();
+        drawZone();
     }
     public void drawZone(){
         for(WorldObject obj : curZone.getObstacles()){
             rectMode(CORNERS);
             fill(255,255,255);
-            
+            rect(obj.getLowx(), obj.getLowy(), obj.getHix(),  obj.getHiy());
         }
+
     }
     public void drawPlayer() {
         fill(0, 230, 172);
@@ -36,17 +40,49 @@ public class Main extends PApplet{
     }
     public void inputProcess(){
         if (up) {
-
-            Dilet.moveY(-5);
+            boolean uflag = true;
+            for(WorldObject w : curZone.getObstacles()){
+                if(!Dilet.canUp(w)){
+                    uflag = false;
+                }
+            }
+            if(uflag){
+                Dilet.moveY(-5);
+            }
         }
         if (left) {
-            Dilet.moveX(-5);
+            boolean lflag = true;
+            for(WorldObject w : curZone.getObstacles()){
+                if(!Dilet.canLeft(w)){
+                    lflag = false;
+                }
+            }
+            if(lflag){
+                Dilet.moveX(-5);
+            }
+
         }
         if (right) {
-            Dilet.moveX(5);
+            boolean rflag = true;
+            for(WorldObject w : curZone.getObstacles()){
+                if(!Dilet.canRight(w)){
+                    rflag = false;
+                }
+            }
+            if(rflag){
+                Dilet.moveX(5);
+            }
         }
         if (down) {
-            Dilet.moveY(5);
+            boolean dflag = true;
+            for(WorldObject w : curZone.getObstacles()){
+                if(!Dilet.canDown(w)){
+                    dflag = false;
+                }
+            }
+            if(dflag){
+                Dilet.moveY(5);
+            }
         }
     }
     public void keyPressed(){

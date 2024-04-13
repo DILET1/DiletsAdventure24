@@ -1,5 +1,10 @@
+import processing.core.PImage;
+
+import java.util.ArrayList;
+
 public class WorldObject {
     private int lowx, lowy, hix, hiy; //lowx and lowy store x and y coords of the lower left corner, hix and hiy store the upper right x and y coords
+    private ArrayList<PImage> sprites = new ArrayList<>();
     public WorldObject(int lowx, int lowy, int hix, int hiy){
         this.lowx = lowx;
         this.lowy = lowy;
