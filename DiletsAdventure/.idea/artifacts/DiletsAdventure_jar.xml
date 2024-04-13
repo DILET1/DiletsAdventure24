@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="DiletsAdventure:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/DiletsAdventure_jar</output-path>
+    <root id="archive" name="DiletsAdventure.jar">
+      <element id="module-output" name="DiletsAdventure" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../processing-4.3/core/library/core.jar" path-in-jar="/" />
+      <element id="library" level="project" name="core" />
+    </root>
+  </artifact>
+</component>
