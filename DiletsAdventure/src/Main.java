@@ -1,13 +1,38 @@
 import processing.core.*;
 import java.util.*;
 public class Main extends PApplet{
-    static ArrayList<Zone> zoneList = new ArrayList<>();
-    static ArrayList<WorldObject> objList = new ArrayList<>();
-    Player Dilet = new Player();
+//    static ArrayList<Zone> zoneList = new ArrayList<>();
+//    static ArrayList<WorldObject> objList = new ArrayList<>();
+    public static int resScalar = 2;
+    static Player Dilet = new Player(resScalar);
+    int currentState = 1; //state -1 is intro cutscene. state 0 is menu. state 1 is in-game. state 2 is pause menu. state 3 is interacting with an object. more to come
     static Zone startArea = new Zone("Startarea");
-    Zone curZone = startArea;
-    public static void loadAreas(){
+    static Zone curZone = startArea;
+    static InteractableObject curInteract = null;
+    static NPC curNPC = null;
+    static DialogueOption curDialogue = null;
+    //TEST AREA
 
+    static InteractableObject tester = new InteractableObject(320 * resScalar, 320 * resScalar, 340 * resScalar, 340 * resScalar, "FISHY NOMM");
+    static Event sayhi = new Event("hi", false, Dilet);
+    static Event saybye = new Event("bye", false, Dilet);
+    static Event saysup = new Event("sup", false, Dilet);
+    static DialogueOption d4 = new DialogueOption(new ArrayList<>(), new Event("Loaded", false, Dilet), "It works");
+    static DialogueOption d5 = new DialogueOption(new ArrayList<>(), new Event("Loaded2", false, Dilet), "It works2");
+    static DialogueOption d2 = new DialogueOption(new ArrayList<>(){{add(d4);add(d5);}}, saybye, "Say Goodbye.");
+    static DialogueOption d3 = new DialogueOption(new ArrayList<>(), saysup, "Say Sup.");
+    static DialogueOption d1 = new DialogueOption(new ArrayList<>(){{add(d2);add(d3);}}, sayhi, "Say Hi.");
+    static Chest testChest = new Chest(200 * resScalar,200* resScalar,225* resScalar,225* resScalar, new ArrayList<Item>(){{add(new Item("Fish", "very cool"));}}, Dilet);
+    static NPC testMan = new NPC(50 * resScalar, 50* resScalar, 100* resScalar, 100* resScalar,"fish" ,d1, "tester");
+
+    //END TEST
+    public static void loadAreas(){
+       curZone.addObj(tester);
+       curZone.addInteractables(tester);
+       curZone.addNPCs(testMan);
+       curZone.addObj(testMan);
+       curZone.addObj(testChest);
+       curZone.addInteractables(testChest);
     }
     boolean up, left, right, down;
     public static void main(String[] args)
@@ -16,13 +41,54 @@ public class Main extends PApplet{
         PApplet.main("Main");
     }
     public void settings(){
-        size(400,400);
+        size(640* resScalar,360* resScalar);
     }
     public void draw(){
-        background(0,0,0);
-        noStroke();
-        drawPlayer();
-        drawZone();
+        inputProcess();
+        if(currentState == 1 || currentState == 3 || currentState == 4){
+            background(0,255,0);
+            noStroke();
+            fill(255,255,255);
+            drawPlayer();
+            drawZone();
+        }
+        if(currentState == 2){
+            menu();
+        }
+        drawBanner();
+        if(currentState == 3){
+            textSize(10 * resScalar);
+            text(curInteract.msg(),15 * resScalar,15 * resScalar);
+        }
+        if(currentState == 4){
+            fill(0,0,0);
+            textSize(10 * resScalar);
+            text(curDialogue.use(), 15 * resScalar,15 * resScalar);
+            int counter = 0;
+            textSize(10 * resScalar);
+            for(DialogueOption co : curDialogue.getAdj()){
+                fill(255,0,127);
+                rect(15 * resScalar,(45 + (15 * counter))* resScalar,100,(55 + (15  * counter))* resScalar);
+                fill(0,0,0);
+                text(co.returnLabel(),15 * resScalar,(45 + 15 *counter) *  resScalar);
+                counter++;
+            }
+        }
+    }
+    public void drawBanner(){
+        //top banner
+        fill(225,0,0);
+        rect(0,0,640 * resScalar,30 * resScalar);
+        //pause button
+        fill(0,255,0);
+        rect(610 * resScalar,5* resScalar,630* resScalar,25* resScalar);
+    }
+    public void menu(){
+        fill(0,255,255);
+        rect(0,30 * resScalar,640 * resScalar,360 * resScalar);
+        fill(0,0,0);
+        rect(260 * resScalar, 90* resScalar, 380* resScalar, 120* resScalar);
+        rect(260 * resScalar, 180* resScalar, 380* resScalar, 210* resScalar);
     }
     public void drawZone(){
         for(WorldObject obj : curZone.getObstacles()){
@@ -30,88 +96,162 @@ public class Main extends PApplet{
             fill(255,255,255);
             rect(obj.getLowx(), obj.getLowy(), obj.getHix(),  obj.getHiy());
         }
-
+        for(InteractableObject io : curZone.getInteractables()){
+            rectMode(CORNERS);
+            fill(255,255,255);
+            rect(io.getLowx(), io.getLowy(), io.getHix(),  io.getHiy());
+        }
+        for(NPC n : curZone.getNPCs()){
+            rectMode(CORNERS);
+            fill(255,255,255);
+            rect(n.getLowx(), n.getLowy(), n.getHix(),  n.getHiy());
+        }
     }
     public void drawPlayer() {
         fill(0, 230, 172);
         rectMode(CENTER);
-        rect(Dilet.getX(), Dilet.getY(), 30, 30);
-        inputProcess();
+        rect(Dilet.getX(), Dilet.getY(), 30* resScalar, 30* resScalar);
     }
     public void inputProcess(){
-        if (up) {
-            boolean uflag = true;
-            for(WorldObject w : curZone.getObstacles()){
-                if(!Dilet.canUp(w)){
-                    uflag = false;
+        if(currentState == 1){
+            if (up) {
+                boolean uflag = true;
+                for(WorldObject w : curZone.getObstacles()){
+                    if(!Dilet.canUp(w)){
+                        uflag = false;
+                    }
+                }
+                if(uflag){
+                    Dilet.moveY(-5 * resScalar);
                 }
             }
-            if(uflag){
-                Dilet.moveY(-5);
+            if (left) {
+                boolean lflag = true;
+                for(WorldObject w : curZone.getObstacles()){
+                    if(!Dilet.canLeft(w)){
+                        lflag = false;
+                    }
+                }
+                if(lflag){
+                    Dilet.moveX(-5* resScalar);
+                }
+
             }
-        }
-        if (left) {
-            boolean lflag = true;
-            for(WorldObject w : curZone.getObstacles()){
-                if(!Dilet.canLeft(w)){
-                    lflag = false;
+            if (right) {
+                boolean rflag = true;
+                for(WorldObject w : curZone.getObstacles()){
+                    if(!Dilet.canRight(w)){
+                        rflag = false;
+                    }
+                }
+                if(rflag){
+                    Dilet.moveX(5* resScalar);
                 }
             }
-            if(lflag){
-                Dilet.moveX(-5);
+            if (down) {
+                boolean dflag = true;
+                for(WorldObject w : curZone.getObstacles()){
+                    if(!Dilet.canDown(w)){
+                        dflag = false;
+                    }
+                }
+                if(dflag){
+                    Dilet.moveY(5* resScalar);
+                }
             }
 
         }
-        if (right) {
-            boolean rflag = true;
-            for(WorldObject w : curZone.getObstacles()){
-                if(!Dilet.canRight(w)){
-                    rflag = false;
+    }
+    public void mouseClicked() {
+        System.out.println(mouseX+" "+mouseY);
+        if(currentState == 1){
+            if(mouseX >= 610* resScalar && mouseX <= 630* resScalar && mouseY >= 5* resScalar && mouseY <= 25* resScalar){
+                currentState = 2;
+                System.out.println("PAUSED");
+            }
+
+            for(InteractableObject i : curZone.getInteractables()){
+                if(mouseX >= i.getLowx() && mouseX <= i.getHix() && mouseY >= i.getLowy() && mouseY <= i.getHiy()){
+                    if(Math.abs(Dilet.getX() - (i.getLowx()+ (i.getHix() - i.getLowx())/2)) < 60 * resScalar){
+                        if(Math.abs(Dilet.getY() - (i.getLowy()+ (i.getHiy() - i.getLowy())/2)) < 60 * resScalar){
+                            currentState = 3;
+                            curInteract = i;
+                        }
+                    }
                 }
             }
-            if(rflag){
-                Dilet.moveX(5);
+
+            for(NPC n : curZone.getNPCs()){
+                if(mouseX >= n.getLowx() && mouseX <= n.getHix() && mouseY >= n.getLowy() && mouseY <= n.getHiy()){
+                    if(Math.abs(Dilet.getX() - (n.getLowx()+ (n.getHix() - n.getLowx())/2)) < 60 * resScalar){
+                        if(Math.abs(Dilet.getY() - (n.getLowy()+ (n.getHiy() - n.getLowy())/2)) < 60 * resScalar){
+                            System.out.println("NPC ACTIVE");
+                            currentState = 4;
+                            curNPC = n;
+                            curDialogue = n.talk();
+                        }
+                    }
+                }
+            }
+
+        }
+        else if(currentState == 2){
+            if(mouseX >= 610* resScalar && mouseX <= 630* resScalar && mouseY >= 5* resScalar && mouseY <= 25* resScalar){
+                currentState = 1;
+                System.out.println("UNPAUSED");
             }
         }
-        if (down) {
-            boolean dflag = true;
-            for(WorldObject w : curZone.getObstacles()){
-                if(!Dilet.canDown(w)){
-                    dflag = false;
+        else if(currentState == 3){
+            System.out.println("EXITING INTERACT");//to be replaced with dialogue n stuff
+            currentState = 1;
+        }
+        else if(currentState == 4){
+            if(mouseX >= 15 * resScalar && mouseX <= 100 * resScalar){
+                for(int i = 0; i < curDialogue.getAdj().size(); i++){
+                    if(mouseY >= (45 + (15 * i))* resScalar && mouseY <= (55 + (15 * i))* resScalar){
+                        curDialogue = curDialogue.getAdj().get(i);
+                        return;
+                    }
                 }
             }
-            if(dflag){
-                Dilet.moveY(5);
-            }
+            currentState = 1;
+            System.out.println("Exited dialogue");
+
         }
     }
     public void keyPressed(){
-        if(key == 'w'){
-            up = true;
-        }
-        if(key == 's'){
-            down = true;
-        }
-        if(key == 'd'){
-            right = true;
-        }
-        if(key == 'a'){
-            left = true;
+        if(currentState == 1){
+            if(key == 'w'){
+                up = true;
+            }
+            if(key == 's'){
+                down = true;
+            }
+            if(key == 'd'){
+                right = true;
+            }
+            if(key == 'a'){
+                left = true;
+            }
         }
     }
     public void keyReleased(){
-        if(key == 'w'){
-            up = false;
-        }
-        if(key == 's'){
-            down = false;
-        }
-        if(key == 'd'){
-            right = false;
-        }
-        if(key == 'a'){
-            left = false;
+        if(currentState == 1){
+            if(key == 'w'){
+                up = false;
+            }
+            if(key == 's'){
+                down = false;
+            }
+            if(key == 'd'){
+                right = false;
+            }
+            if(key == 'a'){
+                left = false;
+            }
         }
     }
+
+
 
 }
