@@ -5,12 +5,13 @@ public class Main extends PApplet{
 //    static ArrayList<WorldObject> objList = new ArrayList<>();
     public static int resScalar = 2;
     static Player Dilet = new Player(resScalar);
-    int currentState = 1; //state -1 is intro cutscene. state 0 is menu. state 1 is in-game. state 2 is pause menu. state 3 is interacting with an object. more to come
+    int currentState = 1; //state -1 is intro cutscene. state 0 is menu. state 1 is in-game. state 2 is pause menu. state 3 is interacting with an object. state 4 is dialogue. state 5 is chest.  more to come
     static Zone startArea = new Zone("Startarea");
     static Zone curZone = startArea;
     static InteractableObject curInteract = null;
     static NPC curNPC = null;
     static DialogueOption curDialogue = null;
+    static Chest curChest = null;
     //TEST AREA
 
     static InteractableObject tester = new InteractableObject(320 * resScalar, 320 * resScalar, 340 * resScalar, 340 * resScalar, "FISHY NOMM");
@@ -32,7 +33,7 @@ public class Main extends PApplet{
        curZone.addNPCs(testMan);
        curZone.addObj(testMan);
        curZone.addObj(testChest);
-       curZone.addInteractables(testChest);
+       curZone.addChest(testChest);
     }
     boolean up, left, right, down;
     public static void main(String[] args)
@@ -74,6 +75,9 @@ public class Main extends PApplet{
                 counter++;
             }
         }
+        if(currentState == 5){
+            chestMenu();
+        }
     }
     public void drawBanner(){
         //top banner
@@ -89,6 +93,16 @@ public class Main extends PApplet{
         fill(0,0,0);
         rect(260 * resScalar, 90* resScalar, 380* resScalar, 120* resScalar);
         rect(260 * resScalar, 180* resScalar, 380* resScalar, 210* resScalar);
+    }
+    public void chestMenu(){
+        fill(127,127,127);
+        rect(120 * resScalar, 100 * resScalar, 525 * resScalar, 305 * resScalar);
+        fill(64,64,64);
+        for(int i = 0; i < 4; i++){
+            for(int j = 0; j < 2; j++){
+                rect((125 + (100 * i)) * resScalar, (105 + (100 * j)) * resScalar, (220 + (100 * i)) * resScalar, (200 + (100 * j)) * resScalar);
+            }
+        }
     }
     public void drawZone(){
         for(WorldObject obj : curZone.getObstacles()){
@@ -193,7 +207,17 @@ public class Main extends PApplet{
                     }
                 }
             }
-
+            for(Chest c : curZone.getChests()){
+                if(mouseX >= c.getLowx() && mouseX <= c.getHix() && mouseY >= c.getLowy() && mouseY <= c.getHiy()){
+                    if(Math.abs(Dilet.getX() - (c.getLowx()+ (c.getHix() - c.getLowx())/2)) < 60 * resScalar){
+                        if(Math.abs(Dilet.getY() - (c.getLowy()+ (c.getHiy() - c.getLowy())/2)) < 60 * resScalar){
+                            System.out.println("CHEST ACTIVE");
+                            currentState = 5;
+                            curChest = c;
+                        }
+                    }
+                }
+            }
         }
         else if(currentState == 2){
             if(mouseX >= 610* resScalar && mouseX <= 630* resScalar && mouseY >= 5* resScalar && mouseY <= 25* resScalar){
@@ -217,6 +241,16 @@ public class Main extends PApplet{
             currentState = 1;
             System.out.println("Exited dialogue");
 
+        }
+        else if(currentState == 5){
+            for(int i = 0; i < 4; i++){
+                for(int j = 0; j < 2; j++){
+                    if(mouseX >=(125 + (100 * i)) * resScalar && mouseY >= (105 + (100 * j)) * resScalar && mouseX <= (220 + (100 * i)) * resScalar && mouseY <=  (200 + (100 * j)) * resScalar){
+                        System.out.println(i * 2 + j + 1);
+                    }
+
+                }
+            }
         }
     }
     public void keyPressed(){

@@ -19,4 +19,7 @@ public class Chest extends InteractableObject{
         System.out.println(message);
         return this.message;
     }
+    public ArrayList<Item> getContents(){
+        return contents;
+    }
 }
