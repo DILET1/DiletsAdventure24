@@ -1,0 +1,52 @@
+For all: 1st line (before the 1st lines mentioned below) is the number of objects to add. One line between each thing being added.
+
+For Events:
+
+1st line is type of event - 1 is Event, 2 is TakeEvent, 3 is giveEvent, 4 is removeObjectEvent, 5 is addObjEvent, 6 is removeInteractableEvent, 7 is addInteractableEvent, 8 is removeNPCEvent, 9 is addNPCEvent.
+For all events:
+2nd line = message
+3rd line is SILENT or NOTSILENT
+for Take/Give events:
+4th line is the index of the item to take/give
+for remove/add events, the 4th line is the index of the thing to remove/add.
+
+For Items:
+
+1st line is name.
+2nd line is description.
+
+For DialogueOptions:
+
+First line is the number of adjacent dialogue options, followed by their ids.
+Second line is the id of the associated event.
+Third line is the label.
+
+For Interactables:
+
+1st line is coordinates
+2nd line is the index of the event
+
+For Chests:
+1st line is coordinates
+2nd line is number of items in chest
+3rd line contains all ids of items
+
+For NPCs:
+
+1st line is the coordinates
+2nd line is index of the DialogueOption for the first dialogue
+3rd line is the name
+
+For WorldObject:
+
+1st line of "block" - number, 0, 1, 2, 3. 0 = creating new WorldObject, 1 is pre-existing InteractableObject, 2 is pre-existing NPC, 3 is pre-existing Chest.
+If number != 0, next line is the index of the pre-existing object.
+If number = 0, next line is 4 numbers, denoting the 4 coordinates of the object.
+
+For Zones:
+
+1st line - IDs of neighboring zones, in order N, S, E, W. If there isn't one, set it as -1.
+2/3 line - #/IDs of WorldObjects
+4/5 line - #/IDs of Interactables
+6/7 line - #/IDS of chests
+8/9 line - #/IDs of NPCs

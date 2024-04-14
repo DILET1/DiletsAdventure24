@@ -1,52 +1,283 @@
 import processing.core.*;
+
+import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Scanner;
 import java.util.*;
-public class Main extends PApplet{
-//    static ArrayList<Zone> zoneList = new ArrayList<>();
-//    static ArrayList<WorldObject> objList = new ArrayList<>();
+public class Main extends PApplet {
+    //all of our fun vars
+    static ArrayList<Zone> zoneList = new ArrayList<>();
+    static ArrayList<Event> events = new ArrayList<>();
+    static ArrayList<Item> items = new ArrayList<>();
+    static ArrayList<InteractableObject> interactables = new ArrayList<>();
+    static ArrayList<WorldObject> objList = new ArrayList<>();
+    static ArrayList<DialogueOption> options = new ArrayList<>();
+    static ArrayList<Chest> chests = new ArrayList<>();
+    static ArrayList<NPC> npcs = new ArrayList<>();
     public static int resScalar = 2;
     static Player Dilet = new Player(resScalar);
-    int currentState = 1; //state -1 is intro cutscene. state 0 is menu. state 1 is in-game. state 2 is pause menu. state 3 is interacting with an object. state 4 is dialogue. state 5 is chest.  more to come
-    static Zone startArea = new Zone("Startarea");
-    static Zone curZone = startArea;
+    static int currentState = 1; //state -1 is intro cutscene. state 0 is menu. state 1 is in-game. state 2 is pause menu. state 3 is interacting with an object. state 4 is dialogue. state 5 is chest.  more to come
+    static Zone curZone = null;
     static InteractableObject curInteract = null;
     static NPC curNPC = null;
     static DialogueOption curDialogue = null;
     static Chest curChest = null;
+    static boolean up, left, right, down;
     //TEST AREA
-    static WorldObject load1 = new WorldObject(400 * resScalar, 200 * resScalar, 410 * resScalar, 210 * resScalar);
-    static WorldObject load2 = new WorldObject(410 * resScalar, 210 * resScalar, 420 * resScalar, 220 * resScalar);
-    static WorldObject load3 = new WorldObject(420 * resScalar, 220 * resScalar, 430 * resScalar, 230 * resScalar);
-    static WorldObject load4 = new WorldObject(430 * resScalar, 230 * resScalar, 440 * resScalar, 240 * resScalar);
-    static InteractableObject tester = new InteractableObject(320 * resScalar, 320 * resScalar, 340 * resScalar, 340 * resScalar, "FISHY NOMM");
-    static Event sayhi = new Event("hi", false, Dilet);
-    static Event saybye = new Event("bye", false, Dilet);
-    static Event saysup = new Event("sup", false, Dilet);
-    static DialogueOption d4 = new DialogueOption(new ArrayList<>(), new Event("Loaded", false, Dilet), "It works");
-    static DialogueOption d5 = new DialogueOption(new ArrayList<>(), new Event("Loaded2", false, Dilet), "It works2");
-    static DialogueOption d2 = new DialogueOption(new ArrayList<>(){{add(d4);add(d5);}}, saybye, "Say Goodbye.");
-    static DialogueOption d3 = new DialogueOption(new ArrayList<>(), saysup, "Say Sup.");
-    static DialogueOption d1 = new DialogueOption(new ArrayList<>(){{add(d2);add(d3);}}, sayhi, "Say Hi.");
-    static Chest testChest = new Chest(200 * resScalar,200* resScalar,225* resScalar,225* resScalar, new ArrayList<Item>(){{add(new Item("Fish", "very cool"));}}, Dilet);
-    static NPC testMan = new NPC(50 * resScalar, 50* resScalar, 100* resScalar, 100* resScalar,"fish" ,d1, "tester");
-
     //END TEST
-    public static void loadAreas(){
-       curZone.addObj(tester);
-       curZone.addObj(load1);
-        curZone.addObj(load2);
-        curZone.addObj(load3);
-        curZone.addObj(load4);
-       curZone.addInteractables(tester);
-       curZone.addNPCs(testMan);
-       curZone.addObj(testMan);
-       curZone.addObj(testChest);
-       curZone.addChest(testChest);
+    public static void load(){
+        loadItems();
+        loadEvents();
+        loadDialogue();
+        loadNPC();
+        loadChest();
+        loadInteractable();
+        loadWorldObj();
+        loadZone();
+        curZone = zoneList.get(0);
     }
-    boolean up, left, right, down;
-    public static void main(String[] args)
-    {
-        loadAreas();
+    public static void loadEvents(){
+        try{
+            File ev1 = new File("baseData/EVENT1.txt");
+            Scanner ev1in = new Scanner(ev1);
+            int ev1n = ev1in.nextInt();
+            for(int i = 0; i < ev1n; i++){
+                System.out.println("PASS");
+                int type = ev1in.nextInt();
+                String chaff = ev1in.nextLine();
+                String message = ev1in.nextLine();
+                String isSilent = ev1in.nextLine();
+                if(type == 1){
+                    events.add(new Event(message, (Objects.equals(isSilent, "SILENT")), Dilet));
+                }
+                if(type == 2 || type == 3){
+                    Item ta = items.get(ev1in.nextInt());
+                    if(type == 2){
+                        events.add(new TakeEvent(message, isSilent.equals("SILENT"), Dilet, ta));
+                    }
+                    else{
+                        events.add(new GiveEvent(message, isSilent.equals("SILENT"), Dilet, ta));
+                    }
+                }
+                System.out.println("ADDED EVENT"+i);
+            }
+        }
+        catch(FileNotFoundException e){
+            System.out.println("ERROR THROWN, COULD NOT COMPLETE ADDING EVENTS.");
+            return;
+        }
+        System.out.println("SUCCESFULLY ADDED ALL EVENTS");
+    }
+    public static void loadItems(){
+        try{
+            File it1 = new File("baseData/ITEM1.txt");
+            Scanner it1in = new Scanner(it1);
+            int it1n = it1in.nextInt();
+            String chaff = it1in.nextLine();
+            for(int i = 0; i < it1n; i++){
+                String name = it1in.nextLine();
+                String desc = it1in.nextLine();
+                items.add(new Item(name, desc));
+                System.out.println("ADDING ITEM "+i);
+            }
+        }
+        catch(FileNotFoundException e){
+            System.out.println("ERROR THROWN, COULD NOT COMPLETE ADDING ITEMS.");
+            return;
+        }
+        System.out.println("SUCCESFULLY ADDED ALL ITEMS");
+    }
+    public static void loadDialogue(){
+        try{
+            File it1 = new File("baseData/DIALOGUE1.txt");
+            Scanner it1in = new Scanner(it1);
+            int it1n = it1in.nextInt();
+            for(int i = 0; i < it1n; i++){
+                int cn = it1in.nextInt();
+                ArrayList<Integer> ids = new ArrayList<>();
+                for(int j = 0; j < cn; j++){
+                    ids.add(it1in.nextInt());
+                }
+                String chaff = it1in.nextLine();
+                int cid = it1in.nextInt();
+                chaff = it1in.nextLine();
+                String label = it1in.nextLine();
+                System.out.println(label);
+                options.add(new DialogueOption(ids, events.get(cid), label));
+                System.out.println("ADDED "+label);
+            }
+        }
+        catch(FileNotFoundException e){
+            System.out.println("ERROR THROWN, COULD NOT COMPLETE ADDING DIALOGUES.");
+            return;
+        }
+        System.out.println("SUCCESFULLY ADDED ALL DIALOGUES");
+    }
+    public static void loadNPC(){
+        try{
+            File it1 = new File("baseData/NPC1.txt");
+            Scanner it1in = new Scanner(it1);
+            int it1n = it1in.nextInt();
+            for(int i = 0; i < it1n; i++){
+                int x1, x2, y1, y2;
+                x1 = it1in.nextInt()* resScalar;
+                y1 = it1in.nextInt()* resScalar;
+                x2 = it1in.nextInt()* resScalar;
+                y2 = it1in.nextInt()* resScalar;
+                String chaff = it1in.nextLine();
+                int firstd = it1in.nextInt();
+                chaff = it1in.nextLine();
+                String name = it1in.nextLine();
+                npcs.add(new NPC(x1, y1, x2, y2,0, options.get(firstd), name));
+                System.out.println("ADDED "+i);
+            }
+        }
+        catch(FileNotFoundException e){
+            System.out.println("ERROR THROWN, COULD NOT COMPLETE ADDING NPC.");
+            return;
+        }
+        System.out.println("SUCCESFULLY ADDED ALL NPC");
+    }
+    public static void loadChest(){
+        try{
+            File it1 = new File("baseData/CHEST1.txt");
+            Scanner it1in = new Scanner(it1);
+            int it1n = it1in.nextInt();
+            for(int i = 0; i < it1n; i++){
+                int x1, x2, y1, y2;
+                ArrayList<Item> cur = new ArrayList<>();
+                x1 = it1in.nextInt()* resScalar;
+                y1 = it1in.nextInt()* resScalar;
+                x2 = it1in.nextInt()* resScalar;
+                y2 = it1in.nextInt()* resScalar;
+                String chaff = it1in.nextLine();
+               int numItems = it1in.nextInt();
+               chaff = it1in.nextLine();
+               for(int j = 0; j < numItems; j++){
+                   cur.add(items.get(it1in.nextInt()));
+               }
+               chests.add(new Chest(x1,y1,x2,y2,cur,Dilet));
+               System.out.println("ADDED "+i);
+            }
+        }
+        catch(FileNotFoundException e){
+            System.out.println("ERROR THROWN, COULD NOT COMPLETE ADDING CHESTS.");
+            return;
+        }
+        System.out.println("SUCCESFULLY ADDED ALL CHESTS");
+    }
+    public static void loadInteractable(){
+        try{
+            File it1 = new File("baseData/INTERACT.txt");
+            Scanner it1in = new Scanner(it1);
+            int it1n = it1in.nextInt();
+            for(int i = 0; i < it1n; i++){
+                int x1, x2, y1, y2;
+                x1 = it1in.nextInt()* resScalar;
+                y1 = it1in.nextInt()* resScalar;
+                x2 = it1in.nextInt()* resScalar;
+                y2 = it1in.nextInt()* resScalar;
+                String chaff = it1in.nextLine();
+                int firstd = it1in.nextInt();
+                interactables.add(new InteractableObject(x1,y1,x2,y2, firstd));
+                System.out.println("ADDED "+i);
+            }
+        }
+        catch(FileNotFoundException e){
+            System.out.println("ERROR THROWN, COULD NOT COMPLETE ADDING INTERACTABLE.");
+            return;
+        }
+        System.out.println("SUCCESFULLY ADDED ALL INTERACTABLE");
+    }
+    public static void loadWorldObj(){
+        try{
+            File it1 = new File("baseData/OBSTACLE1.txt");
+            Scanner it1in = new Scanner(it1);
+            int it1n = it1in.nextInt();
+            String chaff = it1in.nextLine();
+            for(int i = 0; i < it1n; i++){
+                int type = it1in.nextInt();
+                System.out.println(type);
+                chaff = it1in.nextLine();
+                if(type == 0){
+                    int x1, x2, y1, y2;
+                    x1 = it1in.nextInt()* resScalar;
+                    y1 = it1in.nextInt()* resScalar;
+                    x2 = it1in.nextInt()* resScalar;
+                    y2 = it1in.nextInt()* resScalar;
+                    objList.add(new WorldObject(x1,y1,x2,y2));
+                }
+                else{
+                    int ind = it1in.nextInt();
+                    if(type == 1){
+                        objList.add(interactables.get(ind));
+                    }
+                    else if(type == 2){
+                        objList.add(chests.get(ind));
+                    }
+                    else if(type == 3){
+                        objList.add(npcs.get(ind));
+                    }
+                }
+                System.out.println("ADDED "+i);
+            }
+        }
+        catch(FileNotFoundException e){
+            System.out.println("ERROR THROWN, COULD NOT COMPLETE ADDING WORLDOBJ.");
+            return;
+        }
+        System.out.println("SUCCESFULLY ADDED ALL WORLDOBJ");
+    }
+    public static void loadZone(){
+        try{
+            File it1 = new File("baseData/ZONE1.txt");
+            Scanner it1in = new Scanner(it1);
+            int it1n = it1in.nextInt();
+            for(int i = 0; i < it1n; i++){
+                int n, e, s, w;
+                n = it1in.nextInt();
+                e = it1in.nextInt();
+                s = it1in.nextInt();
+                w = it1in.nextInt();
+                Zone temp = new Zone(n,e,s,w);
+                int woc = it1in.nextInt();
+                for(int j = 0; j < woc; j++){
+                    temp.addObj(objList.get(it1in.nextInt()));
+                    System.out.println("ADDED "+j);
+                }
+
+                int ioc = it1in.nextInt();
+                for(int j = 0; j < ioc; j++){
+                    temp.addInteractables(interactables.get(it1in.nextInt()));
+                    System.out.println("ADDED "+j);
+                }
+
+                int cc = it1in.nextInt();
+                for(int j = 0; j < cc; j++){
+                    temp.addChest(chests.get(it1in.nextInt()));
+                    System.out.println("ADDED "+j);
+                }
+
+                int npcc = it1in.nextInt();
+                for(int j = 0; j < npcc; j++){
+                    temp.addNPCs(npcs.get(it1in.nextInt()));
+                    System.out.println("ADDED "+j);
+                }
+                zoneList.add(temp);
+            }
+        }
+        catch(FileNotFoundException e){
+            System.out.println("ERROR THROWN, COULD NOT COMPLETE ADDING ZONE.");
+            return;
+        }
+        System.out.println("SUCCESFULLY ADDED ALL ZONE");
+    }
+    public static void main(String[] args) {
+        load();
         PApplet.main("Main");
+
     }
     public void settings(){
         size(640* resScalar,360* resScalar);
@@ -66,7 +297,7 @@ public class Main extends PApplet{
         drawBanner();
         if(currentState == 3){
             textSize(10 * resScalar);
-            text(curInteract.msg(),15 * resScalar,15 * resScalar);
+            text(events.get(curInteract.msg()).message(),15 * resScalar,15 * resScalar);
         }
         if(currentState == 4){
             fill(0,0,0);
@@ -74,11 +305,11 @@ public class Main extends PApplet{
             text(curDialogue.use(), 15 * resScalar,15 * resScalar);
             int counter = 0;
             textSize(10 * resScalar);
-            for(DialogueOption co : curDialogue.getAdj()){
+            for(int co : curDialogue.getAdj()){
                 fill(255,0,127);
                 rect(15 * resScalar,(45 + (15 * counter))* resScalar,100,(55 + (15  * counter))* resScalar);
                 fill(0,0,0);
-                text(co.returnLabel(),15 * resScalar,(45 + 15 *counter) *  resScalar);
+                text(options.get(co).returnLabel(),15 * resScalar,(45 + 15 *counter) *  resScalar);
                 counter++;
             }
         }
@@ -133,7 +364,7 @@ public class Main extends PApplet{
         for(WorldObject obj : curZone.getObstacles()){
             rectMode(CORNERS);
             fill(255,255,255);
-            rect(obj.getLowx(), obj.getLowy(), obj.getHix(),  obj.getHiy());
+            rect(obj.getLowx(), obj.getLowy() , obj.getHix(),  obj.getHiy());
         }
         for(InteractableObject io : curZone.getInteractables()){
             rectMode(CORNERS);
@@ -144,6 +375,10 @@ public class Main extends PApplet{
             rectMode(CORNERS);
             fill(255,255,255);
             rect(n.getLowx(), n.getLowy(), n.getHix(),  n.getHiy());
+        }
+        for(Chest c : curZone.getChests()){
+            rectMode(CORNERS);
+            rect(c.getLowx(), c.getLowy(), c.getHix(), c.getHiy());
         }
     }
     public void drawPlayer() {
@@ -261,7 +496,7 @@ public class Main extends PApplet{
             if(mouseX >= 15 * resScalar && mouseX <= 100 * resScalar){
                 for(int i = 0; i < curDialogue.getAdj().size(); i++){
                     if(mouseY >= (45 + (15 * i))* resScalar && mouseY <= (55 + (15 * i))* resScalar){
-                        curDialogue = curDialogue.getAdj().get(i);
+                        curDialogue = options.get(curDialogue.getAdj().get(i));
                         return;
                     }
                 }

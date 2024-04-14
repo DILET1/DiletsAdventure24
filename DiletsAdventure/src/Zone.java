@@ -1,13 +1,10 @@
 import java.util.ArrayList;
 public class Zone {
+    int n, e, s, w;
     private ArrayList<WorldObject> obstacles = new ArrayList<>();
     private ArrayList<InteractableObject> interactables = new ArrayList<>();
     private ArrayList<NPC> NPCS = new ArrayList<>();
     private ArrayList<Chest> chests = new ArrayList<>();
-    public String id;
-    public Zone(String id){
-        this.id = id;
-    }
     public void addObj(WorldObject a){
         obstacles.add(a);
     }
@@ -29,5 +26,11 @@ public class Zone {
     }
     public ArrayList<Chest> getChests(){
         return chests;
+    }
+    public Zone(int n, int e, int s, int w){
+        this.n = n;
+        this.s = s;
+        this.w = w;
+        this.e = e;
     }
 }

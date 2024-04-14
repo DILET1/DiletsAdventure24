@@ -1,11 +1,11 @@
 public class InteractableObject extends WorldObject{
-    protected String message;
-    public InteractableObject(int lowx, int lowy, int hix, int hiy, String message) {
+    protected int eventInd;
+    public InteractableObject(int lowx, int lowy, int hix, int hiy, int eventInd) {
         super(lowx, lowy, hix, hiy);
-        this.message = message;
+        this.eventInd = eventInd;
     }
-    public String msg(){
-        return this.message;
+    public int msg(){
+        return this.eventInd;
     }
 
 
