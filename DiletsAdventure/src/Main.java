@@ -13,7 +13,10 @@ public class Main extends PApplet{
     static DialogueOption curDialogue = null;
     static Chest curChest = null;
     //TEST AREA
-
+    static WorldObject load1 = new WorldObject(400 * resScalar, 200 * resScalar, 410 * resScalar, 210 * resScalar);
+    static WorldObject load2 = new WorldObject(410 * resScalar, 210 * resScalar, 420 * resScalar, 220 * resScalar);
+    static WorldObject load3 = new WorldObject(420 * resScalar, 220 * resScalar, 430 * resScalar, 230 * resScalar);
+    static WorldObject load4 = new WorldObject(430 * resScalar, 230 * resScalar, 440 * resScalar, 240 * resScalar);
     static InteractableObject tester = new InteractableObject(320 * resScalar, 320 * resScalar, 340 * resScalar, 340 * resScalar, "FISHY NOMM");
     static Event sayhi = new Event("hi", false, Dilet);
     static Event saybye = new Event("bye", false, Dilet);
@@ -29,6 +32,10 @@ public class Main extends PApplet{
     //END TEST
     public static void loadAreas(){
        curZone.addObj(tester);
+       curZone.addObj(load1);
+        curZone.addObj(load2);
+        curZone.addObj(load3);
+        curZone.addObj(load4);
        curZone.addInteractables(tester);
        curZone.addNPCs(testMan);
        curZone.addObj(testMan);
@@ -92,17 +99,35 @@ public class Main extends PApplet{
         rect(0,30 * resScalar,640 * resScalar,360 * resScalar);
         fill(0,0,0);
         rect(260 * resScalar, 90* resScalar, 380* resScalar, 120* resScalar);
+        fill(255,255,255);
+        textAlign(CENTER);
+        textSize(30 * resScalar);
+        text("MAIN MENU", 260 * resScalar, 90 * resScalar, 380 * resScalar, 120 * resScalar);
+        fill(0,0,0);
         rect(260 * resScalar, 180* resScalar, 380* resScalar, 210* resScalar);
+        fill(255,255,255);
+        text("SAVE MENU", 260 * resScalar, 180* resScalar, 380* resScalar, 210* resScalar);
+
+
     }
     public void chestMenu(){
         fill(127,127,127);
         rect(120 * resScalar, 100 * resScalar, 525 * resScalar, 305 * resScalar);
         fill(64,64,64);
+        int counter = 0;
         for(int i = 0; i < 4; i++){
             for(int j = 0; j < 2; j++){
+                if(counter < curChest.getContents().size()){
+                    fill(32,32,32);
+                }
+                else{
+                    fill(64,64,64);
+                }
                 rect((125 + (100 * i)) * resScalar, (105 + (100 * j)) * resScalar, (220 + (100 * i)) * resScalar, (200 + (100 * j)) * resScalar);
+                counter++;
             }
         }
+
     }
     public void drawZone(){
         for(WorldObject obj : curZone.getObstacles()){
@@ -182,6 +207,9 @@ public class Main extends PApplet{
             if(mouseX >= 610* resScalar && mouseX <= 630* resScalar && mouseY >= 5* resScalar && mouseY <= 25* resScalar){
                 currentState = 2;
                 System.out.println("PAUSED");
+                for(Item i : Dilet.getInventory()){
+                    System.out.println(i.toString());
+                }
             }
 
             for(InteractableObject i : curZone.getInteractables()){
@@ -243,13 +271,24 @@ public class Main extends PApplet{
 
         }
         else if(currentState == 5){
-            for(int i = 0; i < 4; i++){
-                for(int j = 0; j < 2; j++){
-                    if(mouseX >=(125 + (100 * i)) * resScalar && mouseY >= (105 + (100 * j)) * resScalar && mouseX <= (220 + (100 * i)) * resScalar && mouseY <=  (200 + (100 * j)) * resScalar){
-                        System.out.println(i * 2 + j + 1);
+            int counter =  0;
+            if(mouseX >= 120 * resScalar && mouseY >= 100 * resScalar && mouseX <= 600* resScalar && mouseY <= 300* resScalar){
+                for(int i = 0; i < 4; i++){
+                    for(int j = 0; j < 2; j++){
+                        if(counter < curChest.getContents().size()){
+                            if(mouseX >=(125 + (100 * i)) * resScalar && mouseY >= (105 + (100 * j)) * resScalar && mouseX <= (220 + (100 * i)) * resScalar && mouseY <=  (200 + (100 * j)) * resScalar){
+                                System.out.println(i * 2 + j + 1);
+                                Dilet.addItem(curChest.getContents().get(counter));
+                                curChest.removeItem(curChest.getContents().get(counter));
+                            }
+                            counter++;
+                        }
                     }
-
                 }
+            }
+            else{
+                System.out.println("EXITING CHEST");
+                currentState = 1;
             }
         }
     }
