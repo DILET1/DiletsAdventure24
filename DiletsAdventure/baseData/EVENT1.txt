@@ -1,4 +1,4 @@
-3
+5
 1
 Fish
 NOTSILENT
@@ -8,3 +8,11 @@ NOTSILENT
 1
 Kompot
 NOTSILENT
+3
+Nommy kompot
+SILENT
+0 1
+4
+FEESHYKOMPOT
+SILENT
+0 1

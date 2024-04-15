@@ -61,6 +61,28 @@ public class Main extends PApplet {
                         events.add(new GiveEvent(message, isSilent.equals("SILENT"), Dilet, ta));
                     }
                 }
+                if(type == 4 || type == 5 || type == 6 || type == 7 || type == 8 || type == 9){
+                    int zone = ev1in.nextInt();
+                    int ind = ev1in.nextInt();
+                    if(type == 4){
+                        events.add(new RemoveEvent(Dilet, zone, ind, zoneList, objList));
+                    }
+                    if(type == 5){
+                        events.add(new PlaceEvent(Dilet, zone, ind, zoneList, objList));
+                    }
+                    if(type == 6){
+                        events.add(new removeInteractable(Dilet, zone, ind, zoneList, objList, interactables));
+                    }
+                    if(type == 7){
+                        events.add(new placeInteractable(Dilet, zone, ind, zoneList, objList, interactables));
+                    }
+                    if(type == 8){
+                        events.add(new removeNPC(Dilet, zone, ind, zoneList, objList, npcs));
+                    }
+                    if(type == 9){
+                        events.add(new placeNPC(Dilet, zone, ind, zoneList, objList, npcs));
+                    }
+                }
                 System.out.println("ADDED EVENT"+i);
             }
         }

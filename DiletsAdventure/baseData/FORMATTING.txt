@@ -2,13 +2,13 @@ For all: 1st line (before the 1st lines mentioned below) is the number of object
 
 For Events:
 
-1st line is type of event - 1 is Event, 2 is TakeEvent, 3 is giveEvent, 4 is removeObjectEvent, 5 is addObjEvent, 6 is removeInteractableEvent, 7 is addInteractableEvent, 8 is removeNPCEvent, 9 is addNPCEvent.
+1st line is type of event - 1 is Event, 2 is TakeEvent, 3 is giveEvent, 4 is removeEvent, 5 is placeEvent, 6 is removeInteractableEvent, 7 is placeInteractableEvent, 8 is removeNPCEvent, 9 is placeNPCEvent.
 For all events:
 2nd line = message
 3rd line is SILENT or NOTSILENT
 for Take/Give events:
 4th line is the index of the item to take/give
-for remove/add events, the 4th line is the index of the thing to remove/add.
+for remove/add events, the 4th line is the index of the zone, then the thing to remove/add.
 
 For Items:
 
