@@ -301,26 +301,15 @@ public class Main extends PApplet {
 //        load();
 
         Zone testArea = new Zone(-1,-1,-1,-1);
-
-        zoneList.add(testArea);
-        Event e1 = new placeNPC(Dilet, 0, 0,zoneList,objList, npcs);
-        Event e2 = new removeNPC(Dilet, 0, 0, zoneList, objList, npcs);
-        Event e3 = new Event("feeshn't", false, Dilet);
-        events.add(e1);
-        events.add(e2);
-        events.add(e3);
-        DialogueOption d1 = new DialogueOption(new ArrayList<>(),e3,"fishy nomm");
-        InteractableObject switcher = new InteractableObject(300,300,310,310, 0);
-        InteractableObject switch2 = new InteractableObject(315, 300, 320, 310,1);
-        NPC schro = new NPC(240,240,250,250, 2,d1, "schro");
-        objList.add(schro);
-        npcs.add(schro);
+        WorldObject block = new WorldObject(300,100,360,160);
+        Event test = new moveObject(block, 5, 100, 100, Dilet);
+        InteractableObject switcher = new InteractableObject(100,100,130,130, 0);
+        events.add(test);
+        objList.add(switcher);
         interactables.add(switcher);
-        interactables.add(switch2);
         testArea.addInteractables(switcher);
-        testArea.addInteractables(switch2);
+        testArea.addObj(block);
         testArea.addObj(switcher);
-        testArea.addObj(switch2);
         PApplet.main("Main");
         curZone = testArea;
 

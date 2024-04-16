@@ -14,20 +14,25 @@ public class moveObject extends Event{
         int px = dx;
         int py = dy;
         while(px != 0 || py != 0){
+            System.out.println("REMAINING: "+px+" "+py);
             if(px != 0){
                 if(px < 0){
                     this.actor.moveX(Math.max(px, -1 * speed));
+                    px+=Math.max(px, -1 * speed);
                 }
                 else{
                     this.actor.moveX(Math.min(px, speed));
+                    px-=Math.min(px, speed);
                 }
             }
             if(py != 0){
                 if(py < 0){
                     this.actor.moveY(Math.max(py, -1 * speed));
+                    py+=Math.max(py, -1 * speed);
                 }
                 else{
                     this.actor.moveY(Math.min(py, speed));
+                    py-=Math.min(py, speed);
                 }
             }
         }
