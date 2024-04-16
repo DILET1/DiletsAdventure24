@@ -27,17 +27,17 @@ public class Player {
     int getY(){
         return this.y;
     }
-    boolean canRight(WorldObject a){
-        return this.x + radius != a.getLowx() || this.y +radius <= a.getLowy() || this.y - radius >= a.getHiy();
+    boolean canRight(WorldObject a, Coordinate c){
+        return this.x + radius != c.getX() || this.y +radius <= c.getY() || this.y - radius >= c.getY()+a.getHeight();
     }
-    boolean canLeft(WorldObject a){
-        return this.x - radius != a.getHix() || this.y +radius <= a.getLowy() || this.y - radius >= a.getHiy();
+    boolean canLeft(WorldObject a, Coordinate c){
+        return this.x - radius != c.getX()+a.getLen() || this.y +radius <= c.getY() || this.y - radius >= c.getY()+a.getHeight();
     }
-    boolean canUp(WorldObject a){
-        return this.y - radius != a.getHiy() || this.x + radius <= a.getLowx() || this.x - radius >= a.getHix();
+    boolean canUp(WorldObject a, Coordinate c){
+        return this.y - radius != c.getY()+a.getHeight() || this.x + radius <= c.getX() || this.x - radius >= c.getX()+a.getLen();
     }
-    boolean canDown(WorldObject a){
-        return this.y + radius != a.getLowy() || this.x + radius <= a.getLowx() || this.x - radius >= a.getHix();
+    boolean canDown(WorldObject a, Coordinate c){
+        return this.y + radius != c.getY() || this.x + radius <= c.getX() || this.x - radius >= c.getX()+a.getLen();
     }
     void addItem(Item ta){
         inventory.add(ta);

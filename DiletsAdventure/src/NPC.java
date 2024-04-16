@@ -1,8 +1,8 @@
 public class NPC extends InteractableObject{
     DialogueOption firstD;
     String name;
-    public NPC(int lowx, int lowy, int hix, int hiy, int eventInd, DialogueOption firstD, String name) {
-        super(lowx, lowy, hix, hiy, eventInd);
+    public NPC(int x, int y, int eventInd, DialogueOption firstD, String name) {
+        super(x,y, eventInd);
         this.firstD = firstD;
         this.name = name;
     }

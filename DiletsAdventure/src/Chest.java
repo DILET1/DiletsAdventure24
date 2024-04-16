@@ -2,8 +2,8 @@ import java.util.ArrayList;
 public class Chest extends InteractableObject{
     private ArrayList<Item> contents;
     private Player Dilet;
-    public Chest(int lowx, int lowy, int hix, int hiy, ArrayList<Item> ta, Player Dilet) {
-        super(lowx, lowy, hix, hiy, 0);
+    public Chest(int x, int y, ArrayList<Item> ta, Player Dilet) {
+        super(x, y,0);
         this.contents = ta;
         this.Dilet = Dilet;
     }

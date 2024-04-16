@@ -1,7 +1,7 @@
 public class InteractableObject extends WorldObject{
     protected int eventInd;
-    public InteractableObject(int lowx, int lowy, int hix, int hiy, int eventInd) {
-        super(lowx, lowy, hix, hiy);
+    public InteractableObject(int x, int y, int eventInd) {
+        super(x,y);
         this.eventInd = eventInd;
     }
     public int msg(){

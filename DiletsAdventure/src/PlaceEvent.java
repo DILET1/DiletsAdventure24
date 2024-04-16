@@ -5,15 +5,29 @@ public class PlaceEvent extends Event{
     int curZone;
     ArrayList<Zone> Zonelist;
     ArrayList<WorldObject> objs;
-    public PlaceEvent (Player dil, int curZone, int toAdd, ArrayList<Zone> zoneList, ArrayList<WorldObject> objs) {
+    int x;
+    int y;
+    boolean used;
+    public PlaceEvent (Player dil, int curZone, int toAdd, int x, int y, ArrayList<Zone> zoneList, ArrayList<WorldObject> objs) {
         super("this isn't even used", true, dil);
         this.toAdd = toAdd;
         this.curZone = curZone;
         this.Zonelist = zoneList;
         this.objs = objs;
+        this.x = x;
+        this.y = y;
+        this.used = false;
     }
     public String message(){
-        this.Zonelist.get(curZone).addObj(objs.get(toAdd));
-        return "Added object.";
+        if(!used){
+            used = true;
+            this.Zonelist.get(curZone).addObj(objs.get(toAdd), x, y);
+            return "Added object.";
+        }
+        return "duplicate protection enabled for place";
     }
+    public void reset(){
+        used = false;
+    }
+
 }
