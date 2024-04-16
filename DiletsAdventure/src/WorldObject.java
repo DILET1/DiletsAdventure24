@@ -23,4 +23,15 @@ public class WorldObject {
     public int getHiy(){
         return this.hiy;
     }
+    public String toString(){
+        return(this.lowx + " "+ this.lowy+" "+this.hix+" "+this.hiy);
+    }
+    public void moveX(int delta){
+        this.lowx+=delta;
+        this.hix+=delta;
+    }
+    public void moveY(int delta){
+        this.lowy+=delta;
+        this.hiy+=delta;
+    }
 }

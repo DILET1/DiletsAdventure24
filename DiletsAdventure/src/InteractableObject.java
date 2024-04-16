@@ -9,4 +9,5 @@ public class InteractableObject extends WorldObject{
     }
 
 
+
 }

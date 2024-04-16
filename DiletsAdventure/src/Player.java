@@ -3,18 +3,18 @@ public class Player {
     private int x, y, radius, scalar;
     private ArrayList<Item> inventory = new ArrayList<>();
     public Player(int resScalar){
-        this.x = 50 * resScalar;
-        this.y = 50 * resScalar;
+        this.x = 100 * resScalar;
+        this.y = 100 * resScalar;
         this.radius = 15 * resScalar;
         this.scalar = resScalar;
     }
     void moveX(int amt){
-        if(this.x - radius + amt > 0 && this.x + amt + radius< 640 * this.scalar){
+        if(this.x - radius + amt >= 0 && this.x + amt + radius<=640 * this.scalar){
             this.x+=amt;
         }
     }
     void moveY(int amt){
-        if(this.y + amt - radius > 30 * this.scalar && this.y + amt + radius < 360 * this.scalar){
+        if(this.y + amt - radius >= 30 * this.scalar && this.y + amt + radius <= 360 * this.scalar){
             this.y+=amt;
         }
     }

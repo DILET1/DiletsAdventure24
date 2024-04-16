@@ -6,13 +6,20 @@ public class Zone {
     private ArrayList<NPC> NPCS = new ArrayList<>();
     private ArrayList<Chest> chests = new ArrayList<>();
     public void addObj(WorldObject a){
-        obstacles.add(a);
+        if(!obstacles.contains(a)){
+            obstacles.add(a);
+        }
     }
     public void addInteractables(InteractableObject a){
-        interactables.add(a);
+        if(!interactables.contains(a)){
+            interactables.add(a);
+        }
+
     }
     public void addNPCs(NPC a){
-        NPCS.add(a);
+        if(!NPCS.contains(a)){
+            NPCS.add(a);
+        }
     }
     public void addChest(Chest a){
         chests.add(a);

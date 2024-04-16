@@ -230,6 +230,7 @@ public class Main extends PApplet {
                     x2 = it1in.nextInt()* resScalar;
                     y2 = it1in.nextInt()* resScalar;
                     objList.add(new WorldObject(x1,y1,x2,y2));
+                    System.out.println(x1+" "+y1+" "+x2+" "+y2);
                 }
                 else{
                     int ind = it1in.nextInt();
@@ -297,12 +298,38 @@ public class Main extends PApplet {
         System.out.println("SUCCESFULLY ADDED ALL ZONE");
     }
     public static void main(String[] args) {
-        load();
+//        load();
+
+        Zone testArea = new Zone(-1,-1,-1,-1);
+
+        zoneList.add(testArea);
+        Event e1 = new placeNPC(Dilet, 0, 0,zoneList,objList, npcs);
+        Event e2 = new removeNPC(Dilet, 0, 0, zoneList, objList, npcs);
+        Event e3 = new Event("feeshn't", false, Dilet);
+        events.add(e1);
+        events.add(e2);
+        events.add(e3);
+        DialogueOption d1 = new DialogueOption(new ArrayList<>(),e3,"fishy nomm");
+        InteractableObject switcher = new InteractableObject(300,300,310,310, 0);
+        InteractableObject switch2 = new InteractableObject(315, 300, 320, 310,1);
+        NPC schro = new NPC(240,240,250,250, 2,d1, "schro");
+        objList.add(schro);
+        npcs.add(schro);
+        interactables.add(switcher);
+        interactables.add(switch2);
+        testArea.addInteractables(switcher);
+        testArea.addInteractables(switch2);
+        testArea.addObj(switcher);
+        testArea.addObj(switch2);
         PApplet.main("Main");
+        curZone = testArea;
 
     }
     public void settings(){
         size(640* resScalar,360* resScalar);
+    }
+    public void setup(){
+        frameRate(50);
     }
     public void draw(){
         inputProcess();
@@ -460,6 +487,10 @@ public class Main extends PApplet {
     }
     public void mouseClicked() {
         System.out.println(mouseX+" "+mouseY);
+        System.out.println(curZone.getObstacles().size());
+        for(WorldObject w : curZone.getObstacles()){
+            System.out.println(w.toString());
+        }
         if(currentState == 1){
             if(mouseX >= 610* resScalar && mouseX <= 630* resScalar && mouseY >= 5* resScalar && mouseY <= 25* resScalar){
                 currentState = 2;
@@ -581,7 +612,4 @@ public class Main extends PApplet {
             }
         }
     }
-
-
-
 }
