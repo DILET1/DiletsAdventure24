@@ -1,191 +1,199 @@
 import java.util.ArrayList;
 public class Zone {
     int n, e, s, w;
-    private ArrayList<WorldObject> obstacles = new ArrayList<>();
-    private ArrayList<InteractableObject> interactables = new ArrayList<>();
-    private ArrayList<NPC> NPCS = new ArrayList<>();
-    private ArrayList<Chest> chests = new ArrayList<>();
-    private ArrayList<Coordinate> coords = new ArrayList<>();
-    private ArrayList<Coordinate> icoords = new ArrayList<>();
-    private ArrayList<Coordinate> ncoords = new ArrayList<>();
-    private ArrayList<Coordinate> ccoords = new ArrayList<>();
-    public void addObj(WorldObject a, int x, int y){
-        if(!obstacles.contains(a)){
-            obstacles.add(a);
-            coords.add(new Coordinate(x, y));
-        }
-        else{
-            for(int i = 0; i < obstacles.size(); i++){
-                if(obstacles.get(i) == a && coords.get(i).getX() == x && coords.get(i).getY() == y){
-                    return;
-                }
-            }
-            obstacles.add(a);
-            coords.add(new Coordinate(x,y));
-        }
+    private ArrayList<WorldObject> zoneWorldObjects = new ArrayList<>();
+    private ArrayList<InteractableObject> zoneInteractableObjects = new ArrayList<>();
+    private ArrayList<NPC> zoneNPCs = new ArrayList<>();
+    private ArrayList<Chest> zoneChests = new ArrayList<>();
+    private ArrayList<Coordinate> zoneWorldObjectCoords = new ArrayList<>();
+    private ArrayList<Coordinate> zoneInteractableObjectCoords = new ArrayList<>();
+    private ArrayList<Coordinate> zoneNPCCoords = new ArrayList<>();
+    private ArrayList<Coordinate> zoneChestCoords = new ArrayList<>();
+
+    public Coordinate getZoneWorldObjectCoords(int a){
+        return zoneWorldObjectCoords.get(a);
     }
-    public Coordinate getCoord(int a){
-        return coords.get(a);
+    public Coordinate getZoneInteractableObjectCoords(int a){
+        return zoneInteractableObjectCoords.get(a);
     }
-    public Coordinate getIcoord(int a){
-        return icoords.get(a);
+    public Coordinate getZoneNPCCoords(int a){
+        return zoneNPCCoords.get(a);
     }
-    public Coordinate getnCoord(int a){
-        return ncoords.get(a);
-    }    public Coordinate getCcoord(int a){
-        return ccoords.get(a);
+    public Coordinate getZoneChestCoords(int a){
+        return zoneChestCoords.get(a);
     }
 
-    public ArrayList<Coordinate> getCoords(){
-        return coords;
+    public ArrayList<Coordinate> getZoneWorldObjectCoords(){
+        return zoneWorldObjectCoords;
     }
-    public ArrayList<Coordinate> getIcoords(){
-        return icoords;
+    public ArrayList<Coordinate> getZoneInteractableObjectCoords(){
+        return zoneInteractableObjectCoords;
     }
-    public ArrayList<Coordinate> getNcoords(){
-        return ncoords;
+    public ArrayList<Coordinate> getZoneNPCCoords(){
+        return zoneNPCCoords;
     }
-    public ArrayList<Coordinate> getCcoords(){
-        return ccoords;
+    public ArrayList<Coordinate> getZoneChestCoords(){
+        return zoneChestCoords;
     }
     public void wmoveX(WorldObject w, int amt){
-        coords.get(obstacles.indexOf(w)).addX(amt);
+        zoneWorldObjectCoords.get(zoneWorldObjects.indexOf(w)).addX(amt);
     }
     public void wmoveY(WorldObject w, int amt){
-        coords.get(obstacles.indexOf(w)).addY(amt);
+        zoneWorldObjectCoords.get(zoneWorldObjects.indexOf(w)).addY(amt);
     }
     //for add, check if the coordinate already exists, then it works fine.
-    public void addInteractables(InteractableObject a, int x, int y){
-        if(!interactables.contains(a)){
-            interactables.add(a);
-            icoords.add(new Coordinate(x,y));
+
+    public void addInteractable(InteractableObject a, int x, int y){
+        if(!zoneInteractableObjects.contains(a)){
+            zoneInteractableObjects.add(a);
+            zoneInteractableObjectCoords.add(new Coordinate(x,y));
         }
         else{
-            for(int i = 0; i < interactables.size(); i++){
-                if(interactables.get(i) == a && icoords.get(i).getX() == x && icoords.get(i).getY() == y){
+            for(int i = 0; i < zoneInteractableObjects.size(); i++){
+                if(zoneInteractableObjects.get(i) == a && zoneInteractableObjectCoords.get(i).getX() == x && zoneInteractableObjectCoords.get(i).getY() == y){
                     return;
                 }
             }
-            interactables.add(a);
-            icoords.add(new Coordinate(x,y));
+            zoneInteractableObjects.add(a);
+            zoneInteractableObjectCoords.add(new Coordinate(x,y));
         }
 
     }
     public void addNPCs(NPC a, int x, int y){
-        if(!NPCS.contains(a)){
-            NPCS.add(a);
-            ncoords.add(new Coordinate(x,y));
+        if(!zoneNPCs.contains(a)){
+            zoneNPCs.add(a);
+            zoneNPCCoords.add(new Coordinate(x,y));
         }
         else{
-            for(int i = 0; i < NPCS.size(); i++){
-                if(NPCS.get(i) == a && ncoords.get(i).getX() == x && ncoords.get(i).getY() == y){
+            for(int i = 0; i < zoneNPCs.size(); i++){
+                if(zoneNPCs.get(i) == a && zoneNPCCoords.get(i).getX() == x && zoneNPCCoords.get(i).getY() == y){
                     return;
                 }
             }
-            NPCS.add(a);
-            ncoords.add(new Coordinate(x,y));
+            zoneNPCs.add(a);
+            zoneNPCCoords.add(new Coordinate(x,y));
         }
     }
     public void addChest(Chest a, int x, int y){
-        if(!chests.contains(a)){
-            chests.add(a);
-            ccoords.add(new Coordinate(x,y));
+        if(!zoneChests.contains(a)){
+            zoneChests.add(a);
+            zoneChestCoords.add(new Coordinate(x,y));
         }
         else{
-            for(int i = 0; i < chests.size(); i++){
-                if(chests.get(i) == a && ccoords.get(i).getX() == x && ccoords.get(i).getY() == y){
+            for(int i = 0; i < zoneChests.size(); i++){
+                if(zoneChests.get(i) == a && zoneChestCoords.get(i).getX() == x && zoneChestCoords.get(i).getY() == y){
                     return;
                 }
             }
-            chests.add(a);
-            ccoords.add(new Coordinate(x,y));
+            zoneChests.add(a);
+            zoneChestCoords.add(new Coordinate(x,y));
         }
     }
-    public ArrayList<WorldObject> getObstacles(){
-        return obstacles;
+    public void addWorldObject(WorldObject a, int x, int y){
+        if(!zoneWorldObjects.contains(a)){
+            zoneWorldObjects.add(a);
+            zoneWorldObjectCoords.add(new Coordinate(x, y));
+        }
+        else{
+            for(int i = 0; i < zoneWorldObjects.size(); i++){
+                if(zoneWorldObjects.get(i) == a && zoneWorldObjectCoords.get(i).getX() == x && zoneWorldObjectCoords.get(i).getY() == y){
+                    return;
+                }
+            }
+            zoneWorldObjects.add(a);
+            zoneWorldObjectCoords.add(new Coordinate(x,y));
+        }
     }
-    public ArrayList<InteractableObject> getInteractables(){return interactables;}
+
+    public ArrayList<WorldObject> getZoneWorldObjects(){
+        return zoneWorldObjects;
+    }
+    public ArrayList<InteractableObject> getZoneInteractableObjects(){return zoneInteractableObjects;}
     public ArrayList<NPC> getNPCs(){
-        return NPCS;
+        return zoneNPCs;
     }
-    public ArrayList<Chest> getChests(){
-        return chests;
+    public ArrayList<Chest> getZoneChests(){
+        return zoneChests;
     }
-    public void removeObject(WorldObject w, int x, int y){ //safe remove, when multiple of a same object are in the same zone. Remove the one with matching coordinates.
-        for(int i =0; i< obstacles.size(); i++){
-            if(obstacles.get(i) == w && coords.get(i).getX() == x && coords.get(i).getY() == y){
-                obstacles.remove(w);
-                coords.remove(i);
+
+    public void removeWorldObject(WorldObject w, int x, int y){ //safe remove, when multiple of a same object are in the same zone. Remove the one with matching coordinates.
+        for(int i = 0; i< zoneWorldObjects.size(); i++){
+            if(zoneWorldObjects.get(i) == w && zoneWorldObjectCoords.get(i).getX() == x && zoneWorldObjectCoords.get(i).getY() == y){
+                zoneWorldObjects.remove(w);
+                zoneWorldObjectCoords.remove(i);
                 return;
             }
         }
     }
-    public void removeObject(WorldObject w){ //unsafe remove. Removes first object that is the same type. Useful when the coordinate of a unique object is unknown.
+    public void removeWorldObject(WorldObject w){ //unsafe remove. Removes first object that is the same type. Useful when the coordinate of a unique object is unknown.
         int ctr= 0;
-        for(WorldObject a : obstacles){
+        for(WorldObject a : zoneWorldObjects){
             if(a == w){
-                obstacles.remove(a);
-                coords.remove(ctr);
+                zoneWorldObjects.remove(a);
+                zoneWorldObjectCoords.remove(ctr);
                 return;
             }
             ctr++;
         }
     }
+
     public void removeInteractable(InteractableObject w, int x, int y){ //safe remove, when multiple of a same object are in the same zone. Remove the one with matching coordinates.
-        for(int i =0; i< interactables.size(); i++){
-            if(interactables.get(i) == w && icoords.get(i).getX() == x && icoords.get(i).getY() == y){
-                interactables.remove(w);
-                icoords.remove(i);
+        for(int i = 0; i< zoneInteractableObjects.size(); i++){
+            if(zoneInteractableObjects.get(i) == w && zoneInteractableObjectCoords.get(i).getX() == x && zoneInteractableObjectCoords.get(i).getY() == y){
+                zoneInteractableObjects.remove(w);
+                zoneInteractableObjectCoords.remove(i);
                 return;
             }
         }
     }
     public void removeInteractable(WorldObject w){//unsafe remove. Removes first object that is the same type. Useful when the coordinate of a unique object is unknown.
         int ctr = 0;
-        for(InteractableObject a : interactables){
+        for(InteractableObject a : zoneInteractableObjects){
             if(a == w){
-                interactables.remove(a);
-                icoords.remove(ctr);
+                zoneInteractableObjects.remove(a);
+                zoneInteractableObjectCoords.remove(ctr);
                 return;
             }
             ctr++;
         }
     }
+
     public void removeNPC(NPC w, int x, int y){ //safe remove, when multiple of a same object are in the same zone. Remove the one with matching coordinates.
-        for(int i =0; i< NPCS.size(); i++){
-            if(NPCS.get(i) == w && ncoords.get(i).getX() == x && ncoords.get(i).getY() == y){
-                NPCS.remove(w);
-                ncoords.remove(i);
+        for(int i = 0; i< zoneNPCs.size(); i++){
+            if(zoneNPCs.get(i) == w && zoneNPCCoords.get(i).getX() == x && zoneNPCCoords.get(i).getY() == y){
+                zoneNPCs.remove(w);
+                zoneNPCCoords.remove(i);
                 return;
             }
         }
     }
     public void removeNPC(NPC w){ //unsafe remove. Removes first object that is the same type. Useful when the coordinate of a unique object is unknown.
         int ctr = 0;
-        for(NPC a : NPCS){
+        for(NPC a : zoneNPCs){
             if(a == w){
-                NPCS.remove(a);
-                ncoords.remove(ctr);
+                zoneNPCs.remove(a);
+                zoneNPCCoords.remove(ctr);
                 return;
             }
             ctr++;
         }
     }
+
     public void removeChest(Chest w, int x, int y){ //safe remove, when multiple of a same object are in the same zone. Remove the one with matching coordinates.
-        for(int i =0; i< chests.size(); i++){
-            if(chests.get(i) == w && ccoords.get(i).getX() == x && ccoords.get(i).getY() == y){
-                chests.remove(w);
-                ccoords.remove(i);
+        for(int i = 0; i< zoneChests.size(); i++){
+            if(zoneChests.get(i) == w && zoneChestCoords.get(i).getX() == x && zoneChestCoords.get(i).getY() == y){
+                zoneChests.remove(w);
+                zoneChestCoords.remove(i);
                 return;
             }
         }
     }
     public void removeChest(Chest w){ //unsafe remove. Removes first object that is the same type. Useful when the coordinate of a unique object is unknown.
         int ctr = 0;
-        for(Chest a : chests){
+        for(Chest a : zoneChests){
             if(a == w){
-                chests.remove(a);
-                ccoords.remove(ctr);
+                zoneChests.remove(a);
+                zoneChestCoords.remove(ctr);
                 return;
             }
             ctr++;

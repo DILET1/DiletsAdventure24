@@ -1,28 +1,26 @@
 import processing.core.*;
 
-import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.Scanner;
 import java.util.*;
 public class Main extends PApplet {
     //all of our fun vars
-    static ArrayList<Zone> zoneList = new ArrayList<>();
-    static ArrayList<Event> events = new ArrayList<>();
-    static ArrayList<Item> items = new ArrayList<>();
-    static ArrayList<InteractableObject> interactables = new ArrayList<>();
-    static ArrayList<WorldObject> objList = new ArrayList<>();
-    static ArrayList<DialogueOption> options = new ArrayList<>();
-    static ArrayList<Chest> chests = new ArrayList<>();
-    static ArrayList<NPC> npcs = new ArrayList<>();
+    static ArrayList<Zone> globalZones = new ArrayList<>();
+    static ArrayList<Event> globalEvents = new ArrayList<>();
+    static ArrayList<Item> globalItems = new ArrayList<>();
+    static ArrayList<InteractableObject> globalInteractives = new ArrayList<>();
+    static ArrayList<WorldObject> globalObjects = new ArrayList<>();
+    static ArrayList<DialogueOption> globalDialogueOptions = new ArrayList<>();
+    static ArrayList<Chest> globalChests = new ArrayList<>();
+    static ArrayList<NPC> globalNPCs = new ArrayList<>();
     public static int resScalar = 2;
     static Player Dilet = new Player(resScalar);
-    static int currentState = 1; //state -1 is intro cutscene. state 0 is menu. state 1 is in-game. state 2 is pause menu. state 3 is interacting with an object. state 4 is dialogue. state 5 is chest.  more to come
+    static int curState = 1; //state -1 is intro cutscene. state 0 is menu. state 1 is in-game. state 2 is pause menu. state 3 is interacting with an object. state 4 is dialogue. state 5 is chest.  more to come
     static Zone curZone = null;
-    static InteractableObject curInteract = null;
+    static InteractableObject curInteractive = null;
     static NPC curNPC = null;
-    static DialogueOption curDialogue = null;
+    static DialogueOption curDialogueOption = null;
     static Chest curChest = null;
     static boolean up, left, right, down;
     //TEST AREA
@@ -36,7 +34,7 @@ public class Main extends PApplet {
         loadInteractable();
         loadWorldObj();
         loadZone();
-        curZone = zoneList.get(0);
+        curZone = globalZones.get(0);
     }
     public static void loadEvents(){
         try{
@@ -50,15 +48,15 @@ public class Main extends PApplet {
                 String message = ev1in.nextLine();
                 String isSilent = ev1in.nextLine();
                 if(type == 1){
-                    events.add(new Event(message, (Objects.equals(isSilent, "SILENT")), Dilet));
+                    globalEvents.add(new Event(message, (Objects.equals(isSilent, "SILENT")), Dilet));
                 }
                 if(type == 2 || type == 3){
-                    Item ta = items.get(ev1in.nextInt());
+                    Item ta = globalItems.get(ev1in.nextInt());
                     if(type == 2){
-                        events.add(new TakeEvent(message, isSilent.equals("SILENT"), Dilet, ta));
+                        globalEvents.add(new TakeEvent(message, isSilent.equals("SILENT"), Dilet, ta));
                     }
                     else{
-                        events.add(new GiveEvent(message, isSilent.equals("SILENT"), Dilet, ta));
+                        globalEvents.add(new GiveEvent(message, isSilent.equals("SILENT"), Dilet, ta));
                     }
                 }
                 if(type == 4 || type == 5 || type == 6 || type == 7 || type == 8 || type == 9){
@@ -67,22 +65,22 @@ public class Main extends PApplet {
                     int x = ev1in.nextInt();
                     int y = ev1in.nextInt();
                     if(type == 4){
-                        events.add(new RemoveEvent(Dilet, zone, ind, x,y,zoneList, objList));
+                        globalEvents.add(new RemoveEvent(Dilet, zone, ind, x,y, globalZones, globalObjects));
                     }
                     if(type == 5){
-                        events.add(new PlaceEvent(Dilet, zone, ind, x,y,zoneList, objList));
+                        globalEvents.add(new PlaceEvent(Dilet, zone, ind, x,y, globalZones, globalObjects));
                     }
                     if(type == 6){
-                        events.add(new removeInteractable(Dilet, zone, ind, x,y,zoneList, interactables));
+                        globalEvents.add(new removeInteractable(Dilet, zone, ind, x,y, globalZones, globalInteractives));
                     }
                     if(type == 7){
-                        events.add(new placeInteractable(Dilet, zone, ind, x,y,zoneList, interactables));
+                        globalEvents.add(new placeInteractable(Dilet, zone, ind, x,y, globalZones, globalInteractives));
                     }
                     if(type == 8){
-                        events.add(new removeNPC(Dilet, zone, ind, zoneList, npcs));
+                        globalEvents.add(new removeNPC(Dilet, zone, ind, globalZones, globalNPCs));
                     }
                     if(type == 9){
-                        events.add(new placeNPC(Dilet, zone, ind, x,y,zoneList, npcs));
+                        globalEvents.add(new placeNPC(Dilet, zone, ind, x,y, globalZones, globalNPCs));
                     }
                 }
                 System.out.println("ADDED EVENT"+i);
@@ -103,7 +101,7 @@ public class Main extends PApplet {
             for(int i = 0; i < it1n; i++){
                 String name = it1in.nextLine();
                 String desc = it1in.nextLine();
-                items.add(new Item(name, desc));
+                globalItems.add(new Item(name, desc));
                 System.out.println("ADDING ITEM "+i);
             }
         }
@@ -129,7 +127,7 @@ public class Main extends PApplet {
                 chaff = it1in.nextLine();
                 String label = it1in.nextLine();
                 System.out.println(label);
-                options.add(new DialogueOption(ids, events.get(cid), label));
+                globalDialogueOptions.add(new DialogueOption(ids, globalEvents.get(cid), label));
                 System.out.println("ADDED "+label);
             }
         }
@@ -153,7 +151,7 @@ public class Main extends PApplet {
                 int firstd = it1in.nextInt();
                 chaff = it1in.nextLine();
                 String name = it1in.nextLine();
-                npcs.add(new NPC(x1, y1 ,0, options.get(firstd), name));
+                globalNPCs.add(new NPC(x1, y1 ,0, globalDialogueOptions.get(firstd), name));
                 System.out.println("ADDED "+i);
             }
         }
@@ -177,9 +175,9 @@ public class Main extends PApplet {
                int numItems = it1in.nextInt();
                chaff = it1in.nextLine();
                for(int j = 0; j < numItems; j++){
-                   cur.add(items.get(it1in.nextInt()));
+                   cur.add(globalItems.get(it1in.nextInt()));
                }
-               chests.add(new Chest(x1,y1,cur,Dilet));
+               globalChests.add(new Chest(x1,y1,cur,Dilet));
                System.out.println("ADDED "+i);
             }
         }
@@ -200,7 +198,7 @@ public class Main extends PApplet {
                 y1 = it1in.nextInt()* resScalar;
                 String chaff = it1in.nextLine();
                 int firstd = it1in.nextInt();
-                interactables.add(new InteractableObject(x1,y1, firstd));
+                globalInteractives.add(new InteractableObject(x1,y1, firstd));
                 System.out.println("ADDED "+i);
             }
         }
@@ -220,7 +218,7 @@ public class Main extends PApplet {
                     int x, y;
                     x = it1in.nextInt()* resScalar;
                     y = it1in.nextInt()* resScalar;
-                    objList.add(new WorldObject(x, y));
+                    globalObjects.add(new WorldObject(x, y));
                     System.out.println(x+" "+y);
                 System.out.println("ADDED "+i);
             }
@@ -245,28 +243,28 @@ public class Main extends PApplet {
                 Zone temp = new Zone(n,e,s,w);
                 int woc = it1in.nextInt();
                 for(int j = 0; j < woc; j++){
-                    temp.addObj(objList.get(it1in.nextInt()), it1in.nextInt() * resScalar, it1in.nextInt() * resScalar);
+                    temp.addWorldObject(globalObjects.get(it1in.nextInt()), it1in.nextInt() * resScalar, it1in.nextInt() * resScalar);
                     System.out.println("ADDED "+j);
                 }
 
                 int ioc = it1in.nextInt();
                 for(int j = 0; j < ioc; j++){
-                    temp.addInteractables(interactables.get(it1in.nextInt()), it1in.nextInt() * resScalar, it1in.nextInt()* resScalar);
+                    temp.addInteractable(globalInteractives.get(it1in.nextInt()), it1in.nextInt() * resScalar, it1in.nextInt()* resScalar);
                     System.out.println("ADDED "+j);
                 }
 
                 int cc = it1in.nextInt();
                 for(int j = 0; j < cc; j++){
-                    temp.addChest(chests.get(it1in.nextInt()), it1in.nextInt()* resScalar, it1in.nextInt()* resScalar);
+                    temp.addChest(globalChests.get(it1in.nextInt()), it1in.nextInt()* resScalar, it1in.nextInt()* resScalar);
                     System.out.println("ADDED "+j);
                 }
 
                 int npcc = it1in.nextInt();
                 for(int j = 0; j < npcc; j++){
-                    temp.addNPCs(npcs.get(it1in.nextInt()), it1in.nextInt()* resScalar, it1in.nextInt()* resScalar);
+                    temp.addNPCs(globalNPCs.get(it1in.nextInt()), it1in.nextInt()* resScalar, it1in.nextInt()* resScalar);
                     System.out.println("ADDED "+j);
                 }
-                zoneList.add(temp);
+                globalZones.add(temp);
             }
         }
         catch(FileNotFoundException e){
@@ -288,36 +286,36 @@ public class Main extends PApplet {
     }
     public void draw(){
         inputProcess();
-        if(currentState == 1 || currentState == 3 || currentState == 4){
+        if(curState == 1 || curState == 3 || curState == 4){
             background(0,255,0);
             noStroke();
             fill(255,255,255);
             drawPlayer();
             drawZone();
         }
-        if(currentState == 2){
+        if(curState == 2){
             menu();
         }
         drawBanner();
-        if(currentState == 3){
+        if(curState == 3){
             textSize(10 * resScalar);
-            text(events.get(curInteract.msg()).message(),15 * resScalar,15 * resScalar);
+            text(globalEvents.get(curInteractive.msg()).message(),15 * resScalar,15 * resScalar);
         }
-        if(currentState == 4){
+        if(curState == 4){
             fill(0,0,0);
             textSize(10 * resScalar);
-            text(curDialogue.use(), 15 * resScalar,15 * resScalar);
+            text(curDialogueOption.use(), 15 * resScalar,15 * resScalar);
             int counter = 0;
             textSize(10 * resScalar);
-            for(int co : curDialogue.getAdj()){
+            for(int co : curDialogueOption.getAdj()){
                 fill(255,0,127);
                 rect(15 * resScalar,(45 + (15 * counter))* resScalar,100,(55 + (15  * counter))* resScalar);
                 fill(0,0,0);
-                text(options.get(co).returnLabel(),15 * resScalar,(45 + 15 *counter) *  resScalar);
+                text(globalDialogueOptions.get(co).returnLabel(),15 * resScalar,(45 + 15 *counter) *  resScalar);
                 counter++;
             }
         }
-        if(currentState == 5){
+        if(curState == 5){
             chestMenu();
         }
     }
@@ -366,31 +364,31 @@ public class Main extends PApplet {
     }
     public void drawZone(){
         int ctr =0;
-        for(WorldObject obj : curZone.getObstacles()){
+        for(WorldObject obj : curZone.getZoneWorldObjects()){
             rectMode(CORNERS);
             fill(255,255,255);
-            rect(curZone.getCoord(ctr).getX(), curZone.getCoord(ctr).getY() ,curZone.getCoord(ctr).getX()+ obj.getLen(),curZone.getCoord(ctr).getY()+ obj.getHeight());
+            rect(curZone.getZoneWorldObjectCoords(ctr).getX(), curZone.getZoneWorldObjectCoords(ctr).getY() ,curZone.getZoneWorldObjectCoords(ctr).getX()+ obj.getLen(),curZone.getZoneWorldObjectCoords(ctr).getY()+ obj.getHeight());
             ctr++;
         }
         ctr = 0;
-        for(InteractableObject obj : curZone.getInteractables()){
+        for(InteractableObject obj : curZone.getZoneInteractableObjects()){
             rectMode(CORNERS);
             fill(0,255,255);
-            rect(curZone.getIcoord(ctr).getX(), curZone.getIcoord(ctr).getY() ,curZone.getIcoord(ctr).getX()+ obj.getLen(),curZone.getIcoord(ctr).getY()+ obj.getHeight());
+            rect(curZone.getZoneInteractableObjectCoords(ctr).getX(), curZone.getZoneInteractableObjectCoords(ctr).getY() ,curZone.getZoneInteractableObjectCoords(ctr).getX()+ obj.getLen(),curZone.getZoneInteractableObjectCoords(ctr).getY()+ obj.getHeight());
             ctr++;
         }
         ctr =0;
         for(NPC obj : curZone.getNPCs()){
             rectMode(CORNERS);
             fill(255,0,255);
-            rect(curZone.getnCoord(ctr).getX(), curZone.getnCoord(ctr).getY() ,curZone.getnCoord(ctr).getX()+ obj.getLen(),curZone.getnCoord(ctr).getY()+ obj.getHeight());
+            rect(curZone.getZoneNPCCoords(ctr).getX(), curZone.getZoneNPCCoords(ctr).getY() ,curZone.getZoneNPCCoords(ctr).getX()+ obj.getLen(),curZone.getZoneNPCCoords(ctr).getY()+ obj.getHeight());
             ctr++;
         }
         ctr=0;
-        for(Chest obj : curZone.getChests()){
+        for(Chest obj : curZone.getZoneChests()){
             rectMode(CORNERS);
             fill(255,255,0);
-            rect(curZone.getCcoord(ctr).getX(), curZone.getCcoord(ctr).getY() ,curZone.getCcoord(ctr).getX()+ obj.getLen(),curZone.getCcoord(ctr).getY()+ obj.getHeight());
+            rect(curZone.getZoneChestCoords(ctr).getX(), curZone.getZoneChestCoords(ctr).getY() ,curZone.getZoneChestCoords(ctr).getX()+ obj.getLen(),curZone.getZoneChestCoords(ctr).getY()+ obj.getHeight());
             ctr++;
         }
     }
@@ -400,33 +398,33 @@ public class Main extends PApplet {
         rect(Dilet.getX(), Dilet.getY(), 30* resScalar, 30* resScalar);
     }
     public void inputProcess(){
-        if(currentState == 1){
+        if(curState == 1){
             if (up) {
                 boolean uflag = true;
                 int ctr = 0;
-                for(WorldObject w : curZone.getObstacles()){
-                    if(!Dilet.canUp(w,curZone.getCoord(ctr)) ){
+                for(WorldObject w : curZone.getZoneWorldObjects()){
+                    if(!Dilet.canUp(w,curZone.getZoneWorldObjectCoords(ctr)) ){
                         uflag = false;
                     }
                     ctr++;
                 }
                 ctr = 0;
-                for(Chest w : curZone.getChests()){
-                    if(!Dilet.canUp(w, curZone.getCcoord(ctr))){
+                for(Chest w : curZone.getZoneChests()){
+                    if(!Dilet.canUp(w, curZone.getZoneChestCoords(ctr))){
                         uflag = false;
                     }
                     ctr++;
                 }
                 ctr= 0;
                 for(NPC w : curZone.getNPCs()){
-                    if(!Dilet.canUp(w, curZone.getnCoord(ctr))){
+                    if(!Dilet.canUp(w, curZone.getZoneNPCCoords(ctr))){
                         uflag = false;
                     }
                     ctr++;
                 }
                 ctr = 0;
-                for(InteractableObject w : curZone.getInteractables()){
-                    if(!Dilet.canUp(w, curZone.getIcoord(ctr))){
+                for(InteractableObject w : curZone.getZoneInteractableObjects()){
+                    if(!Dilet.canUp(w, curZone.getZoneInteractableObjectCoords(ctr))){
                         uflag = false;
                     }
                     ctr++;
@@ -438,29 +436,29 @@ public class Main extends PApplet {
             if (left) {
                 boolean lflag = true;
                 int ctr = 0;
-                for(WorldObject w : curZone.getObstacles()){
-                    if(!Dilet.canLeft(w,curZone.getCoord(ctr)) ){
+                for(WorldObject w : curZone.getZoneWorldObjects()){
+                    if(!Dilet.canLeft(w,curZone.getZoneWorldObjectCoords(ctr)) ){
                         lflag = false;
                     }
                     ctr++;
                 }
                 ctr = 0;
-                for(Chest w : curZone.getChests()){
-                    if(!Dilet.canLeft(w, curZone.getCcoord(ctr))){
+                for(Chest w : curZone.getZoneChests()){
+                    if(!Dilet.canLeft(w, curZone.getZoneChestCoords(ctr))){
                         lflag = false;
                     }
                     ctr++;
                 }
                 ctr= 0;
                 for(NPC w : curZone.getNPCs()){
-                    if(!Dilet.canLeft(w, curZone.getnCoord(ctr))){
+                    if(!Dilet.canLeft(w, curZone.getZoneNPCCoords(ctr))){
                         lflag = false;
                     }
                     ctr++;
                 }
                 ctr = 0;
-                for(InteractableObject w : curZone.getInteractables()){
-                    if(!Dilet.canLeft(w, curZone.getIcoord(ctr))){
+                for(InteractableObject w : curZone.getZoneInteractableObjects()){
+                    if(!Dilet.canLeft(w, curZone.getZoneInteractableObjectCoords(ctr))){
                         lflag = false;
                     }
                     ctr++;
@@ -472,29 +470,29 @@ public class Main extends PApplet {
             if (right) {
                 boolean rflag = true;
                 int ctr = 0;
-                for(WorldObject w : curZone.getObstacles()){
-                    if(!Dilet.canRight(w,curZone.getCoord(ctr)) ){
+                for(WorldObject w : curZone.getZoneWorldObjects()){
+                    if(!Dilet.canRight(w,curZone.getZoneWorldObjectCoords(ctr)) ){
                         rflag = false;
                     }
                     ctr++;
                 }
                 ctr = 0;
-                for(Chest w : curZone.getChests()){
-                    if(!Dilet.canRight(w, curZone.getCcoord(ctr))){
+                for(Chest w : curZone.getZoneChests()){
+                    if(!Dilet.canRight(w, curZone.getZoneChestCoords(ctr))){
                         rflag = false;
                     }
                     ctr++;
                 }
                 ctr= 0;
                 for(NPC w : curZone.getNPCs()){
-                    if(!Dilet.canRight(w, curZone.getnCoord(ctr))){
+                    if(!Dilet.canRight(w, curZone.getZoneNPCCoords(ctr))){
                         rflag = false;
                     }
                     ctr++;
                 }
                 ctr = 0;
-                for(InteractableObject w : curZone.getInteractables()){
-                    if(!Dilet.canRight(w, curZone.getIcoord(ctr))){
+                for(InteractableObject w : curZone.getZoneInteractableObjects()){
+                    if(!Dilet.canRight(w, curZone.getZoneInteractableObjectCoords(ctr))){
                         rflag = false;
                     }
                     ctr++;
@@ -506,29 +504,29 @@ public class Main extends PApplet {
             if (down) {
                 boolean dflag = true;
                 int ctr = 0;
-                for(WorldObject w : curZone.getObstacles()){
-                    if(!Dilet.canDown(w,curZone.getCoord(ctr)) ){
+                for(WorldObject w : curZone.getZoneWorldObjects()){
+                    if(!Dilet.canDown(w,curZone.getZoneWorldObjectCoords(ctr)) ){
                         dflag = false;
                     }
                     ctr++;
                 }
                 ctr = 0;
-                for(Chest w : curZone.getChests()){
-                    if(!Dilet.canDown(w, curZone.getCcoord(ctr))){
+                for(Chest w : curZone.getZoneChests()){
+                    if(!Dilet.canDown(w, curZone.getZoneChestCoords(ctr))){
                         dflag = false;
                     }
                     ctr++;
                 }
                 ctr= 0;
                 for(NPC w : curZone.getNPCs()){
-                    if(!Dilet.canDown(w, curZone.getnCoord(ctr))){
+                    if(!Dilet.canDown(w, curZone.getZoneNPCCoords(ctr))){
                         dflag = false;
                     }
                     ctr++;
                 }
                 ctr = 0;
-                for(InteractableObject w : curZone.getInteractables()){
-                    if(!Dilet.canDown(w, curZone.getIcoord(ctr))){
+                for(InteractableObject w : curZone.getZoneInteractableObjects()){
+                    if(!Dilet.canDown(w, curZone.getZoneInteractableObjectCoords(ctr))){
                         dflag = false;
                     }
                     ctr++;
@@ -542,29 +540,29 @@ public class Main extends PApplet {
     }
     public void mouseClicked() {
         System.out.println(mouseX+" "+mouseY);
-        System.out.println(curZone.getObstacles().size());
-        for(WorldObject w : curZone.getObstacles()){
+        System.out.println(curZone.getZoneWorldObjects().size());
+        for(WorldObject w : curZone.getZoneWorldObjects()){
             System.out.println(w.toString());
         }
-        System.out.println(curZone.getInteractables().size());
-        for(InteractableObject i : curZone.getInteractables()){
+        System.out.println(curZone.getZoneInteractableObjects().size());
+        for(InteractableObject i : curZone.getZoneInteractableObjects()){
             System.out.println(i.toString());
         }
-        if(currentState == 1){
+        if(curState == 1){
             if(mouseX >= 610* resScalar && mouseX <= 630* resScalar && mouseY >= 5* resScalar && mouseY <= 25* resScalar){
-                currentState = 2;
+                curState = 2;
                 System.out.println("PAUSED");
                 for(Item i : Dilet.getInventory()){
                     System.out.println(i.toString());
                 }
             }
             int ctr = 0;
-            for(InteractableObject i : curZone.getInteractables()){
-                if(mouseX >= curZone.getIcoord(ctr).getX() && mouseX <= curZone.getIcoord(ctr).getX() + i.getLen() && mouseY >= curZone.getIcoord(ctr).getY() && mouseY <= curZone.getIcoord(ctr).getY() + i.getHeight()){
-                    if(Math.abs(Dilet.getX() - (curZone.getIcoord(ctr).getX()+ (i.getLen()/2))) < 60 * resScalar){
-                        if(Math.abs(Dilet.getY() - (curZone.getIcoord(ctr).getY()+ (i.getHeight()))) < 60 * resScalar){
-                            currentState = 3;
-                            curInteract = i;
+            for(InteractableObject i : curZone.getZoneInteractableObjects()){
+                if(mouseX >= curZone.getZoneInteractableObjectCoords(ctr).getX() && mouseX <= curZone.getZoneInteractableObjectCoords(ctr).getX() + i.getLen() && mouseY >= curZone.getZoneInteractableObjectCoords(ctr).getY() && mouseY <= curZone.getZoneInteractableObjectCoords(ctr).getY() + i.getHeight()){
+                    if(Math.abs(Dilet.getX() - (curZone.getZoneInteractableObjectCoords(ctr).getX()+ (i.getLen()/2))) < 60 * resScalar){
+                        if(Math.abs(Dilet.getY() - (curZone.getZoneInteractableObjectCoords(ctr).getY()+ (i.getHeight()))) < 60 * resScalar){
+                            curState = 3;
+                            curInteractive = i;
                         }
                     }
                 }
@@ -572,25 +570,25 @@ public class Main extends PApplet {
             }
             ctr = 0;
             for(NPC n : curZone.getNPCs()){
-                if(mouseX >= curZone.getnCoord(ctr).getX() && mouseX <= curZone.getnCoord(ctr).getX() + n.getLen() && mouseY >= curZone.getnCoord(ctr).getY() && mouseY <= curZone.getnCoord(ctr).getY() + n.getHeight()){
-                    if(Math.abs(Dilet.getX() - (curZone.getnCoord(ctr).getX()+ (n.getLen()/2))) < 60 * resScalar){
-                        if(Math.abs(Dilet.getY() - (curZone.getnCoord(ctr).getY()+ (n.getHeight()))) < 60 * resScalar){
+                if(mouseX >= curZone.getZoneNPCCoords(ctr).getX() && mouseX <= curZone.getZoneNPCCoords(ctr).getX() + n.getLen() && mouseY >= curZone.getZoneNPCCoords(ctr).getY() && mouseY <= curZone.getZoneNPCCoords(ctr).getY() + n.getHeight()){
+                    if(Math.abs(Dilet.getX() - (curZone.getZoneNPCCoords(ctr).getX()+ (n.getLen()/2))) < 60 * resScalar){
+                        if(Math.abs(Dilet.getY() - (curZone.getZoneNPCCoords(ctr).getY()+ (n.getHeight()))) < 60 * resScalar){
                             System.out.println("NPC ACTIVE");
-                            currentState = 4;
+                            curState = 4;
                             curNPC = n;
-                            curDialogue = n.talk();
+                            curDialogueOption = n.talk();
                         }
                     }
                 }
                 ctr++;
             }
             ctr =0;
-            for(Chest c : curZone.getChests()){
-                if(mouseX >= curZone.getCcoord(ctr).getX() && mouseX <= curZone.getCcoord(ctr).getX() + c.getLen() && mouseY >= curZone.getCcoord(ctr).getY() && mouseY <= curZone.getCcoord(ctr).getY() + c.getHeight()){
-                    if(Math.abs(Dilet.getX() - (curZone.getCcoord(ctr).getX()+ (c.getLen()/2))) < 60 * resScalar){
-                        if(Math.abs(Dilet.getY() - (curZone.getCcoord(ctr).getY()+ (c.getHeight()))) < 60 * resScalar){
+            for(Chest c : curZone.getZoneChests()){
+                if(mouseX >= curZone.getZoneChestCoords(ctr).getX() && mouseX <= curZone.getZoneChestCoords(ctr).getX() + c.getLen() && mouseY >= curZone.getZoneChestCoords(ctr).getY() && mouseY <= curZone.getZoneChestCoords(ctr).getY() + c.getHeight()){
+                    if(Math.abs(Dilet.getX() - (curZone.getZoneChestCoords(ctr).getX()+ (c.getLen()/2))) < 60 * resScalar){
+                        if(Math.abs(Dilet.getY() - (curZone.getZoneChestCoords(ctr).getY()+ (c.getHeight()))) < 60 * resScalar){
                             System.out.println("CHEST ACTIVE");
-                            currentState = 5;
+                            curState = 5;
                             curChest = c;
                         }
                     }
@@ -598,31 +596,31 @@ public class Main extends PApplet {
                 ctr++;
             }
         }
-        else if(currentState == 2){
+        else if(curState == 2){
             if(mouseX >= 610* resScalar && mouseX <= 630* resScalar && mouseY >= 5* resScalar && mouseY <= 25* resScalar){
-                currentState = 1;
+                curState = 1;
                 System.out.println("UNPAUSED");
             }
         }
-        else if(currentState == 3){
-            events.get(curInteract.msg()).reset();
+        else if(curState == 3){
+            globalEvents.get(curInteractive.msg()).reset();
             System.out.println("EXITING INTERACT");//to be replaced with dialogue n stuff
-            currentState = 1;
+            curState = 1;
         }
-        else if(currentState == 4){
+        else if(curState == 4){
             if(mouseX >= 15 * resScalar && mouseX <= 100 * resScalar){
-                for(int i = 0; i < curDialogue.getAdj().size(); i++){
+                for(int i = 0; i < curDialogueOption.getAdj().size(); i++){
                     if(mouseY >= (45 + (15 * i))* resScalar && mouseY <= (55 + (15 * i))* resScalar){
-                        curDialogue = options.get(curDialogue.getAdj().get(i));
+                        curDialogueOption = globalDialogueOptions.get(curDialogueOption.getAdj().get(i));
                         return;
                     }
                 }
             }
-            currentState = 1;
+            curState = 1;
             System.out.println("Exited dialogue");
 
         }
-        else if(currentState == 5){
+        else if(curState == 5){
             int counter =  0;
             if(mouseX >= 120 * resScalar && mouseY >= 100 * resScalar && mouseX <= 600* resScalar && mouseY <= 300* resScalar){
                 for(int i = 0; i < 4; i++){
@@ -640,12 +638,12 @@ public class Main extends PApplet {
             }
             else{
                 System.out.println("EXITING CHEST");
-                currentState = 1;
+                curState = 1;
             }
         }
     }
     public void keyPressed(){
-        if(currentState == 1){
+        if(curState == 1){
             if(key == 'w'){
                 up = true;
             }
@@ -661,7 +659,7 @@ public class Main extends PApplet {
         }
     }
     public void keyReleased(){
-        if(currentState == 1){
+        if(curState == 1){
             if(key == 'w'){
                 up = false;
             }

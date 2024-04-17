@@ -22,10 +22,10 @@ public class RemoveEvent extends Event{
         if(!used){
             used = true;
             if(this.x == this.y && this.x == -1){
-                this.Zonelist.get(curZone).removeObject(objs.get(toRemove));
+                this.Zonelist.get(curZone).removeWorldObject(objs.get(toRemove));
             }
             else{
-                this.Zonelist.get(curZone).removeObject(objs.get(toRemove), x, y);
+                this.Zonelist.get(curZone).removeWorldObject(objs.get(toRemove), x, y);
             }
             return "Removed object.";
         }

@@ -21,7 +21,7 @@ public class PlaceEvent extends Event{
     public String message(){
         if(!used){
             used = true;
-            this.Zonelist.get(curZone).addObj(objs.get(toAdd), x, y);
+            this.Zonelist.get(curZone).addWorldObject(objs.get(toAdd), x, y);
             return "Added object.";
         }
         return "duplicate protection enabled for place";
