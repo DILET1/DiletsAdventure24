@@ -1,18 +1,27 @@
-5
+6
 1
 Fish
 NOTSILENT
+
 1
 Fosh
 NOTSILENT
+
 1
 Kompot
 NOTSILENT
+
 3
 Nommy kompot
 SILENT
-0 1
+0
+
 4
 FEESHYKOMPOT
 SILENT
 0 1 150 150
+
+10
+fish
+SILENT
+0 0 50 50 3

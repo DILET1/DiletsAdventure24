@@ -52,6 +52,7 @@ public class Main extends PApplet {
                 String chaff = ev1in.nextLine();
                 String message = ev1in.nextLine();
                 String isSilent = ev1in.nextLine();
+                System.out.println("TYPE: " +type);
                 if(type == 1){
                     globalEvents.add(new Event(message, (Objects.equals(isSilent, "SILENT")), Dilet));
                 }
@@ -64,7 +65,7 @@ public class Main extends PApplet {
                         globalEvents.add(new GiveEvent(message, isSilent.equals("SILENT"), Dilet, ta));
                     }
                 }
-                if(type == 4 || type == 5 || type == 6 || type == 7 || type == 8 || type == 9){
+                if(type == 4 || type == 5 || type == 6 || type == 7 || type == 8 || type == 9 || type == 10 || type == 11 || type == 12){
                     int zone = ev1in.nextInt();
                     int ind = ev1in.nextInt();
                     int x = ev1in.nextInt();
@@ -86,6 +87,18 @@ public class Main extends PApplet {
                     }
                     if(type == 9){
                         globalEvents.add(new placeNPC(Dilet, zone, ind, x,y, globalZones, globalNPCs));
+                    }
+                    if(type > 9){
+                        int speed = ev1in.nextInt();
+                        if(type == 10){
+                            globalEvents.add(new moveObject(Dilet, zone, ind, x, y, speed, globalZones, globalObjects));
+                        }
+                        if(type == 11){
+                            globalEvents.add(new moveInteractable(Dilet, zone, ind, x, y, speed, globalZones, globalInteractives));
+                        }
+                        if(type == 12){
+                            globalEvents.add(new moveNPC(Dilet, zone, ind, x, y, speed, globalZones, globalNPCs));
+                        }
                     }
                 }
                 System.out.println("ADDED EVENT"+i);
@@ -306,29 +319,7 @@ public class Main extends PApplet {
         System.out.println("SUCCESFULLY ADDED ALL ZONE");
     }
     public static void main(String[] args) {
-        //load();
-        Zone testZone = new Zone(-1,-1,-1,-1);
-        curZone = testZone;
-        curState = 1;
-        Dilet.addItem(new Item("Fish", "Epic"));
-        Dilet.addItem(new Item("Kompot", "Cool"));
-        WorldObject mover = new WorldObject(30,30);
-        globalObjects.add(mover);
-        Event talk1 = new Event("wasg", false, Dilet);
-        Event talk2 = new Event("img", false, Dilet);
-        Event move1 = new moveObject(Dilet, curZone, 0, 100, 100, 1, globalObjects);
-        globalEvents.add(talk1);
-        globalEvents.add(move1);
-        globalEvents.add(talk2);
-        testZone.addWorldObject(mover, 100,100);
-        Cutscene plswork = new Cutscene(Dilet);
-        globalEvents.add(plswork);
-        plswork.addEvent(talk1, 1000);
-        plswork.addEvent(move1,1000);
-        plswork.addEvent(talk2,3000);
-        InteractableObject switcher = new InteractableObject(30,30, 3);
-        globalInteractives.add(switcher);
-        testZone.addInteractable(switcher, 500, 50);
+        load();
         newStart = 0;
         cutSceneInd = 0;
         PApplet.main("Main");

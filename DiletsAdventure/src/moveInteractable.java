@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class moveObject extends Event{
+public class moveInteractable extends Event{
     int tm;
     int zone;
     int x;
@@ -9,9 +9,9 @@ public class moveObject extends Event{
     int cy;
     int speed;
     boolean used;
-    ArrayList<WorldObject> objs;
+    ArrayList<InteractableObject> objs;
     ArrayList<Zone> zones;
-    public moveObject(Player dil, int curZone, int tm, int x, int y, int speed, ArrayList<Zone> zones, ArrayList<WorldObject> objs) {
+    public moveInteractable(Player dil, int curZone, int tm, int x, int y, int speed, ArrayList<Zone> zones, ArrayList<InteractableObject> objs) {
         super("this isn't used", true, dil);
         this.zone = curZone;
         this.zones = zones;
@@ -27,19 +27,19 @@ public class moveObject extends Event{
     public String message(){
         if(!used){
             if (cx < 0) {
-                zones.get(zone).wmoveX(objs.get(tm), Math.max(cx, -1 * speed));
+                zones.get(zone).imoveX(objs.get(tm), Math.max(cx, -1 * speed));
                 cx -= (Math.max(cx, -1 * speed));
             }
             if(cx > 0){
-                zones.get(zone).wmoveX(objs.get(tm), Math.min(cx, speed));
+                zones.get(zone).imoveX(objs.get(tm), Math.min(cx, speed));
                 cx-=(Math.min(cx, speed));
             }
             if (cy < 0) {
-                zones.get(zone).wmoveY(objs.get(tm), Math.max(cy, -1 * speed));
+                zones.get(zone).imoveY(objs.get(tm), Math.max(cy, -1 * speed));
                 cy -= (Math.max(cy, -1 * speed));
             }
             if(cy > 0){
-                zones.get(zone).wmoveY(objs.get(tm), Math.min(cy, speed));
+                zones.get(zone).imoveY(objs.get(tm), Math.min(cy, speed));
                 cy-=(Math.min(cy, speed));
             }
             if(cx == cy && cx == 0){

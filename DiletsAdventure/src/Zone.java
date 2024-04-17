@@ -35,11 +35,24 @@ public class Zone {
     public ArrayList<Coordinate> getZoneChestCoords(){
         return zoneChestCoords;
     }
+
     public void wmoveX(WorldObject w, int amt){
         zoneWorldObjectCoords.get(zoneWorldObjects.indexOf(w)).addX(amt);
     }
     public void wmoveY(WorldObject w, int amt){
         zoneWorldObjectCoords.get(zoneWorldObjects.indexOf(w)).addY(amt);
+    }
+    public void imoveX(InteractableObject w, int amt){
+        zoneInteractableObjectCoords.get(zoneInteractableObjects.indexOf(w)).addX(amt);
+    }
+    public void imoveY(InteractableObject w, int amt){
+        zoneInteractableObjectCoords.get(zoneInteractableObjects.indexOf(w)).addY(amt);
+    }
+    public void nmoveX(NPC w, int amt){
+        zoneNPCCoords.get(zoneNPCs.indexOf(w)).addX(amt);
+    }
+    public void nmoveY(NPC w, int amt){
+        zoneNPCCoords.get(zoneNPCs.indexOf(w)).addY(amt);
     }
     //for add, check if the coordinate already exists, then it works fine.
 
