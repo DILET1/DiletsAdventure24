@@ -50,4 +50,7 @@ public class moveObject extends Event{
         used = false; cx = x;
         cy = y;
     }
+    public boolean done(){
+        return (cx == cy) && (cx == 0);
+    }
 }

@@ -16,4 +16,7 @@ public class Cutscene extends Event{
     public ArrayList<Integer> getDelays(){
         return delays;
     }
+    public boolean isCutscene(){
+        return true;
+    }
 }

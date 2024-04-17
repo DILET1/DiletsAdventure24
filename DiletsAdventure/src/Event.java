@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 public class Event {
     private String message;
     private boolean silent;
@@ -16,5 +17,17 @@ public class Event {
     public void reset(){
         return;
     }
+    public boolean isCutscene(){
+        return false;
+    }
 
+    public ArrayList<Integer> getDelays() {
+        return new ArrayList<Integer>();
+    }
+    public ArrayList<Event> getSeq(){
+        return new ArrayList<Event>();
+    }
+    public boolean done(){
+        return true;
+    }
 }

@@ -22,7 +22,7 @@ public class Main extends PApplet {
     static NPC curNPC = null;
     static DialogueOption curDialogueOption = null;
     static Chest curChest = null;
-    static Cutscene curCutscene = null;
+    static int curCutscene;
     static int elapsedTime;
     static int newStart; //updated each time the cutscene state is entered
     static int cutSceneInd; //ditto above
@@ -33,6 +33,7 @@ public class Main extends PApplet {
         loadItems();
         loadEvents();
         loadDialogue();
+        loadCutscenes();
         loadNPC();
         loadChest();
         loadInteractable();
@@ -95,6 +96,33 @@ public class Main extends PApplet {
             return;
         }
         System.out.println("SUCCESFULLY ADDED ALL EVENTS");
+    }
+    public static void loadCutscenes(){
+        try{
+            File ev1 = new File("baseData/CUTSCENE1.txt");
+            Scanner ev1in = new Scanner(ev1);
+            int ev1n = ev1in.nextInt();
+            for(int i = 0; i < ev1n; i++){
+                Cutscene temp = new Cutscene(Dilet);
+                ArrayList<Event> events = new ArrayList<>();
+                ArrayList<Integer> times = new ArrayList<>();
+                int num = ev1in.nextInt();
+                for(int j =0; j < num; j++){
+                    events.add(globalEvents.get(ev1in.nextInt()));
+                    times.add(ev1in.nextInt());
+                }
+                for(int k = 0; k < num; k++){
+                    temp.addEvent(events.get(k), times.get(k));
+                }
+                globalEvents.add(temp);
+                System.out.println("ADDED EVENT"+i);
+            }
+        }
+        catch(FileNotFoundException e){
+            System.out.println("ERROR THROWN, COULD NOT COMPLETE ADDING CUTSCENES.");
+            return;
+        }
+        System.out.println("SUCCESFULLY ADDED ALL CUTSCENES");
     }
     public static void loadItems(){
         try{
@@ -281,7 +309,7 @@ public class Main extends PApplet {
         //load();
         Zone testZone = new Zone(-1,-1,-1,-1);
         curZone = testZone;
-        curState = 7;
+        curState = 1;
         Dilet.addItem(new Item("Fish", "Epic"));
         Dilet.addItem(new Item("Kompot", "Cool"));
         WorldObject mover = new WorldObject(30,30);
@@ -290,16 +318,19 @@ public class Main extends PApplet {
         Event talk2 = new Event("img", false, Dilet);
         Event move1 = new moveObject(Dilet, curZone, 0, 100, 100, 1, globalObjects);
         globalEvents.add(talk1);
-        globalEvents.add(talk2);
         globalEvents.add(move1);
+        globalEvents.add(talk2);
         testZone.addWorldObject(mover, 100,100);
         Cutscene plswork = new Cutscene(Dilet);
+        globalEvents.add(plswork);
         plswork.addEvent(talk1, 1000);
-        plswork.addEvent(talk2,1000);
         plswork.addEvent(move1,1000);
+        plswork.addEvent(talk2,3000);
+        InteractableObject switcher = new InteractableObject(30,30, 3);
+        globalInteractives.add(switcher);
+        testZone.addInteractable(switcher, 500, 50);
         newStart = 0;
         cutSceneInd = 0;
-        curCutscene = plswork;
         PApplet.main("Main");
 
     }
@@ -331,13 +362,13 @@ public class Main extends PApplet {
         drawBanner();
         if(curState == 7){
             textSize(10 * resScalar);
-            if(elapsedTime-newStart < newStart+(curCutscene.getDelays().get(cutSceneInd))){
-                text(curCutscene.getSeq().get(cutSceneInd).message(),15 * resScalar,15 * resScalar);
+            if(millis()-newStart < globalEvents.get(curCutscene).getDelays().get(cutSceneInd) || !globalEvents.get(curCutscene).getSeq().get(cutSceneInd).done()){
+                text(globalEvents.get(curCutscene).getSeq().get(cutSceneInd).message(),15 * resScalar,15 * resScalar);
             }
             else{
                 cutSceneInd++;
-                newStart = elapsedTime;
-                if(cutSceneInd == curCutscene.getDelays().size()){
+                newStart = millis();
+                if(cutSceneInd == globalEvents.get(curCutscene).getDelays().size()){
                     curState = 1;
                 }
             }
@@ -629,8 +660,20 @@ public class Main extends PApplet {
                 if(mouseX >= curZone.getZoneInteractableObjectCoords(ctr).getX() && mouseX <= curZone.getZoneInteractableObjectCoords(ctr).getX() + i.getLen() && mouseY >= curZone.getZoneInteractableObjectCoords(ctr).getY() && mouseY <= curZone.getZoneInteractableObjectCoords(ctr).getY() + i.getHeight()){
                     if(Math.abs(Dilet.getX() - (curZone.getZoneInteractableObjectCoords(ctr).getX()+ (i.getLen()/2))) < 60 * resScalar){
                         if(Math.abs(Dilet.getY() - (curZone.getZoneInteractableObjectCoords(ctr).getY()+ (i.getHeight()))) < 60 * resScalar){
-                            curState = 3;
-                            curInteractive = i;
+                            if(globalEvents.get(i.msg()).isCutscene()){
+                                curState = 7;
+                                newStart = millis();
+                                System.out.println("START: "+millis());
+                                cutSceneInd = 0;
+                                curCutscene = i.msg();
+                                for(Integer time : globalEvents.get(curCutscene).getDelays()){
+                                    System.out.println(time);
+                                }
+                            }
+                            else{
+                                curState = 3;
+                                curInteractive = i;
+                            }
                         }
                     }
                 }

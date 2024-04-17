@@ -21,6 +21,10 @@ First line is the number of adjacent dialogue options, followed by their ids.
 Second line is the id of the associated event.
 Third line is the label.
 
+For Cutscenes:
+
+First line is the number of events, followed by each event ID and time.
+
 For Interactables:
 
 1st line is coordinates
