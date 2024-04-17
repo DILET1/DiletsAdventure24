@@ -16,12 +16,16 @@ public class Main extends PApplet {
     static ArrayList<NPC> globalNPCs = new ArrayList<>();
     public static int resScalar = 2;
     static Player Dilet = new Player(resScalar);
-    static int curState = 1; //state -1 is intro cutscene. state 0 is menu. state 1 is in-game. state 2 is pause menu. state 3 is interacting with an object. state 4 is dialogue. state 5 is chest.  more to come
+    static int curState = 1; //state -1 is intro cutscene. state 0 is menu. state 1 is in-game. state 2 is pause menu. state 3 is interacting with an object. state 4 is dialogue. state 5 is chest. state 6 is inventory. state 7 is cutscene, state 8 is inventory, more to come
     static Zone curZone = null;
     static InteractableObject curInteractive = null;
     static NPC curNPC = null;
     static DialogueOption curDialogueOption = null;
     static Chest curChest = null;
+    static Cutscene curCutscene = null;
+    static int elapsedTime;
+    static int newStart; //updated each time the cutscene state is entered
+    static int cutSceneInd; //ditto above
     static boolean up, left, right, down;
     //TEST AREA
     //END TEST
@@ -274,7 +278,28 @@ public class Main extends PApplet {
         System.out.println("SUCCESFULLY ADDED ALL ZONE");
     }
     public static void main(String[] args) {
-        load();
+        //load();
+        Zone testZone = new Zone(-1,-1,-1,-1);
+        curZone = testZone;
+        curState = 7;
+        Dilet.addItem(new Item("Fish", "Epic"));
+        Dilet.addItem(new Item("Kompot", "Cool"));
+        WorldObject mover = new WorldObject(30,30);
+        globalObjects.add(mover);
+        Event talk1 = new Event("wasg", false, Dilet);
+        Event talk2 = new Event("img", false, Dilet);
+        Event move1 = new moveObject(Dilet, curZone, 0, 100, 100, 1, globalObjects);
+        globalEvents.add(talk1);
+        globalEvents.add(talk2);
+        globalEvents.add(move1);
+        testZone.addWorldObject(mover, 100,100);
+        Cutscene plswork = new Cutscene(Dilet);
+        plswork.addEvent(talk1, 1000);
+        plswork.addEvent(talk2,1000);
+        plswork.addEvent(move1,1000);
+        newStart = 0;
+        cutSceneInd = 0;
+        curCutscene = plswork;
         PApplet.main("Main");
 
     }
@@ -285,8 +310,15 @@ public class Main extends PApplet {
         frameRate(60);
     }
     public void draw(){
+        elapsedTime = millis();
         inputProcess();
-        if(curState == 1 || curState == 3 || curState == 4){
+        if(curState != 1){
+            up = false;
+            down = false;
+            left = false;
+            right = false;
+        }
+        if(curState == 1 || curState == 3 || curState == 4 || curState == 7){
             background(0,255,0);
             noStroke();
             fill(255,255,255);
@@ -297,6 +329,19 @@ public class Main extends PApplet {
             menu();
         }
         drawBanner();
+        if(curState == 7){
+            textSize(10 * resScalar);
+            if(elapsedTime-newStart < newStart+(curCutscene.getDelays().get(cutSceneInd))){
+                text(curCutscene.getSeq().get(cutSceneInd).message(),15 * resScalar,15 * resScalar);
+            }
+            else{
+                cutSceneInd++;
+                newStart = elapsedTime;
+                if(cutSceneInd == curCutscene.getDelays().size()){
+                    curState = 1;
+                }
+            }
+        }
         if(curState == 3){
             textSize(10 * resScalar);
             text(globalEvents.get(curInteractive.msg()).message(),15 * resScalar,15 * resScalar);
@@ -318,6 +363,10 @@ public class Main extends PApplet {
         if(curState == 5){
             chestMenu();
         }
+        if(curState == 8){
+            inventoryMenu();
+        }
+
     }
     public void drawBanner(){
         //top banner
@@ -351,6 +400,25 @@ public class Main extends PApplet {
         for(int i = 0; i < 4; i++){
             for(int j = 0; j < 2; j++){
                 if(counter < curChest.getContents().size()){
+                    fill(32,32,32);
+                }
+                else{
+                    fill(64,64,64);
+                }
+                rect((125 + (100 * i)) * resScalar, (105 + (100 * j)) * resScalar, (220 + (100 * i)) * resScalar, (200 + (100 * j)) * resScalar);
+                counter++;
+            }
+        }
+
+    }
+    public void inventoryMenu(){
+        fill(127,127,127);
+        rect(120 * resScalar, 100 * resScalar, 525 * resScalar, 305 * resScalar);
+        fill(64,64,64);
+        int counter = 0;
+        for(int i = 0; i < 4; i++){
+            for(int j = 0; j < 2; j++){
+                if(counter < Dilet.getInventory().size()){
                     fill(32,32,32);
                 }
                 else{
@@ -641,6 +709,22 @@ public class Main extends PApplet {
                 curState = 1;
             }
         }
+        else if(curState == 8){
+            int counter =  0;
+            if(mouseX >= 120 * resScalar && mouseY >= 100 * resScalar && mouseX <= 600* resScalar && mouseY <= 300* resScalar){
+                for(int i = 0; i < 4; i++){
+                    for(int j = 0; j < 2; j++){
+                        if(counter < Dilet.getInventory().size()){
+                            if(mouseX >=(125 + (100 * i)) * resScalar && mouseY >= (105 + (100 * j)) * resScalar && mouseX <= (220 + (100 * i)) * resScalar && mouseY <=  (200 + (100 * j)) * resScalar){
+                                System.out.println(i * 2 + j + 1);
+                                System.out.println("SELECTED ITEM: "+ Dilet.getInventory().get(counter));
+                            }
+                            counter++;
+                        }
+                    }
+                }
+            }
+        }
     }
     public void keyPressed(){
         if(curState == 1){
@@ -655,6 +739,14 @@ public class Main extends PApplet {
             }
             if(key == 'a'){
                 left = true;
+            }
+            if(key == 'e'){
+                curState = 8;
+            }
+        }
+        else if(curState == 8){
+            if(key == 'e'){
+                curState = 1;
             }
         }
     }
@@ -674,4 +766,5 @@ public class Main extends PApplet {
             }
         }
     }
+
 }
