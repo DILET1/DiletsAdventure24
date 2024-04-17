@@ -8,7 +8,7 @@ For all events:
 3rd line is SILENT or NOTSILENT
 for Take/Give events:
 4th line is the index of the item to take/give
-for remove/add events, the 4th line is the index of the zone, then the thing to remove/add, then the coordinate (-1 and -1 if using the "unsafe" removal option)
+for remove/add events, the 4th line is the index of the zone, then the thing to remove/add, then the coordinate (-1 and -1 if using the "unsafe" removal option. if removing a npc, none are needed.).
 
 For Items:
 

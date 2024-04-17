@@ -13,5 +13,8 @@ public class Event {
     public boolean isSilent(){
         return silent;
     }
+    public void reset(){
+        return;
+    }
 
 }

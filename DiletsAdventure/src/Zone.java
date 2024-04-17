@@ -14,6 +14,15 @@ public class Zone {
             obstacles.add(a);
             coords.add(new Coordinate(x, y));
         }
+        else{
+            for(int i = 0; i < obstacles.size(); i++){
+                if(obstacles.get(i) == a && coords.get(i).getX() == x && coords.get(i).getY() == y){
+                    return;
+                }
+            }
+            obstacles.add(a);
+            coords.add(new Coordinate(x,y));
+        }
     }
     public Coordinate getCoord(int a){
         return coords.get(a);
@@ -47,15 +56,50 @@ public class Zone {
     }
     //for add, check if the coordinate already exists, then it works fine.
     public void addInteractables(InteractableObject a, int x, int y){
-        interactables.add(a);
-        icoords.add(new Coordinate(x,y));
+        if(!interactables.contains(a)){
+            interactables.add(a);
+            icoords.add(new Coordinate(x,y));
+        }
+        else{
+            for(int i = 0; i < interactables.size(); i++){
+                if(interactables.get(i) == a && icoords.get(i).getX() == x && icoords.get(i).getY() == y){
+                    return;
+                }
+            }
+            interactables.add(a);
+            icoords.add(new Coordinate(x,y));
+        }
+
     }
     public void addNPCs(NPC a, int x, int y){
-        NPCS.add(a);
-        ncoords.add(new Coordinate(x,y));
+        if(!NPCS.contains(a)){
+            NPCS.add(a);
+            ncoords.add(new Coordinate(x,y));
+        }
+        else{
+            for(int i = 0; i < NPCS.size(); i++){
+                if(NPCS.get(i) == a && ncoords.get(i).getX() == x && ncoords.get(i).getY() == y){
+                    return;
+                }
+            }
+            NPCS.add(a);
+            ncoords.add(new Coordinate(x,y));
+        }
     }
     public void addChest(Chest a, int x, int y){
-        chests.add(a); ccoords.add(new Coordinate(x,y));
+        if(!chests.contains(a)){
+            chests.add(a);
+            ccoords.add(new Coordinate(x,y));
+        }
+        else{
+            for(int i = 0; i < chests.size(); i++){
+                if(chests.get(i) == a && ccoords.get(i).getX() == x && ccoords.get(i).getY() == y){
+                    return;
+                }
+            }
+            chests.add(a);
+            ccoords.add(new Coordinate(x,y));
+        }
     }
     public ArrayList<WorldObject> getObstacles(){
         return obstacles;

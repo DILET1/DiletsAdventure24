@@ -4,19 +4,34 @@ public class removeInteractable extends Event{
     int toRemove;
     int curZone;
     ArrayList<Zone> Zonelist;
-    ArrayList<WorldObject> objs;
     ArrayList<InteractableObject> its;
-    public removeInteractable(Player dil, int curZone, int toRemove, ArrayList<Zone> zoneList, ArrayList<WorldObject> objs, ArrayList<InteractableObject> its) {
+    boolean used;
+    int x;
+    int y;
+    public removeInteractable(Player dil, int curZone, int toRemove, int x, int y, ArrayList<Zone> zoneList, ArrayList<InteractableObject> its) {
         super("this isn't even used", true, dil);
         this.toRemove = toRemove;
         this.curZone = curZone;
         this.Zonelist = zoneList;
-        this.objs = objs;
         this.its = its;
+        this.used = false;
+        this.x = x;
+        this.y = y;
     }
     public String message(){
-        this.Zonelist.get(curZone).getObstacles().remove(objs.get(toRemove));
-        this.Zonelist.get(curZone).getInteractables().remove(its.get(toRemove));
-        return "Removed object.";
+        if(!used){
+            if(this.x == this.y && this.x == -1){
+                this.Zonelist.get(curZone).removeInteractable(its.get(toRemove));
+            }
+            else{
+                this.Zonelist.get(curZone).removeInteractable(its.get(toRemove), x, y);
+            }
+            used = true;
+            return "Removed object.";
+        }
+        return "Dupe protection";
+    }
+    public void reset(){
+        used = false;
     }
 }
