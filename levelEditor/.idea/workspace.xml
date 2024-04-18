@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="acb51a52-f037-4ab9-9347-7a7237b5a4df" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/QUEST1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/core.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/levelEditor.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/DisplayObject.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/CHEST1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/CHEST1.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/CUTSCENE1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/CUTSCENE1.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/DIALOGUE1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/DIALOGUE1.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/EVENT1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/EVENT1.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/INTERACT.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/INTERACT.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/ITEM1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/ITEM1.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/NPC1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/NPC1.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/OBSTACLE1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/OBSTACLE1.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/ZONE1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/ZONE1.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/out/production/DiletsAdventure/Main$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/out/production/DiletsAdventure/Main$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/out/production/DiletsAdventure/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/out/production/DiletsAdventure/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/src/Main.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 1
+}]]></component>
+  <component name="ProjectId" id="2fIAKmW9OAwmHkk1WxTkQZSCls3" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/DiletsAdventure24/processing-4.3/core/library/core.jar",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="acb51a52-f037-4ab9-9347-7a7237b5a4df" name="Changes" comment="" />
+      <created>1713478158613</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1713478158613</updated>
+    </task>
+    <servers />
+  </component>
+</project>

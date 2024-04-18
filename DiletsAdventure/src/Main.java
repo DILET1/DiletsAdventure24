@@ -34,6 +34,7 @@ public class Main extends PApplet {
     public static void load(){
         loadItems();
         loadEvents();
+        loadQuests();
         loadDialogue();
         loadCutscenes();
         loadNPC();
@@ -140,6 +141,36 @@ public class Main extends PApplet {
             return;
         }
         System.out.println("SUCCESFULLY ADDED ALL CUTSCENES");
+    }
+    public static void loadQuests(){
+        try{
+            File ev1 = new File("baseData/QUEST1.txt");
+            Scanner ev1in = new Scanner(ev1);
+            int ev1n = ev1in.nextInt();
+            String chaff = ev1in.nextLine();
+            for(int i = 0; i < ev1n; i++) {
+                String name = ev1in.nextLine();
+                int num = ev1in.nextInt();
+                chaff = ev1in.nextLine();
+                ArrayList<String> toAdd = new ArrayList<>();
+                for (int j = 0; j < num; j++) {
+                    toAdd.add(ev1in.nextLine());
+                }
+                globalQuests.add(new Quest(name) {{
+                    for (String s : toAdd) {
+                        addStep(s);
+                    }
+                }});
+                for(String s : toAdd){
+                    System.out.println(s);
+                }
+            }
+        }
+        catch(FileNotFoundException e){
+            System.out.println("ERROR THROWN, COULD NOT COMPLETE ADDING QUESTS.");
+            return;
+        }
+        System.out.println("SUCCESFULLY ADDED ALL QUESTS");
     }
     public static void loadItems(){
         try{
@@ -323,38 +354,10 @@ public class Main extends PApplet {
         System.out.println("SUCCESFULLY ADDED ALL ZONE");
     }
     public static void main(String[] args) {
-        //load();
-        Zone testZone = new Zone(-1,-1,-1,-1);
-        globalZones.add(testZone);
-        Event firstE = new Event("Hello Dilet.", false, Dilet, 0, 0);
-        Event secondE = new Event("This is the test area. It's pretty cool and sometimes breaks. Don't worry if it does. Hey, try interacting with that cube to progress.", false, Dilet, 0,1);
-        Event thirdE = new Event("You interact with the strange cube.", false, Dilet, 0, 2);
-        Event byeE = new Event("See you around, Dilet.", false, Dilet,-1,-1);
-        globalEvents.add(firstE);
-        globalEvents.add(secondE);
-        globalEvents.add(thirdE);
-        globalEvents.add(byeE);
-        DialogueOption firstD = new DialogueOption(new ArrayList<Integer>(){{add(1);add(2);}}, firstE, "first dialogue option");
-        DialogueOption secondD = new DialogueOption(new ArrayList<Integer>(), secondE, "What is this place?");
-        DialogueOption byeD = new DialogueOption(new ArrayList<Integer>(), byeE, "Bye.");
-        globalDialogueOptions.add(firstD);
-        globalDialogueOptions.add(secondD);
-        globalDialogueOptions.add(byeD);
-        NPC introMan = new NPC(40,40,0,firstD, "Warden");
-        globalNPCs.add(introMan);
-        Quest testQuest = new Quest("Find out about the area");
-        testQuest.addStep("Talk to the warden.");
-        testQuest.addStep("Find out about the testArea from the warden.");
-        testQuest.addStep("Interact with the strange cube.");
-        testZone.addNPCs(introMan, 100,100);
-        InteractableObject strangeCube = new InteractableObject(30,30,2);
-        testZone.addInteractable(strangeCube, 200,100);
-        globalInteractives.add(strangeCube);
-        curZone = testZone;
-        questLog.add(testQuest);
-        globalQuests.add(testQuest);
+        cutSceneInd = 0;
+        newStart = 0;
+        load();
         PApplet.main("Main");
-
     }
     public void settings(){
         size(640* resScalar,360* resScalar);
