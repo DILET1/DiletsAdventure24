@@ -11,8 +11,8 @@ public class moveInteractable extends Event{
     boolean used;
     ArrayList<InteractableObject> objs;
     ArrayList<Zone> zones;
-    public moveInteractable(Player dil, int curZone, int tm, int x, int y, int speed, ArrayList<Zone> zones, ArrayList<InteractableObject> objs) {
-        super("this isn't used", true, dil);
+    public moveInteractable(Player dil, int curZone, int tm, int x, int y, int speed, int questID, int questStep, ArrayList<Zone> zones, ArrayList<InteractableObject> objs) {
+        super("this isn't used", true, dil, questID, questStep);
         this.zone = curZone;
         this.zones = zones;
         this.tm = tm;

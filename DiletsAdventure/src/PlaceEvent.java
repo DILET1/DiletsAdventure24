@@ -8,8 +8,8 @@ public class PlaceEvent extends Event{
     int x;
     int y;
     boolean used;
-    public PlaceEvent (Player dil, int curZone, int toAdd, int x, int y, ArrayList<Zone> zoneList, ArrayList<WorldObject> objs) {
-        super("this isn't even used", true, dil);
+    public PlaceEvent (Player dil, int curZone, int toAdd, int x, int y, int questID, int questStep, ArrayList<Zone> zoneList, ArrayList<WorldObject> objs) {
+        super("this isn't even used", true, dil, questID, questStep);
         this.toAdd = toAdd;
         this.curZone = curZone;
         this.Zonelist = zoneList;

@@ -8,8 +8,8 @@ public class RemoveEvent extends Event{
     int x;
     int y;
     boolean used;
-    public RemoveEvent(Player dil, int curZone, int toRemove, int x, int y, ArrayList<Zone> zoneList, ArrayList<WorldObject> objs) {
-        super("this isn't even used", true, dil);
+    public RemoveEvent(Player dil, int curZone, int toRemove, int x, int y, int questID, int questStep, ArrayList<Zone> zoneList, ArrayList<WorldObject> objs) {
+        super("this isn't even used", true, dil, questID, questStep);
         this.toRemove = toRemove;
         this.curZone = curZone;
         this.Zonelist = zoneList;

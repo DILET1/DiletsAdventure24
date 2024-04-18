@@ -11,8 +11,8 @@ public class moveNPC extends Event{
     boolean used;
     ArrayList<NPC> objs;
     ArrayList<Zone> zones;
-    public moveNPC(Player dil, int curZone, int tm, int x, int y, int speed, ArrayList<Zone> zones, ArrayList<NPC> objs) {
-        super("this isn't used", true, dil);
+    public moveNPC(Player dil, int curZone, int tm, int x, int y, int speed, int questID, int questStep, ArrayList<Zone> zones, ArrayList<NPC> objs) {
+        super("this isn't used", true, dil, questID, questStep);
         this.zone = curZone;
         this.zones = zones;
         this.tm = tm;

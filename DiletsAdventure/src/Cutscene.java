@@ -4,7 +4,7 @@ public class Cutscene extends Event{
     ArrayList<Event> seq = new ArrayList<>();
     ArrayList<Integer> delays = new ArrayList<>();
     public Cutscene(Player dil) {
-        super("Playin a cutscene", true, dil);
+        super("Playin a cutscene", true, dil, -1, -1);
     }
     public void addEvent(Event e, int delay){
         seq.add(e);

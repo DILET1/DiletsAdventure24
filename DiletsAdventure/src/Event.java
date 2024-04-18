@@ -2,11 +2,15 @@ import java.util.ArrayList;
 public class Event {
     private String message;
     private boolean silent;
+    protected int questId;
+    protected int questStep;
     protected Player dil;
-    public Event(String message, boolean silent, Player dil){
+    public Event(String message, boolean silent, Player dil, int questId, int questStep){
         this.message = message;
         this.silent = silent;
         this.dil = dil;
+        this.questId = questId;
+        this.questStep = questStep;
     }
     public String message(){
         return this.message;
@@ -29,5 +33,11 @@ public class Event {
     }
     public boolean done(){
         return true;
+    }
+    public int returnQuestID(){
+        return questId;
+    }
+    public int returnQuestStep(){
+        return questStep;
     }
 }

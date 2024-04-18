@@ -8,8 +8,8 @@ public class removeInteractable extends Event{
     boolean used;
     int x;
     int y;
-    public removeInteractable(Player dil, int curZone, int toRemove, int x, int y, ArrayList<Zone> zoneList, ArrayList<InteractableObject> its) {
-        super("this isn't even used", true, dil);
+    public removeInteractable(Player dil, int curZone, int toRemove, int x, int y, int questID, int questStep, ArrayList<Zone> zoneList, ArrayList<InteractableObject> its) {
+        super("this isn't even used", true, dil, questID, questStep);
         this.toRemove = toRemove;
         this.curZone = curZone;
         this.Zonelist = zoneList;

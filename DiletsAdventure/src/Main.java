@@ -14,6 +14,8 @@ public class Main extends PApplet {
     static ArrayList<DialogueOption> globalDialogueOptions = new ArrayList<>();
     static ArrayList<Chest> globalChests = new ArrayList<>();
     static ArrayList<NPC> globalNPCs = new ArrayList<>();
+    static ArrayList<Quest> globalQuests = new ArrayList<>();
+    static ArrayList<Quest> questLog = new ArrayList<>();
     public static int resScalar = 2;
     static Player Dilet = new Player(resScalar);
     static int curState = 1; //state -1 is intro cutscene. state 0 is menu. state 1 is in-game. state 2 is pause menu. state 3 is interacting with an object. state 4 is dialogue. state 5 is chest. state 6 is inventory. state 7 is cutscene, state 8 is inventory, more to come
@@ -49,20 +51,22 @@ public class Main extends PApplet {
             for(int i = 0; i < ev1n; i++){
                 System.out.println("PASS");
                 int type = ev1in.nextInt();
+                int questID = ev1in.nextInt();
+                int questStep = ev1in.nextInt();
                 String chaff = ev1in.nextLine();
                 String message = ev1in.nextLine();
                 String isSilent = ev1in.nextLine();
                 System.out.println("TYPE: " +type);
                 if(type == 1){
-                    globalEvents.add(new Event(message, (Objects.equals(isSilent, "SILENT")), Dilet));
+                    globalEvents.add(new Event(message, (Objects.equals(isSilent, "SILENT")), Dilet, questID, questStep));
                 }
                 if(type == 2 || type == 3){
                     Item ta = globalItems.get(ev1in.nextInt());
                     if(type == 2){
-                        globalEvents.add(new TakeEvent(message, isSilent.equals("SILENT"), Dilet, ta));
+                        globalEvents.add(new TakeEvent(message, isSilent.equals("SILENT"), Dilet, ta, questID, questStep));
                     }
                     else{
-                        globalEvents.add(new GiveEvent(message, isSilent.equals("SILENT"), Dilet, ta));
+                        globalEvents.add(new GiveEvent(message, isSilent.equals("SILENT"), Dilet, ta, questID, questStep));
                     }
                 }
                 if(type == 4 || type == 5 || type == 6 || type == 7 || type == 8 || type == 9 || type == 10 || type == 11 || type == 12){
@@ -71,33 +75,33 @@ public class Main extends PApplet {
                     int x = ev1in.nextInt();
                     int y = ev1in.nextInt();
                     if(type == 4){
-                        globalEvents.add(new RemoveEvent(Dilet, zone, ind, x,y, globalZones, globalObjects));
+                        globalEvents.add(new RemoveEvent(Dilet, zone, ind, x,y, questID, questStep, globalZones, globalObjects));
                     }
                     if(type == 5){
-                        globalEvents.add(new PlaceEvent(Dilet, zone, ind, x,y, globalZones, globalObjects));
+                        globalEvents.add(new PlaceEvent(Dilet, zone, ind, x,y, questID, questStep,globalZones, globalObjects));
                     }
                     if(type == 6){
-                        globalEvents.add(new removeInteractable(Dilet, zone, ind, x,y, globalZones, globalInteractives));
+                        globalEvents.add(new removeInteractable(Dilet, zone, ind, x,y, questID, questStep,globalZones, globalInteractives));
                     }
                     if(type == 7){
-                        globalEvents.add(new placeInteractable(Dilet, zone, ind, x,y, globalZones, globalInteractives));
+                        globalEvents.add(new placeInteractable(Dilet, zone, ind, x,y, questID, questStep,globalZones, globalInteractives));
                     }
                     if(type == 8){
-                        globalEvents.add(new removeNPC(Dilet, zone, ind, globalZones, globalNPCs));
+                        globalEvents.add(new removeNPC(Dilet, zone, ind, questID, questStep,globalZones, globalNPCs));
                     }
                     if(type == 9){
-                        globalEvents.add(new placeNPC(Dilet, zone, ind, x,y, globalZones, globalNPCs));
+                        globalEvents.add(new placeNPC(Dilet, zone, ind, x,y, questID, questStep,globalZones, globalNPCs));
                     }
                     if(type > 9){
                         int speed = ev1in.nextInt();
                         if(type == 10){
-                            globalEvents.add(new moveObject(Dilet, zone, ind, x, y, speed, globalZones, globalObjects));
+                            globalEvents.add(new moveObject(Dilet, zone, ind, x, y, speed, questID, questStep,globalZones, globalObjects));
                         }
                         if(type == 11){
-                            globalEvents.add(new moveInteractable(Dilet, zone, ind, x, y, speed, globalZones, globalInteractives));
+                            globalEvents.add(new moveInteractable(Dilet, zone, ind, x, y, speed, questID, questStep,globalZones, globalInteractives));
                         }
                         if(type == 12){
-                            globalEvents.add(new moveNPC(Dilet, zone, ind, x, y, speed, globalZones, globalNPCs));
+                            globalEvents.add(new moveNPC(Dilet, zone, ind, x, y, speed, questID, questStep,globalZones, globalNPCs));
                         }
                     }
                 }
@@ -319,9 +323,36 @@ public class Main extends PApplet {
         System.out.println("SUCCESFULLY ADDED ALL ZONE");
     }
     public static void main(String[] args) {
-        load();
-        newStart = 0;
-        cutSceneInd = 0;
+        //load();
+        Zone testZone = new Zone(-1,-1,-1,-1);
+        globalZones.add(testZone);
+        Event firstE = new Event("Hello Dilet.", false, Dilet, 0, 0);
+        Event secondE = new Event("This is the test area. It's pretty cool and sometimes breaks. Don't worry if it does. Hey, try interacting with that cube to progress.", false, Dilet, 0,1);
+        Event thirdE = new Event("You interact with the strange cube.", false, Dilet, 0, 2);
+        Event byeE = new Event("See you around, Dilet.", false, Dilet,-1,-1);
+        globalEvents.add(firstE);
+        globalEvents.add(secondE);
+        globalEvents.add(thirdE);
+        globalEvents.add(byeE);
+        DialogueOption firstD = new DialogueOption(new ArrayList<Integer>(){{add(1);add(2);}}, firstE, "first dialogue option");
+        DialogueOption secondD = new DialogueOption(new ArrayList<Integer>(), secondE, "What is this place?");
+        DialogueOption byeD = new DialogueOption(new ArrayList<Integer>(), byeE, "Bye.");
+        globalDialogueOptions.add(firstD);
+        globalDialogueOptions.add(secondD);
+        globalDialogueOptions.add(byeD);
+        NPC introMan = new NPC(40,40,0,firstD, "Warden");
+        globalNPCs.add(introMan);
+        Quest testQuest = new Quest("Find out about the area");
+        testQuest.addStep("Talk to the warden.");
+        testQuest.addStep("Find out about the testArea from the warden.");
+        testQuest.addStep("Interact with the strange cube.");
+        testZone.addNPCs(introMan, 100,100);
+        InteractableObject strangeCube = new InteractableObject(30,30,2);
+        testZone.addInteractable(strangeCube, 200,100);
+        globalInteractives.add(strangeCube);
+        curZone = testZone;
+        questLog.add(testQuest);
+        globalQuests.add(testQuest);
         PApplet.main("Main");
 
     }
@@ -371,9 +402,17 @@ public class Main extends PApplet {
         if(curState == 4){
             fill(0,0,0);
             textSize(10 * resScalar);
+            Event i = curDialogueOption.returnTrigger();
+            if(i.returnQuestID() != -1) {
+                globalQuests.get(i.returnQuestID()).progress(i.returnQuestStep());
+                if(globalQuests.get(i.returnQuestID()).questDone()){
+                    questLog.remove(i);
+                }
+            }
+
             text(curDialogueOption.use(), 15 * resScalar,15 * resScalar);
             int counter = 0;
-            textSize(10 * resScalar);
+            textSize(20 * resScalar);
             for(int co : curDialogueOption.getAdj()){
                 fill(255,0,127);
                 rect(15 * resScalar,(45 + (15 * counter))* resScalar,100,(55 + (15  * counter))* resScalar);
@@ -395,8 +434,15 @@ public class Main extends PApplet {
         fill(225,0,0);
         rect(0,0,640 * resScalar,30 * resScalar);
         //pause button
-        fill(0,255,0);
+        fill(0,0,255);
         rect(610 * resScalar,5* resScalar,630* resScalar,25* resScalar);
+        textSize(10 * resScalar);
+        if(questLog.size() != 0){
+            text(questLog.get(0).getName()+": "+questLog.get(0).curStep(), 60 * resScalar,40 * resScalar);
+        }
+        else{
+            text("No active quest", 60 * resScalar, 40 * resScalar);
+        }
     }
     public void menu(){
         fill(0,255,255);
@@ -662,6 +708,12 @@ public class Main extends PApplet {
                                 }
                             }
                             else{
+                                if(globalEvents.get(i.msg()).returnQuestID() != -1){
+                                    globalQuests.get(globalEvents.get(i.msg()).returnQuestID()).progress(globalEvents.get(i.msg()).returnQuestStep());
+                                    if(globalQuests.get(globalEvents.get(i.msg()).returnQuestID()).questDone()){
+                                        questLog.remove(globalQuests.get(globalEvents.get(i.msg()).returnQuestID()));
+                                    }
+                                }
                                 curState = 3;
                                 curInteractive = i;
                             }

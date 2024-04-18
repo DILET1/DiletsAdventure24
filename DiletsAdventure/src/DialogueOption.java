@@ -24,5 +24,8 @@ public class DialogueOption {
             return "Silent Event";
         }
     }
+    public Event returnTrigger(){
+        return this.trigger;
+    }
 
 }
