@@ -9,6 +9,9 @@ public class Zone {
     private ArrayList<Coordinate> zoneInteractableObjectCoords = new ArrayList<>();
     private ArrayList<Coordinate> zoneNPCCoords = new ArrayList<>();
     private ArrayList<Coordinate> zoneChestCoords = new ArrayList<>();
+    private ArrayList<Event> zoneEvents = new ArrayList<>();
+    private ArrayList<ArrayList<DialogueOption>> zoneDialogue = new ArrayList<>();
+    private ArrayList<Cutscene> zoneCutscenes = new ArrayList<>();
 
     public Coordinate getZoneWorldObjectCoords(int a){
         return zoneWorldObjectCoords.get(a);
@@ -213,6 +216,29 @@ public class Zone {
 
         }
     }
+
+    public void addEvent(Event e){
+        this.zoneEvents.add(e);
+    }
+    public Event getEvent(int a){
+        return this.zoneEvents.get(a);
+    }
+
+    public void addDialogueOption(DialogueOption d, int NPCID){
+        this.zoneDialogue.get(NPCID).add(d);
+    }
+    public DialogueOption getDialogue(int d, int NPCID){
+        return this.zoneDialogue.get(NPCID).get(d);
+    }
+
+    public void addCutscene(Cutscene c){
+        this.zoneCutscenes.add(c);
+    }
+
+    public Cutscene getCutscene(int a){
+        return this.zoneCutscenes.get(a);
+    }
+
     public Zone(int n, int e, int s, int w){
         this.n = n;
         this.s = s;

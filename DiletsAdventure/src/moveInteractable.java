@@ -9,9 +9,8 @@ public class moveInteractable extends Event{
     int cy;
     int speed;
     boolean used;
-    ArrayList<InteractableObject> objs;
     ArrayList<Zone> zones;
-    public moveInteractable(Player dil, int curZone, int tm, int x, int y, int speed, int questID, int questStep, ArrayList<Zone> zones, ArrayList<InteractableObject> objs) {
+    public moveInteractable(Player dil, int curZone, int tm, int x, int y, int speed, int questID, int questStep, ArrayList<Zone> zones) {
         super("this isn't used", true, dil, questID, questStep);
         this.zone = curZone;
         this.zones = zones;
@@ -19,7 +18,6 @@ public class moveInteractable extends Event{
         this.x = x;
         this.y = y;
         this.speed = speed;
-        this.objs = objs;
         used = false;
         cx = x;
         cy = y;
@@ -27,19 +25,19 @@ public class moveInteractable extends Event{
     public String message(){
         if(!used){
             if (cx < 0) {
-                zones.get(zone).imoveX(objs.get(tm), Math.max(cx, -1 * speed));
+                zones.get(zone).imoveX(zones.get(zone).getZoneInteractableObjects().get(tm), Math.max(cx, -1 * speed));
                 cx -= (Math.max(cx, -1 * speed));
             }
             if(cx > 0){
-                zones.get(zone).imoveX(objs.get(tm), Math.min(cx, speed));
+                zones.get(zone).imoveX(zones.get(zone).getZoneInteractableObjects().get(tm), Math.min(cx, speed));
                 cx-=(Math.min(cx, speed));
             }
             if (cy < 0) {
-                zones.get(zone).imoveY(objs.get(tm), Math.max(cy, -1 * speed));
+                zones.get(zone).imoveY(zones.get(zone).getZoneInteractableObjects().get(tm), Math.max(cy, -1 * speed));
                 cy -= (Math.max(cy, -1 * speed));
             }
             if(cy > 0){
-                zones.get(zone).imoveY(objs.get(tm), Math.min(cy, speed));
+                zones.get(zone).imoveY(zones.get(zone).getZoneInteractableObjects().get(tm), Math.min(cy, speed));
                 cy-=(Math.min(cy, speed));
             }
             if(cx == cy && cx == 0){

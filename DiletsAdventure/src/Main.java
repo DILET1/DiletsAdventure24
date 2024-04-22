@@ -7,13 +7,8 @@ import java.util.*;
 public class Main extends PApplet {
     //all of our fun vars
     static ArrayList<Zone> globalZones = new ArrayList<>();
-    static ArrayList<Event> globalEvents = new ArrayList<>();
     static ArrayList<Item> globalItems = new ArrayList<>();
-    static ArrayList<InteractableObject> globalInteractives = new ArrayList<>();
     static ArrayList<WorldObject> globalObjects = new ArrayList<>();
-    static ArrayList<DialogueOption> globalDialogueOptions = new ArrayList<>();
-    static ArrayList<Chest> globalChests = new ArrayList<>();
-    static ArrayList<NPC> globalNPCs = new ArrayList<>();
     static ArrayList<Quest> globalQuests = new ArrayList<>();
     static ArrayList<Quest> questLog = new ArrayList<>();
     public static int resScalar = 2;
@@ -27,331 +22,38 @@ public class Main extends PApplet {
     static int curCutscene;
     static int elapsedTime;
     static int newStart; //updated each time the cutscene state is entered
-    static int cutSceneInd; //ditto above
+    static int cutSceneInd;//ditto above
     static boolean up, left, right, down;
-    //TEST AREA
-    //END TEST
     public static void load(){
-        loadItems();
-        loadEvents();
-        loadQuests();
-        loadDialogue();
-        loadCutscenes();
-        loadNPC();
-        loadChest();
-        loadInteractable();
-        loadWorldObj();
-        loadZone();
+        try{
+            File manifest = new File("baseData/MANIFEST.txt");
+            Scanner in = new Scanner(manifest);
+            int numFiles = in.nextInt();
+            for(int i = 0; i < numFiles; i++){
+                loadZone("baseData/zone"+i+"/");
+            }
+        }
+        catch(FileNotFoundException e){
+            return;
+        }
         curZone = globalZones.get(0);
     }
-    public static void loadEvents(){
-        try{
-            File ev1 = new File("baseData/EVENT1.txt");
-            Scanner ev1in = new Scanner(ev1);
-            int ev1n = ev1in.nextInt();
-            for(int i = 0; i < ev1n; i++){
-                System.out.println("PASS");
-                int type = ev1in.nextInt();
-                int questID = ev1in.nextInt();
-                int questStep = ev1in.nextInt();
-                String chaff = ev1in.nextLine();
-                String message = ev1in.nextLine();
-                String isSilent = ev1in.nextLine();
-                System.out.println("TYPE: " +type);
-                if(type == 1){
-                    globalEvents.add(new Event(message, (Objects.equals(isSilent, "SILENT")), Dilet, questID, questStep));
-                }
-                if(type == 2 || type == 3){
-                    Item ta = globalItems.get(ev1in.nextInt());
-                    if(type == 2){
-                        globalEvents.add(new TakeEvent(message, isSilent.equals("SILENT"), Dilet, ta, questID, questStep));
-                    }
-                    else{
-                        globalEvents.add(new GiveEvent(message, isSilent.equals("SILENT"), Dilet, ta, questID, questStep));
-                    }
-                }
-                if(type == 4 || type == 5 || type == 6 || type == 7 || type == 8 || type == 9 || type == 10 || type == 11 || type == 12){
-                    int zone = ev1in.nextInt();
-                    int ind = ev1in.nextInt();
-                    int x = ev1in.nextInt();
-                    int y = ev1in.nextInt();
-                    if(type == 4){
-                        globalEvents.add(new RemoveEvent(Dilet, zone, ind, x,y, questID, questStep, globalZones, globalObjects));
-                    }
-                    if(type == 5){
-                        globalEvents.add(new PlaceEvent(Dilet, zone, ind, x,y, questID, questStep,globalZones, globalObjects));
-                    }
-                    if(type == 6){
-                        globalEvents.add(new removeInteractable(Dilet, zone, ind, x,y, questID, questStep,globalZones, globalInteractives));
-                    }
-                    if(type == 7){
-                        globalEvents.add(new placeInteractable(Dilet, zone, ind, x,y, questID, questStep,globalZones, globalInteractives));
-                    }
-                    if(type == 8){
-                        globalEvents.add(new removeNPC(Dilet, zone, ind, questID, questStep,globalZones, globalNPCs));
-                    }
-                    if(type == 9){
-                        globalEvents.add(new placeNPC(Dilet, zone, ind, x,y, questID, questStep,globalZones, globalNPCs));
-                    }
-                    if(type > 9){
-                        int speed = ev1in.nextInt();
-                        if(type == 10){
-                            globalEvents.add(new moveObject(Dilet, zone, ind, x, y, speed, questID, questStep,globalZones, globalObjects));
-                        }
-                        if(type == 11){
-                            globalEvents.add(new moveInteractable(Dilet, zone, ind, x, y, speed, questID, questStep,globalZones, globalInteractives));
-                        }
-                        if(type == 12){
-                            globalEvents.add(new moveNPC(Dilet, zone, ind, x, y, speed, questID, questStep,globalZones, globalNPCs));
-                        }
-                    }
-                }
-                System.out.println("ADDED EVENT"+i);
-            }
-        }
-        catch(FileNotFoundException e){
-            System.out.println("ERROR THROWN, COULD NOT COMPLETE ADDING EVENTS.");
-            return;
-        }
-        System.out.println("SUCCESFULLY ADDED ALL EVENTS");
+    public static void loadZone(String directory){
+        loadEvents(directory);
     }
-    public static void loadCutscenes(){
+    public static void loadEvents(String directory){
         try{
-            File ev1 = new File("baseData/CUTSCENE1.txt");
-            Scanner ev1in = new Scanner(ev1);
-            int ev1n = ev1in.nextInt();
-            for(int i = 0; i < ev1n; i++){
-                Cutscene temp = new Cutscene(Dilet);
-                ArrayList<Event> events = new ArrayList<>();
-                ArrayList<Integer> times = new ArrayList<>();
-                int num = ev1in.nextInt();
-                for(int j =0; j < num; j++){
-                    events.add(globalEvents.get(ev1in.nextInt()));
-                    times.add(ev1in.nextInt());
-                }
-                for(int k = 0; k < num; k++){
-                    temp.addEvent(events.get(k), times.get(k));
-                }
-                globalEvents.add(temp);
-                System.out.println("ADDED EVENT"+i);
-            }
-        }
-        catch(FileNotFoundException e){
-            System.out.println("ERROR THROWN, COULD NOT COMPLETE ADDING CUTSCENES.");
-            return;
-        }
-        System.out.println("SUCCESFULLY ADDED ALL CUTSCENES");
-    }
-    public static void loadQuests(){
-        try{
-            File ev1 = new File("baseData/QUEST1.txt");
-            Scanner ev1in = new Scanner(ev1);
-            int ev1n = ev1in.nextInt();
-            String chaff = ev1in.nextLine();
-            for(int i = 0; i < ev1n; i++) {
-                String name = ev1in.nextLine();
-                int num = ev1in.nextInt();
-                chaff = ev1in.nextLine();
-                ArrayList<String> toAdd = new ArrayList<>();
-                for (int j = 0; j < num; j++) {
-                    toAdd.add(ev1in.nextLine());
-                }
-                globalQuests.add(new Quest(name) {{
-                    for (String s : toAdd) {
-                        addStep(s);
-                    }
-                }});
-                for(String s : toAdd){
-                    System.out.println(s);
-                }
-            }
-        }
-        catch(FileNotFoundException e){
-            System.out.println("ERROR THROWN, COULD NOT COMPLETE ADDING QUESTS.");
-            return;
-        }
-        System.out.println("SUCCESFULLY ADDED ALL QUESTS");
-    }
-    public static void loadItems(){
-        try{
-            File it1 = new File("baseData/ITEM1.txt");
-            Scanner it1in = new Scanner(it1);
-            int it1n = it1in.nextInt();
-            String chaff = it1in.nextLine();
-            for(int i = 0; i < it1n; i++){
-                String name = it1in.nextLine();
-                String desc = it1in.nextLine();
-                globalItems.add(new Item(name, desc));
-                System.out.println("ADDING ITEM "+i);
-            }
-        }
-        catch(FileNotFoundException e){
-            System.out.println("ERROR THROWN, COULD NOT COMPLETE ADDING ITEMS.");
-            return;
-        }
-        System.out.println("SUCCESFULLY ADDED ALL ITEMS");
-    }
-    public static void loadDialogue(){
-        try{
-            File it1 = new File("baseData/DIALOGUE1.txt");
-            Scanner it1in = new Scanner(it1);
-            int it1n = it1in.nextInt();
-            for(int i = 0; i < it1n; i++){
-                int cn = it1in.nextInt();
-                ArrayList<Integer> ids = new ArrayList<>();
-                for(int j = 0; j < cn; j++){
-                    ids.add(it1in.nextInt());
-                }
-                String chaff = it1in.nextLine();
-                int cid = it1in.nextInt();
-                chaff = it1in.nextLine();
-                String label = it1in.nextLine();
-                System.out.println(label);
-                globalDialogueOptions.add(new DialogueOption(ids, globalEvents.get(cid), label));
-                System.out.println("ADDED "+label);
-            }
-        }
-        catch(FileNotFoundException e){
-            System.out.println("ERROR THROWN, COULD NOT COMPLETE ADDING DIALOGUES.");
-            return;
-        }
-        System.out.println("SUCCESFULLY ADDED ALL DIALOGUES");
-    }
-    public static void loadNPC(){
-        try{
-            File it1 = new File("baseData/NPC1.txt");
-            Scanner it1in = new Scanner(it1);
-            int it1n = it1in.nextInt();
-            for(int i = 0; i < it1n; i++){
-                int x1, y1;
-                x1 = it1in.nextInt()* resScalar;
-                y1 = it1in.nextInt()* resScalar;
+            File f = new File(directory + "EVENTS.txt");
+            Scanner in = new Scanner(f);
+            int n = in.nextInt();
+            String chaff = in.nextLine();
+            for(int i = 0; i < n; i++){
 
-                String chaff = it1in.nextLine();
-                int firstd = it1in.nextInt();
-                chaff = it1in.nextLine();
-                String name = it1in.nextLine();
-                globalNPCs.add(new NPC(x1, y1 ,0, globalDialogueOptions.get(firstd), name));
-                System.out.println("ADDED "+i);
             }
         }
         catch(FileNotFoundException e){
-            System.out.println("ERROR THROWN, COULD NOT COMPLETE ADDING NPC.");
             return;
         }
-        System.out.println("SUCCESFULLY ADDED ALL NPC");
-    }
-    public static void loadChest(){
-        try{
-            File it1 = new File("baseData/CHEST1.txt");
-            Scanner it1in = new Scanner(it1);
-            int it1n = it1in.nextInt();
-            for(int i = 0; i < it1n; i++){
-                int x1, y1;
-                ArrayList<Item> cur = new ArrayList<>();
-                x1 = it1in.nextInt()* resScalar;
-                y1 = it1in.nextInt()* resScalar;
-                String chaff = it1in.nextLine();
-               int numItems = it1in.nextInt();
-               chaff = it1in.nextLine();
-               for(int j = 0; j < numItems; j++){
-                   cur.add(globalItems.get(it1in.nextInt()));
-               }
-               globalChests.add(new Chest(x1,y1,cur,Dilet));
-               System.out.println("ADDED "+i);
-            }
-        }
-        catch(FileNotFoundException e){
-            System.out.println("ERROR THROWN, COULD NOT COMPLETE ADDING CHESTS.");
-            return;
-        }
-        System.out.println("SUCCESFULLY ADDED ALL CHESTS");
-    }
-    public static void loadInteractable(){
-        try{
-            File it1 = new File("baseData/INTERACT.txt");
-            Scanner it1in = new Scanner(it1);
-            int it1n = it1in.nextInt();
-            for(int i = 0; i < it1n; i++){
-                int x1, y1;
-                x1 = it1in.nextInt()* resScalar;
-                y1 = it1in.nextInt()* resScalar;
-                String chaff = it1in.nextLine();
-                int firstd = it1in.nextInt();
-                globalInteractives.add(new InteractableObject(x1,y1, firstd));
-                System.out.println("ADDED "+i);
-            }
-        }
-        catch(FileNotFoundException e){
-            System.out.println("ERROR THROWN, COULD NOT COMPLETE ADDING INTERACTABLE.");
-            return;
-        }
-        System.out.println("SUCCESFULLY ADDED ALL INTERACTABLE");
-    }
-    public static void loadWorldObj(){
-        try{
-            File it1 = new File("baseData/OBSTACLE1.txt");
-            Scanner it1in = new Scanner(it1);
-            int it1n = it1in.nextInt();
-            String chaff = it1in.nextLine();
-            for(int i = 0; i < it1n; i++){
-                    int x, y;
-                    x = it1in.nextInt()* resScalar;
-                    y = it1in.nextInt()* resScalar;
-                    globalObjects.add(new WorldObject(x, y));
-                    System.out.println(x+" "+y);
-                System.out.println("ADDED "+i);
-            }
-        }
-        catch(FileNotFoundException e){
-            System.out.println("ERROR THROWN, COULD NOT COMPLETE ADDING WORLDOBJ.");
-            return;
-        }
-        System.out.println("SUCCESFULLY ADDED ALL WORLDOBJ");
-    }
-    public static void loadZone(){
-        try{
-            File it1 = new File("baseData/ZONE1.txt");
-            Scanner it1in = new Scanner(it1);
-            int it1n = it1in.nextInt();
-            for(int i = 0; i < it1n; i++){
-                int n, e, s, w;
-                n = it1in.nextInt();
-                e = it1in.nextInt();
-                s = it1in.nextInt();
-                w = it1in.nextInt();
-                Zone temp = new Zone(n,e,s,w);
-                int woc = it1in.nextInt();
-                for(int j = 0; j < woc; j++){
-                    temp.addWorldObject(globalObjects.get(it1in.nextInt()), it1in.nextInt() * resScalar, it1in.nextInt() * resScalar);
-                    System.out.println("ADDED "+j);
-                }
-
-                int ioc = it1in.nextInt();
-                for(int j = 0; j < ioc; j++){
-                    temp.addInteractable(globalInteractives.get(it1in.nextInt()), it1in.nextInt() * resScalar, it1in.nextInt()* resScalar);
-                    System.out.println("ADDED "+j);
-                }
-
-                int cc = it1in.nextInt();
-                for(int j = 0; j < cc; j++){
-                    temp.addChest(globalChests.get(it1in.nextInt()), it1in.nextInt()* resScalar, it1in.nextInt()* resScalar);
-                    System.out.println("ADDED "+j);
-                }
-
-                int npcc = it1in.nextInt();
-                for(int j = 0; j < npcc; j++){
-                    temp.addNPCs(globalNPCs.get(it1in.nextInt()), it1in.nextInt()* resScalar, it1in.nextInt()* resScalar);
-                    System.out.println("ADDED "+j);
-                }
-                globalZones.add(temp);
-            }
-        }
-        catch(FileNotFoundException e){
-            System.out.println("ERROR THROWN, COULD NOT COMPLETE ADDING ZONE.");
-            return;
-        }
-        System.out.println("SUCCESFULLY ADDED ALL ZONE");
     }
     public static void main(String[] args) {
         cutSceneInd = 0;
@@ -387,20 +89,20 @@ public class Main extends PApplet {
         drawBanner();
         if(curState == 7){
             textSize(10 * resScalar);
-            if(millis()-newStart < globalEvents.get(curCutscene).getDelays().get(cutSceneInd) || !globalEvents.get(curCutscene).getSeq().get(cutSceneInd).done()){
-                text(globalEvents.get(curCutscene).getSeq().get(cutSceneInd).message(),15 * resScalar,15 * resScalar);
+            if(millis()-newStart < curZone.getCutscene(curCutscene).getDelays().get(cutSceneInd) || !curZone.getCutscene(curCutscene).getSeq().get(cutSceneInd).done()){
+                text(curZone.getEvent(curCutscene).getSeq().get(cutSceneInd).message(),15 * resScalar,15 * resScalar);
             }
             else{
                 cutSceneInd++;
                 newStart = millis();
-                if(cutSceneInd == globalEvents.get(curCutscene).getDelays().size()){
+                if(cutSceneInd == curZone.getCutscene(curCutscene).getDelays().size()){
                     curState = 1;
                 }
             }
         }
         if(curState == 3){
             textSize(10 * resScalar);
-            text(globalEvents.get(curInteractive.msg()).message(),15 * resScalar,15 * resScalar);
+            text(curZone.getEvent(curInteractive.msg()).message(),15 * resScalar,15 * resScalar);
         }
         if(curState == 4){
             fill(0,0,0);
@@ -420,7 +122,7 @@ public class Main extends PApplet {
                 fill(255,0,127);
                 rect(15 * resScalar,(45 + (15 * counter))* resScalar,100,(55 + (15  * counter))* resScalar);
                 fill(0,0,0);
-                text(globalDialogueOptions.get(co).returnLabel(),15 * resScalar,(45 + 15 *counter) *  resScalar);
+                text(curZone.getDialogue(co, curNPC.getIndex()).returnLabel(),15 * resScalar,(45 + 15 *counter) *  resScalar);
                 counter++;
             }
         }
@@ -434,13 +136,11 @@ public class Main extends PApplet {
     }
     public void drawBanner(){
         //top banner
-        fill(225,0,0);
-        rect(0,0,640 * resScalar,30 * resScalar);
         //pause button
         fill(0,0,255);
         rect(610 * resScalar,5* resScalar,630* resScalar,25* resScalar);
         textSize(10 * resScalar);
-        if(questLog.size() != 0){
+        if(!questLog.isEmpty()){
             text(questLog.get(0).getName()+": "+questLog.get(0).curStep(), 60 * resScalar,40 * resScalar);
         }
         else{
@@ -504,8 +204,8 @@ public class Main extends PApplet {
     public void drawZone(){
         int ctr =0;
         for(WorldObject obj : curZone.getZoneWorldObjects()){
-            rectMode(CORNERS);
             fill(255,255,255);
+            rectMode(CORNERS);
             rect(curZone.getZoneWorldObjectCoords(ctr).getX(), curZone.getZoneWorldObjectCoords(ctr).getY() ,curZone.getZoneWorldObjectCoords(ctr).getX()+ obj.getLen(),curZone.getZoneWorldObjectCoords(ctr).getY()+ obj.getHeight());
             ctr++;
         }
@@ -700,21 +400,21 @@ public class Main extends PApplet {
                 if(mouseX >= curZone.getZoneInteractableObjectCoords(ctr).getX() && mouseX <= curZone.getZoneInteractableObjectCoords(ctr).getX() + i.getLen() && mouseY >= curZone.getZoneInteractableObjectCoords(ctr).getY() && mouseY <= curZone.getZoneInteractableObjectCoords(ctr).getY() + i.getHeight()){
                     if(Math.abs(Dilet.getX() - (curZone.getZoneInteractableObjectCoords(ctr).getX()+ (i.getLen()/2))) < 60 * resScalar){
                         if(Math.abs(Dilet.getY() - (curZone.getZoneInteractableObjectCoords(ctr).getY()+ (i.getHeight()))) < 60 * resScalar){
-                            if(globalEvents.get(i.msg()).isCutscene()){
+                            if(curZone.getEvent(i.msg()).isCutscene()){
                                 curState = 7;
                                 newStart = millis();
                                 System.out.println("START: "+millis());
                                 cutSceneInd = 0;
                                 curCutscene = i.msg();
-                                for(Integer time : globalEvents.get(curCutscene).getDelays()){
+                                for(Integer time : curZone.getCutscene(curCutscene).getDelays()){
                                     System.out.println(time);
                                 }
                             }
                             else{
-                                if(globalEvents.get(i.msg()).returnQuestID() != -1){
-                                    globalQuests.get(globalEvents.get(i.msg()).returnQuestID()).progress(globalEvents.get(i.msg()).returnQuestStep());
-                                    if(globalQuests.get(globalEvents.get(i.msg()).returnQuestID()).questDone()){
-                                        questLog.remove(globalQuests.get(globalEvents.get(i.msg()).returnQuestID()));
+                                if(curZone.getEvent(i.msg()).returnQuestID() != -1){
+                                    globalQuests.get(curZone.getEvent(i.msg()).returnQuestID()).progress(curZone.getEvent(i.msg()).returnQuestStep());
+                                    if(globalQuests.get(curZone.getEvent(i.msg()).returnQuestID()).questDone()){
+                                        questLog.remove(globalQuests.get(curZone.getEvent(i.msg()).returnQuestID()));
                                     }
                                 }
                                 curState = 3;
@@ -760,7 +460,7 @@ public class Main extends PApplet {
             }
         }
         else if(curState == 3){
-            globalEvents.get(curInteractive.msg()).reset();
+            curZone.getEvent(curInteractive.msg()).reset();
             System.out.println("EXITING INTERACT");//to be replaced with dialogue n stuff
             curState = 1;
         }
@@ -768,7 +468,8 @@ public class Main extends PApplet {
             if(mouseX >= 15 * resScalar && mouseX <= 100 * resScalar){
                 for(int i = 0; i < curDialogueOption.getAdj().size(); i++){
                     if(mouseY >= (45 + (15 * i))* resScalar && mouseY <= (55 + (15 * i))* resScalar){
-                        curDialogueOption = globalDialogueOptions.get(curDialogueOption.getAdj().get(i));
+                        curDialogueOption = curZone.getDialogue(curDialogueOption.getAdj().get(i), curNPC.getIndex());
+                        System.out.println("You selected dialogue option "+i);
                         return;
                     }
                 }

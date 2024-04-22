@@ -1,63 +1,84 @@
-For all: 1st line (before the 1st lines mentioned below) is the number of objects to add. One line between each thing being added.
+The MANIFEST file only holds the number of zones (lol)
 
-For Events:
+The GLOBAL folder holds assets that are meant to be re-usable outside each zone.
+In it:
+- WorldObject list
+- Quest list
+- Item list
 
-1st line is type of event - 1 is Event, 2 is TakeEvent, 3 is giveEvent, 4 is removeEvent, 5 is placeEvent, 6 is removeInteractableEvent, 7 is placeInteractableEvent, 8 is removeNPCEvent, 9 is placeNPCEvent. 10 is moveObject, 11 is moveInteractable, 12 is moveNPC
-For all events:
-2nd line = questID, questStep
-3rd line = message
-4th line is SILENT or NOTSILENT
-for Take/Give events:
-5th line is the index of the item to take/give
-for remove/add events, the 4th line is the index of the zone, then the thing to remove/add, then the coordinate (-1 and -1 if using the "unsafe" removal option. if removing a npc, none are needed.).
-for move events:
-5th line is the index of the zone, then index of the object to move, then the amount in x and y to move it, and then the speed.
+For WorldObjects:
+1st line is the number of WorldObjects
+Each line after is the length and width of the object.
 
+For Quests:
+1st line is the number of Quests
+For each quest:
+1st line is number of step
+Each following line is the description of the step.
 
 For Items:
+1st line is number of items.
+For each item:
+Two lines, on one the name, the other has the description.
 
-1st line is name.
-2nd line is description.
+Each zone(x) folder corresponds to one zone.
+In each folder:
+- Event list
+- Interactable list
+- NPC list (dialogue is in here)
+- Cutscenes
+- Chests
+- Layout
 
-For DialogueOptions:
 
-First line is the number of adjacent dialogue options, followed by their ids.
-Second line is the id of the associated event.
-Third line is the label.
-
-For Cutscenes:
-
-First line is the number of events, followed by each event ID and time.
+For Events:
+1st line is how many events there are
+For each event:
+1st line is the type of event. 1 is a standard event, 2 is a place event, 3 is place interactable, 4 place npc, 5 remove event, 6 remove interactable, 7 remove npc, 8 is a move event, 9 is move interactable, 10 is move npc, 11 is give, 12 is take
+2nd line is the quest id, followed by quest step.
+3rd line is the message
+4th line is a 1 or 0, denoting silence
+For place/remove events:
+5th line is id of the thing to place/remove, followed by coordinates
+For move events:
+5th line is the amount to move (x,y) and the speed
+for give/take events:
+5th line is the id of the item to give/take
 
 For Interactables:
 
-1st line is coordinates
-2nd line is the index of the event
-
-For Chests:
-1st line is coordinates
-2nd line is number of items in chest
-3rd line contains all ids of items
+1st line is how many interactables there are
+For each interactable:
+1st line is the size (x, y) followed by the event id.
 
 For NPCs:
 
-1st line is the coordinates
-2nd line is index of the DialogueOption for the first dialogue
-3rd line is the name
+1st line is how many NPCs there are
+For each NPC:
+1st line is name.
+2nd line is size (x,y) followed by event id, then followed by the number of dialogue options.
+For each dialogue option:
+1st line is the number of adjacent options, followed by their indexes. Indices are now generated for EACH NPC which greatly simplifies things.
+2nd line is event ID upon pressing it.
+3rd line is the event label.
 
-For WorldObject:
+For Cutscenes:
 
-One line, just length and width
+1st line is how many cutscenes there are.
+For each cutscene:
+1st line is how many events in the scene
+Each event gets one line, with index (now generated for each zone) and a duration in milliseconds.
 
-For Quests:
-1st line is the name.
-2nd line is the number of steps.
-3rd line is the description of each step.
+For chests:
 
-For Zones:
+1st line is how many chests there are.
+For each chest:
+1st line is how many items there are, followed by the IDs of each item (universal)
 
-1st line - IDs of neighboring zones, in order N, S, E, W. If there isn't one, set it as -1.
-2/3 line - #/IDs then x and y of WorldObjects
-4/5 line - #/IDs then x and y of Interactables
-6/7 line - #/IDS then x and y of chests
-8/9 line - #/IDs then x and y of NPCs
+For formatting:
+
+1st line holds 4 integers, the IDs of adjacent zones (N, E, S, W). Set to -1 if they don't exist.
+2nd line holds the number of WorldObjects, they each get a line.
+For each WorldObject, its line has the ID and coordinates of the upper left corner.
+
+After that, one line per coordinate for all the Interactables, NPCs, and Chests.

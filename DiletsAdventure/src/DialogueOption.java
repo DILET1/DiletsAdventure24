@@ -21,6 +21,7 @@ public class DialogueOption {
             return this.trigger.message();
         }
         else{
+            this.trigger.message();
             return "Silent Event";
         }
     }
