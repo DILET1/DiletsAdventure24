@@ -15,7 +15,7 @@ public class placeInteractable extends Event{
         this.y = y;
     }
     public String message(){
-        this.Zonelist.get(curZone).addInteractable(this.Zonelist.get(curZone).getZoneInteractableObjects().get(toAdd),x,y);
+        this.Zonelist.get(curZone).addInteractable(toAdd,x,y);
         return "Added Interactable.";
     }
 }

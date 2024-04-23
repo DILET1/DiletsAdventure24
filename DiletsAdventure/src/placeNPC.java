@@ -15,7 +15,7 @@ public class placeNPC extends Event{
         this.y = y;
     }
     public String message(){
-        this.Zonelist.get(curZone).addNPCs(this.Zonelist.get(curZone).getNPCs().get(toAdd), x, y);
+        this.Zonelist.get(curZone).addNPCs(toAdd, x, y);
         return "Added NPC.";
     }
 }

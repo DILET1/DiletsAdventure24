@@ -3,8 +3,11 @@ public class Zone {
     int n, e, s, w;
     private ArrayList<WorldObject> zoneWorldObjects = new ArrayList<>();
     private ArrayList<InteractableObject> zoneInteractableObjects = new ArrayList<>();
+    private ArrayList<InteractableObject> allZoneInteractableObject = new ArrayList<>();
     private ArrayList<NPC> zoneNPCs = new ArrayList<>();
+    private ArrayList<NPC> allZoneNPCs = new ArrayList<>();
     private ArrayList<Chest> zoneChests = new ArrayList<>();
+    private ArrayList<Chest> allZoneChests = new ArrayList<>();
     private ArrayList<Coordinate> zoneWorldObjectCoords = new ArrayList<>();
     private ArrayList<Coordinate> zoneInteractableObjectCoords = new ArrayList<>();
     private ArrayList<Coordinate> zoneNPCCoords = new ArrayList<>();
@@ -58,50 +61,58 @@ public class Zone {
         zoneNPCCoords.get(zoneNPCs.indexOf(w)).addY(amt);
     }
     //for add, check if the coordinate already exists, then it works fine.
-
-    public void addInteractable(InteractableObject a, int x, int y){
-        if(!zoneInteractableObjects.contains(a)){
-            zoneInteractableObjects.add(a);
+    public void loadInteractable(InteractableObject a){
+        allZoneInteractableObject.add(a);
+    }
+    public void loadNPC(NPC a){
+        allZoneNPCs.add(a);
+    }
+    public void loadChest(Chest a){
+        allZoneChests.add(a);
+    }
+    public void addInteractable(int a, int x, int y){
+        if(!zoneInteractableObjects.contains(allZoneInteractableObject.get(a))){
+            zoneInteractableObjects.add(allZoneInteractableObject.get(a));
             zoneInteractableObjectCoords.add(new Coordinate(x,y));
         }
         else{
             for(int i = 0; i < zoneInteractableObjects.size(); i++){
-                if(zoneInteractableObjects.get(i) == a && zoneInteractableObjectCoords.get(i).getX() == x && zoneInteractableObjectCoords.get(i).getY() == y){
+                if(zoneInteractableObjects.get(i) == allZoneInteractableObject.get(a) && zoneInteractableObjectCoords.get(i).getX() == x && zoneInteractableObjectCoords.get(i).getY() == y){
                     return;
                 }
             }
-            zoneInteractableObjects.add(a);
+            zoneInteractableObjects.add(allZoneInteractableObject.get(a));
             zoneInteractableObjectCoords.add(new Coordinate(x,y));
         }
 
     }
-    public void addNPCs(NPC a, int x, int y){
+    public void addNPCs(int a, int x, int y){
         if(!zoneNPCs.contains(a)){
-            zoneNPCs.add(a);
+            zoneNPCs.add(allZoneNPCs.get(a));
             zoneNPCCoords.add(new Coordinate(x,y));
         }
         else{
             for(int i = 0; i < zoneNPCs.size(); i++){
-                if(zoneNPCs.get(i) == a && zoneNPCCoords.get(i).getX() == x && zoneNPCCoords.get(i).getY() == y){
+                if(zoneNPCs.get(i) == allZoneNPCs.get(a) && zoneNPCCoords.get(i).getX() == x && zoneNPCCoords.get(i).getY() == y){
                     return;
                 }
             }
-            zoneNPCs.add(a);
+            zoneNPCs.add(allZoneNPCs.get(a));
             zoneNPCCoords.add(new Coordinate(x,y));
         }
     }
-    public void addChest(Chest a, int x, int y){
+    public void addChest(int a, int x, int y){
         if(!zoneChests.contains(a)){
-            zoneChests.add(a);
+            zoneChests.add(allZoneChests.get(a));
             zoneChestCoords.add(new Coordinate(x,y));
         }
         else{
             for(int i = 0; i < zoneChests.size(); i++){
-                if(zoneChests.get(i) == a && zoneChestCoords.get(i).getX() == x && zoneChestCoords.get(i).getY() == y){
+                if(zoneChests.get(i) == allZoneChests.get(a) && zoneChestCoords.get(i).getX() == x && zoneChestCoords.get(i).getY() == y){
                     return;
                 }
             }
-            zoneChests.add(a);
+            zoneChests.add(allZoneChests.get(a));
             zoneChestCoords.add(new Coordinate(x,y));
         }
     }
@@ -224,8 +235,8 @@ public class Zone {
         return this.zoneEvents.get(a);
     }
 
-    public void addDialogueOption(DialogueOption d, int NPCID){
-        this.zoneDialogue.get(NPCID).add(d);
+    public void addDialogueOption(ArrayList<DialogueOption> d){
+        this.zoneDialogue.add(d);
     }
     public DialogueOption getDialogue(int d, int NPCID){
         return this.zoneDialogue.get(NPCID).get(d);

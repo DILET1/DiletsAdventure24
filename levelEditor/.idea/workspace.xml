@@ -5,28 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="acb51a52-f037-4ab9-9347-7a7237b5a4df" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/CHEST1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/CUTSCENE1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/DIALOGUE1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/EVENT1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/INTERACT.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/ITEM1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/NPC1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/OBSTACLE1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/QUEST1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/RUNLOG.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/MANIFEST.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/ZONE1.txt" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/zone0/CHESTS.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/zone0/CUTSCENES.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/zone0/INTERACTABLES.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/zone0/LAYOUT.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/zone0/NEIGHBORS.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/zone0/NPCS.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/FORMATTING.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/FORMATTING.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/GLOBAL/ITEM" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/GLOBAL/ITEMS.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/GLOBAL/QUEST" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/GLOBAL/QUESTS.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/GLOBAL/WO" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/GLOBAL/WO.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/baseData/zone0/EVENTS.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/baseData/zone0/EVENTS.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/out/production/DiletsAdventure/Main$2.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../DiletsAdventure/out/production/DiletsAdventure/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/out/production/DiletsAdventure/Main.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../DiletsAdventure/out/production/DiletsAdventure/Zone.class" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/out/production/DiletsAdventure/Zone.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/src/DialogueOption.java" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/src/DialogueOption.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/out/production/DiletsAdventure/placeInteractable.class" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/out/production/DiletsAdventure/placeInteractable.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/out/production/DiletsAdventure/placeNPC.class" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/out/production/DiletsAdventure/placeNPC.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../DiletsAdventure/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/src/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../DiletsAdventure/src/Zone.java" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/src/Zone.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/src/moveInteractable.java" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/src/moveInteractable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/src/moveNPC.java" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/src/moveNPC.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../DiletsAdventure/src/placeInteractable.java" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/src/placeInteractable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../DiletsAdventure/src/placeNPC.java" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/src/placeNPC.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/src/removeInteractable.java" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/src/removeInteractable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DiletsAdventure/src/removeNPC.java" beforeDir="false" afterPath="$PROJECT_DIR$/../DiletsAdventure/src/removeNPC.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -52,18 +50,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/DiletsAdventure24/DiletsAdventure",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/DiletsAdventure24/DiletsAdventure&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">

@@ -13,7 +13,7 @@ Each line after is the length and width of the object.
 For Quests:
 1st line is the number of Quests
 For each quest:
-1st line is number of step
+1st line is number of step and quest name
 Each following line is the description of the step.
 
 For Items:
@@ -23,6 +23,7 @@ Two lines, on one the name, the other has the description.
 
 Each zone(x) folder corresponds to one zone.
 In each folder:
+- Adjacent zone ID list
 - Event list
 - Interactable list
 - NPC list (dialogue is in here)
@@ -30,6 +31,8 @@ In each folder:
 - Chests
 - Layout
 
+For the adjacent zones:
+1 line, 4 numbers. 1 for each zone (NESW)
 
 For Events:
 1st line is how many events there are
@@ -41,7 +44,7 @@ For each event:
 For place/remove events:
 5th line is the id of the zone, id of the thing to place/remove, followed by coordinates
 For move events:
-5th line is the id of the zone, amount to move (x,y) and the speed
+5th line is the id of the zone, id of thing to move, amount to move (x,y) and the speed
 for give/take events:
 5th line is the id of the item to give/take
 
@@ -73,12 +76,12 @@ For chests:
 
 1st line is how many chests there are.
 For each chest:
-1st line is how many items there are, followed by the IDs of each item (universal)
+1st line is length and height.
+2nd line is how many items there are, followed by the IDs of each item (universal)
 
-For formatting:
+For layout:
 
-1st line holds 4 integers, the IDs of adjacent zones (N, E, S, W). Set to -1 if they don't exist.
-2nd line holds the number of WorldObjects, they each get a line.
+1st line holds the number of WorldObjects, they each get a line.
 For each WorldObject, its line has the ID and coordinates of the upper left corner.
 
 After that, one line per coordinate for all the Interactables, NPCs, and Chests.

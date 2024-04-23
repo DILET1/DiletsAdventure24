@@ -25,6 +25,7 @@ public class Main extends PApplet {
     static int cutSceneInd;//ditto above
     static boolean up, left, right, down;
     public static void load(){
+        loadBase();
         try{
             File manifest = new File("baseData/MANIFEST.txt");
             Scanner in = new Scanner(manifest);
@@ -38,8 +39,86 @@ public class Main extends PApplet {
         }
         curZone = globalZones.get(0);
     }
+    public static void loadBase(){
+        try{
+            File obj = new File("baseData/GLOBAL/WO.txt");
+            Scanner in = new Scanner(obj);
+            int n = in.nextInt();
+            for(int i = 0; i < n; i++){
+                globalObjects.add(new WorldObject(in.nextInt(), in.nextInt()));
+            }
+            File quests = new File("baseData/GLOBAL/QUESTS.txt");
+            in = new Scanner(quests);
+            n = in.nextInt();
+            for(int i = 0; i < n; i++){
+                int steps = in.nextInt();
+                Quest q = new Quest(in.nextLine());
+                for(int j = 0; j < steps; j++){
+                    q.addStep(in.nextLine());
+                }
+                globalQuests.add(q);
+            }
+            File items = new File("baseData/GLOBAL/ITEMS.txt");
+            in = new Scanner(items);
+            n = in.nextInt();
+            String chaff = in.nextLine();
+            for(int i = 0; i < n; i++){
+                globalItems.add(new Item(in.nextLine(), in.nextLine()));
+            }
+        }
+        catch(FileNotFoundException e){
+            return;
+        }
+    }
     public static void loadZone(String directory, int ind){
+        try{
+            File adj = new File(directory+"NEIGHBORS.txt");
+            Scanner in = new Scanner(adj);
+            globalZones.add(new Zone(in.nextInt(),in.nextInt(),in.nextInt(),in.nextInt()));
+        }
+        catch(FileNotFoundException e){
+            return;
+        }
         loadEvents(directory, ind);
+        loadInteractables(directory, ind);
+        loadNPCs(directory, ind);
+        loadCutscenes(directory, ind);
+        loadChests(directory, ind);
+        try{
+            File adj = new File(directory+"LAYOUT.txt");
+            Scanner in = new Scanner(adj);
+            int wos = in.nextInt();
+            for(int i = 0; i < wos; i++){
+                int id = in.nextInt();
+                int x = in.nextInt();
+                int y = in.nextInt();
+                globalZones.get(ind).addWorldObject(globalObjects.get(id), x, y);
+            }
+            int interactables = in.nextInt();
+            for(int i = 0; i < interactables; i++){
+                int id = in.nextInt();
+                int x = in.nextInt();
+                int y = in.nextInt();
+                globalZones.get(ind).addInteractable(id, x, y);
+            }
+            int npcs = in.nextInt();
+            for(int i = 0; i < npcs; i++){
+                int id = in.nextInt();
+                int x = in.nextInt();
+                int y = in.nextInt();
+                globalZones.get(ind).addNPCs(id, x, y);
+            }
+            int chests = in.nextInt();
+            for(int i = 0; i < chests; i++){
+                int id = in.nextInt();
+                int x = in.nextInt();
+                int y = in.nextInt();
+                globalZones.get(ind).addChest(id, x, y);
+            }
+        }
+        catch(FileNotFoundException e){
+            return;
+        }
     }
     public static void loadEvents(String directory, int ind){
         try{
@@ -58,7 +137,7 @@ public class Main extends PApplet {
                     globalZones.get(ind).addEvent(new Event(message, isSilent == 1, Dilet, questID, questStep));
                     System.out.println(message+" "+isSilent+" "+questID+" "+questStep);
                 }
-                if(type > 1 && type < 8){
+                else if(type > 1 && type < 8){
                     int zone = in.nextInt();
                     int index = in.nextInt();
                     int x = in.nextInt();
@@ -83,7 +162,7 @@ public class Main extends PApplet {
                     }
                     System.out.println(message+" "+isSilent+" "+questID+" "+questStep+" "+zone+" "+index+" "+x+" "+y);
                 }
-                if(type > 7 && type < 11){
+                else if(type > 7 && type < 11){
                     int zone = in.nextInt();
                     int index = in.nextInt();
                     int dx = in.nextInt();
@@ -116,10 +195,100 @@ public class Main extends PApplet {
             return;
         }
     }
+    public static void loadInteractables(String directory, int ind){
+        try{
+            File f = new File(directory+"INTERACTABLES.txt");
+            Scanner in = new Scanner(f);
+            int num = in.nextInt();
+            for(int i = 0; i < num; i++){
+                int len = in.nextInt();
+                int height = in.nextInt();
+                int event = in.nextInt();
+                globalZones.get(ind).loadInteractable(new InteractableObject(len, height, event));
+                System.out.println(len+" "+height+" "+event);
+            }
+        }
+        catch(FileNotFoundException e){
+            return;
+        }
+    }
+    public static void loadNPCs(String directory, int ind){
+        try{
+            File f = new File(directory+"NPCS.txt");
+            Scanner in = new Scanner(f);
+            int n = in.nextInt();
+            String chaff = in.nextLine();
+            for(int i = 0; i < n; i++){
+                String name = in.nextLine();
+                int len = in.nextInt();
+                int height = in.nextInt();
+                int id = in.nextInt();
+                int options = in.nextInt();
+                ArrayList<DialogueOption> deez = new ArrayList<>();
+                for(int j = 0; j < options; j++){
+                    int adjacent = in.nextInt();
+                    ArrayList<Integer> adj = new ArrayList<>();
+                    for(int k = 0; k < adjacent; k++) {
+                        adj.add(in.nextInt());
+                    }
+                    int dialogueID = in.nextInt();
+                    chaff = in.nextLine();
+                    String label = in.nextLine();
+                    deez.add(new DialogueOption(adj, globalZones.get(ind).getEvent(dialogueID), label));
+                    System.out.println(dialogueID+" "+label);
+                }
+                globalZones.get(ind).loadNPC(new NPC(len, height, id, deez.get(0), name, i));
+                System.out.println(len+" "+height+" "+id+" "+name+" "+i);
+                globalZones.get(ind).addDialogueOption(deez);
+            }
+        }
+        catch(FileNotFoundException e){
+            return;
+        }
+    }
+    public static void loadCutscenes(String directory, int ind){
+        try{
+            File f = new File(directory+"CUTSCENES.txt");
+            Scanner in = new Scanner(f);
+            int n = in.nextInt();
+            for(int i = 0; i < n; i++){
+                int scenes = in.nextInt();
+                Cutscene c = new Cutscene(Dilet);
+                for(int j = 0; j < scenes; j++) {
+                    c.addEvent(globalZones.get(ind).getEvent(in.nextInt()), in.nextInt());
+                }
+                globalZones.get(ind).addCutscene(c);
+            }
+        }
+        catch(FileNotFoundException e){
+            return;
+        }
+    }
+    public static void loadChests(String directory, int ind){
+        try{
+            File f = new File(directory+"CHESTS.txt");
+            Scanner in = new Scanner(f);
+            int n = in.nextInt();
+            for(int i = 0; i < n; i++){
+                int x = in.nextInt();
+                int y = in.nextInt();
+                int items = in.nextInt();
+                ArrayList<Item> list = new ArrayList<>();
+                for(int j = 0; j < items; j++){
+                    list.add(globalItems.get(in.nextInt()));
+                }
+                globalZones.get(ind).loadChest(new Chest(x,y,list,Dilet));
+            }
+        }
+        catch(FileNotFoundException e){
+            return;
+        }
+    }
 
     public static void main(String[] args) {
         cutSceneInd = 0;
         newStart = 0;
+        globalItems.add(new Item("Feesh", "Glorious"));
         load();
         PApplet.main("Main");
     }
