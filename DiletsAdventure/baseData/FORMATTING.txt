@@ -39,9 +39,9 @@ For each event:
 3rd line is the message
 4th line is a 1 or 0, denoting silence
 For place/remove events:
-5th line is id of the thing to place/remove, followed by coordinates
+5th line is the id of the zone, id of the thing to place/remove, followed by coordinates
 For move events:
-5th line is the amount to move (x,y) and the speed
+5th line is the id of the zone, amount to move (x,y) and the speed
 for give/take events:
 5th line is the id of the item to give/take
 

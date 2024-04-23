@@ -30,7 +30,7 @@ public class Main extends PApplet {
             Scanner in = new Scanner(manifest);
             int numFiles = in.nextInt();
             for(int i = 0; i < numFiles; i++){
-                loadZone("baseData/zone"+i+"/");
+                loadZone("baseData/zone"+i+"/", i);
             }
         }
         catch(FileNotFoundException e){
@@ -38,23 +38,85 @@ public class Main extends PApplet {
         }
         curZone = globalZones.get(0);
     }
-    public static void loadZone(String directory){
-        loadEvents(directory);
+    public static void loadZone(String directory, int ind){
+        loadEvents(directory, ind);
     }
-    public static void loadEvents(String directory){
+    public static void loadEvents(String directory, int ind){
         try{
             File f = new File(directory + "EVENTS.txt");
             Scanner in = new Scanner(f);
             int n = in.nextInt();
             String chaff = in.nextLine();
             for(int i = 0; i < n; i++){
-
+                int type = in.nextInt();
+                int questID = in.nextInt();
+                int questStep = in.nextInt();
+                chaff = in.nextLine();
+                String message = in.nextLine();
+                int isSilent = in.nextInt();
+                if(type == 1){
+                    globalZones.get(ind).addEvent(new Event(message, isSilent == 1, Dilet, questID, questStep));
+                    System.out.println(message+" "+isSilent+" "+questID+" "+questStep);
+                }
+                if(type > 1 && type < 8){
+                    int zone = in.nextInt();
+                    int index = in.nextInt();
+                    int x = in.nextInt();
+                    int y = in.nextInt();
+                    if(type == 2){
+                        globalZones.get(ind).addEvent(new PlaceEvent(Dilet, zone, index, x, y, questID, questStep, globalZones, globalObjects));
+                    }
+                    if(type == 3){
+                        globalZones.get(ind).addEvent(new placeInteractable(Dilet, zone, index, x, y, questID, questStep, globalZones));
+                    }
+                    if(type == 4){
+                        globalZones.get(ind).addEvent(new placeNPC(Dilet, zone, index, x, y, questID, questStep, globalZones));
+                    }
+                    if(type == 5){
+                        globalZones.get(ind).addEvent(new RemoveEvent(Dilet, zone, index, x, y, questID, questStep, globalZones, globalObjects));
+                    }
+                    if(type == 6){
+                        globalZones.get(ind).addEvent(new removeInteractable(Dilet, zone, index, x, y, questID, questStep, globalZones));
+                    }
+                    if(type == 7){
+                        globalZones.get(ind).addEvent(new removeNPC(Dilet, zone, index, questID, questStep, globalZones));
+                    }
+                    System.out.println(message+" "+isSilent+" "+questID+" "+questStep+" "+zone+" "+index+" "+x+" "+y);
+                }
+                if(type > 7 && type < 11){
+                    int zone = in.nextInt();
+                    int index = in.nextInt();
+                    int dx = in.nextInt();
+                    int dy = in.nextInt();
+                    int speed = in.nextInt();
+                    if(type == 8){
+                        globalZones.get(ind).addEvent(new moveObject(Dilet, zone, index, dx,dy,speed,-1,-1,globalZones,globalObjects));
+                    }
+                    if(type == 9){
+                        globalZones.get(ind).addEvent(new moveInteractable(Dilet, zone, index, dx,dy,speed,-1,-1,globalZones));
+                    }
+                    if(type == 10){
+                        globalZones.get(ind).addEvent(new moveNPC(Dilet, zone, index, dx,dy,speed,-1,-1,globalZones));
+                    }
+                    System.out.println(message+" "+isSilent+" "+questID+" "+questStep+" "+zone+" "+index+" "+dx+" "+dy+" "+speed);
+                }
+                else{
+                    int ta = in.nextInt();
+                    if(type == 11){
+                        globalZones.get(ind).addEvent(new GiveEvent(message, isSilent == 1, Dilet, globalItems.get(ta), -1,-1));
+                    }
+                    if(type == 12){
+                        globalZones.get(ind).addEvent(new TakeEvent(message, isSilent == 1, Dilet, globalItems.get(ta), -1,-1));
+                    }
+                    System.out.println(message+" "+isSilent+" "+questID+" "+questStep+" "+ta);
+                }
             }
         }
         catch(FileNotFoundException e){
             return;
         }
     }
+
     public static void main(String[] args) {
         cutSceneInd = 0;
         newStart = 0;
@@ -199,7 +261,6 @@ public class Main extends PApplet {
                 counter++;
             }
         }
-
     }
     public void drawZone(){
         int ctr =0;
