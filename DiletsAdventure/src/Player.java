@@ -9,14 +9,14 @@ public class Player {
         this.scalar = resScalar;
     }
     public void moveX(int amt){
-        if(this.x - radius + amt >= 0 && this.x + amt + radius<=640 * this.scalar){
-            this.x+=amt;
-        }
+        this.x+=amt;
     }
     public void moveY(int amt){
-        if(this.y + amt - radius >= 30 * this.scalar && this.y + amt + radius <= 360 * this.scalar){
             this.y+=amt;
-        }
+    }
+    public void setLoc(int x, int y){
+        this.x = x;
+        this.y = y;
     }
     public int getX(){
         return this.x;

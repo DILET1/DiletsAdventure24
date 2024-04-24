@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 public class Zone {
-    int n, e, s, w;
+    int n, e, s, w, nx, ny, ex, ey, sx, sy, wx,wy;
     private ArrayList<WorldObject> zoneWorldObjects = new ArrayList<>();
     private ArrayList<InteractableObject> zoneInteractableObjects = new ArrayList<>();
     private ArrayList<InteractableObject> allZoneInteractableObject = new ArrayList<>();
@@ -131,6 +131,18 @@ public class Zone {
             zoneWorldObjectCoords.add(new Coordinate(x,y));
         }
     }
+    public int getN(){
+        return this.n;
+    }
+    public int getS(){
+        return this.s;
+    }
+    public int getE(){
+        return this.e;
+    }
+    public int getW(){
+        return this.w;
+    }
 
     public ArrayList<WorldObject> getZoneWorldObjects(){
         return zoneWorldObjects;
@@ -250,10 +262,30 @@ public class Zone {
         return this.zoneCutscenes.get(a);
     }
 
-    public Zone(int n, int e, int s, int w){
+    public Coordinate enterNorth(){
+        return new Coordinate(nx, ny);
+    }
+    public Coordinate enterSouth(){
+        return new Coordinate(sx, sy);
+    }
+    public Coordinate enterEast(){
+        return new Coordinate(ex, ey);
+    }
+    public Coordinate enterWest(){
+        return new Coordinate(wx, wy);
+    }
+    public Zone(int n, int e, int s, int w, int nx, int ny, int ex, int ey, int sx, int sy, int wx, int wy){
         this.n = n;
         this.s = s;
         this.w = w;
         this.e = e;
+        this.nx = nx;
+        this.ny = ny;
+        this.ex = ex;
+        this.ey = ey;
+        this.sx = sx;
+        this.sy = sy;
+        this.wx = wx;
+        this.wy = wy;
     }
 }

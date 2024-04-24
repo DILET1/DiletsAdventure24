@@ -45,7 +45,7 @@ public class Main extends PApplet {
             Scanner in = new Scanner(obj);
             int n = in.nextInt();
             for(int i = 0; i < n; i++){
-                globalObjects.add(new WorldObject(in.nextInt(), in.nextInt()));
+                globalObjects.add(new WorldObject(in.nextInt() * resScalar, in.nextInt()* resScalar));
             }
             File quests = new File("baseData/GLOBAL/QUESTS.txt");
             in = new Scanner(quests);
@@ -74,7 +74,7 @@ public class Main extends PApplet {
         try{
             File adj = new File(directory+"NEIGHBORS.txt");
             Scanner in = new Scanner(adj);
-            globalZones.add(new Zone(in.nextInt(),in.nextInt(),in.nextInt(),in.nextInt()));
+            globalZones.add(new Zone(in.nextInt(),in.nextInt(),in.nextInt(),in.nextInt(), in.nextInt(),in.nextInt(),in.nextInt(),in.nextInt(),in.nextInt(),in.nextInt(),in.nextInt(),in.nextInt()));
         }
         catch(FileNotFoundException e){
             return;
@@ -92,28 +92,28 @@ public class Main extends PApplet {
                 int id = in.nextInt();
                 int x = in.nextInt();
                 int y = in.nextInt();
-                globalZones.get(ind).addWorldObject(globalObjects.get(id), x, y);
+                globalZones.get(ind).addWorldObject(globalObjects.get(id), x * resScalar , y * resScalar);
             }
             int interactables = in.nextInt();
             for(int i = 0; i < interactables; i++){
                 int id = in.nextInt();
                 int x = in.nextInt();
                 int y = in.nextInt();
-                globalZones.get(ind).addInteractable(id, x, y);
+                globalZones.get(ind).addInteractable(id, x * resScalar , y* resScalar);
             }
             int npcs = in.nextInt();
             for(int i = 0; i < npcs; i++){
                 int id = in.nextInt();
                 int x = in.nextInt();
                 int y = in.nextInt();
-                globalZones.get(ind).addNPCs(id, x, y);
+                globalZones.get(ind).addNPCs(id, x* resScalar, y* resScalar);
             }
             int chests = in.nextInt();
             for(int i = 0; i < chests; i++){
                 int id = in.nextInt();
                 int x = in.nextInt();
                 int y = in.nextInt();
-                globalZones.get(ind).addChest(id, x, y);
+                globalZones.get(ind).addChest(id, x* resScalar, y* resScalar);
             }
         }
         catch(FileNotFoundException e){
@@ -204,8 +204,8 @@ public class Main extends PApplet {
                 int len = in.nextInt();
                 int height = in.nextInt();
                 int event = in.nextInt();
-                globalZones.get(ind).loadInteractable(new InteractableObject(len, height, event));
-                System.out.println(len+" "+height+" "+event);
+                globalZones.get(ind).loadInteractable(new InteractableObject(len * resScalar, height * resScalar, event));
+                System.out.println(len +" "+height+" "+event);
             }
         }
         catch(FileNotFoundException e){
@@ -237,7 +237,7 @@ public class Main extends PApplet {
                     deez.add(new DialogueOption(adj, globalZones.get(ind).getEvent(dialogueID), label));
                     System.out.println(dialogueID+" "+label);
                 }
-                globalZones.get(ind).loadNPC(new NPC(len, height, id, deez.get(0), name, i));
+                globalZones.get(ind).loadNPC(new NPC(len * resScalar, height* resScalar, id, deez.get(0), name, i));
                 System.out.println(len+" "+height+" "+id+" "+name+" "+i);
                 globalZones.get(ind).addDialogueOption(deez);
             }
@@ -277,7 +277,7 @@ public class Main extends PApplet {
                 for(int j = 0; j < items; j++){
                     list.add(globalItems.get(in.nextInt()));
                 }
-                globalZones.get(ind).loadChest(new Chest(x,y,list,Dilet));
+                globalZones.get(ind).loadChest(new Chest(x* resScalar,y* resScalar,list,Dilet));
             }
         }
         catch(FileNotFoundException e){
@@ -501,6 +501,15 @@ public class Main extends PApplet {
                 if(uflag){
                     Dilet.moveY(-5 * resScalar);
                 }
+                if(Dilet.getY() < 15 * resScalar){
+                    if(curZone.getN() == -1){
+                        Dilet.moveY(5 * resScalar);
+                    }
+                    else{
+                        curZone = globalZones.get(curZone.getN());
+                        Dilet.setLoc(curZone.enterSouth().getX() * resScalar, curZone.enterSouth().getY() * resScalar);
+                    }
+                }
             }
             if (left) {
                 boolean lflag = true;
@@ -534,6 +543,17 @@ public class Main extends PApplet {
                 }
                 if(lflag){
                     Dilet.moveX(-5 * resScalar);
+                }
+                if(Dilet.getX() < 15 * resScalar){
+                    if(curZone.getW() == -1){
+                        Dilet.moveX(5 * resScalar);
+                    }
+                    else{
+                        int newInd = curZone.getW();
+                        curZone = globalZones.get(newInd);
+                        Dilet.setLoc(globalZones.get(newInd).enterEast().getX() * resScalar, globalZones.get(newInd).enterEast().getY() * resScalar);
+                        System.out.println("BALLS");
+                    }
                 }
             }
             if (right) {
@@ -569,6 +589,17 @@ public class Main extends PApplet {
                 if(rflag){
                     Dilet.moveX(5 * resScalar);
                 }
+                if(Dilet.getX() > 625 * resScalar){
+                    if(curZone.getE() == -1){
+                        Dilet.moveX(-5 * resScalar);
+                    }
+                    else{
+                        int newInd = curZone.getE();
+                        curZone = globalZones.get(newInd);
+                        Dilet.setLoc(globalZones.get(newInd).enterWest().getX() * resScalar, globalZones.get(newInd).enterWest().getY() * resScalar);
+                        System.out.println("BALLS");
+                    }
+                }
             }
             if (down) {
                 boolean dflag = true;
@@ -602,6 +633,15 @@ public class Main extends PApplet {
                 }
                 if(dflag){
                     Dilet.moveY(5 * resScalar);
+                }
+                if(Dilet.getY() > 345 * resScalar){
+                    if(curZone.getS() == -1){
+                        Dilet.moveY(-5 * resScalar);
+                    }
+                    else{
+                        curZone = globalZones.get(curZone.getS());
+                        Dilet.setLoc(curZone.enterNorth().getX() * resScalar, curZone.enterNorth().getY() * resScalar);
+                    }
                 }
             }
 

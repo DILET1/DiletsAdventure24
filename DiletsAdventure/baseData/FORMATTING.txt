@@ -32,7 +32,7 @@ In each folder:
 - Layout
 
 For the adjacent zones:
-1 line, 4 numbers. 1 for each zone (NESW)
+1 line, 12 numbers. First 4 are the indices of adjacent zones. Next 8 are pairs of coordinates when the player enters the zone from the north, east, south, or west.
 
 For Events:
 1st line is how many events there are
