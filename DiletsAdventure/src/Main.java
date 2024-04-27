@@ -24,6 +24,9 @@ public class Main extends PApplet {
     static int newStart; //updated each time the cutscene state is entered
     static int cutSceneInd;//ditto above
     static boolean up, left, right, down;
+    PImage questB, questT, pauseB, itemB, evB, butB;
+    ArrayList<String> pastEvs = new ArrayList<>();
+    PFont cons;
     public static void load(){
         loadBase();
         try{
@@ -297,6 +300,18 @@ public class Main extends PApplet {
     }
     public void setup(){
         frameRate(60);
+        questB = loadImage("baseData/GLOBAL/UI/questlogbutton.png");
+        questB.resize(60 * resScalar, 0);
+        questT = loadImage("baseData/GLOBAL/UI/questTabBackground.png");
+        questT.resize(200 * resScalar, 0);
+        itemB = loadImage("baseData/GLOBAL/UI/itembutton.png");
+        itemB.resize(60 * resScalar, 0);
+        pauseB = loadImage("baseData/GLOBAL/UI/pausebutton.png");
+        pauseB.resize(60 * resScalar, 0);
+        butB = loadImage("baseData/GLOBAL/UI/bottomBarBackground.png");
+        butB.resize(200 * resScalar, 0);
+        evB = loadImage("baseData/GLOBAL/UI/eventLogBackground.png");
+        evB.resize(200 * resScalar, 0);
     }
     public void draw(){
         elapsedTime = millis();
@@ -345,15 +360,16 @@ public class Main extends PApplet {
                     questLog.remove(i);
                 }
             }
-
-            text(curDialogueOption.use(), 15 * resScalar,15 * resScalar);
+            textMode(CORNERS);
+            text(curDialogueOption.use(), 450 * resScalar,130 * resScalar, 630 * resScalar, 160 * resScalar);
             int counter = 0;
             textSize(20 * resScalar);
             for(int co : curDialogueOption.getAdj()){
                 fill(255,0,127);
-                rect(15 * resScalar,(45 + (15 * counter))* resScalar,100,(55 + (15  * counter))* resScalar);
+                rect(450 * resScalar,(160 + (30 * counter))* resScalar,630,(190 + (30  * counter))* resScalar);
                 fill(0,0,0);
-                text(curZone.getDialogue(co, curNPC.getIndex()).returnLabel(),15 * resScalar,(45 + 15 *counter) *  resScalar);
+                textMode(CORNERS);
+                text(curZone.getDialogue(co, curNPC.getIndex()).returnLabel(),450 * resScalar,(160 + (30 * counter))* resScalar,630,(190 + (30  * counter))* resScalar);
                 counter++;
             }
         }
@@ -366,21 +382,34 @@ public class Main extends PApplet {
 
     }
     public void drawBanner(){
-        //top banner
-        //pause button
-        fill(0,0,255);
-        rect(610 * resScalar,5* resScalar,630* resScalar,25* resScalar);
         textSize(10 * resScalar);
+        rectMode(CORNERS);
+        imageMode(CORNER);
+        image(evB, 440 * resScalar, 120 * resScalar);
+        image(questT, 440 * resScalar, 0);
+        image(butB, 440 * resScalar, 330 * resScalar);
+        image(itemB, 445 * resScalar, 335 * resScalar);
+        image(pauseB, 510 * resScalar, 335 * resScalar);
+        image(questB, 575 * resScalar, 335 * resScalar);
         if(!questLog.isEmpty()){
-            text(questLog.get(0).getName()+": "+questLog.get(0).curStep(), 60 * resScalar,40 * resScalar);
+            text(questLog.get(0).getName()+": "+questLog.get(0).curStep(), 460 * resScalar, 20 * resScalar, 620 * resScalar, 100 * resScalar);
         }
         else{
-            text("No active quest", 60 * resScalar, 40 * resScalar);
+            text("No active quest", 460 * resScalar, 20 * resScalar, 620 * resScalar, 100 * resScalar);
+        }
+        if(curState != 4){
+            fill(0,0,0);
+            int ctr = 0;
+            for(int i = pastEvs.size() -1 ; i >= 0;i--){
+                String s = pastEvs.get(i);
+                text(s, 450 * resScalar, (280 - 30 * ctr)* resScalar,630* resScalar,(310 - 30 * ctr)* resScalar);
+                ctr++;
+            }
         }
     }
     public void menu(){
         fill(0,255,255);
-        rect(0,30 * resScalar,640 * resScalar,360 * resScalar);
+        rect(0,0,440 * resScalar,360 * resScalar);
         fill(0,0,0);
         rect(260 * resScalar, 90* resScalar, 380* resScalar, 120* resScalar);
         fill(255,255,255);
@@ -552,7 +581,6 @@ public class Main extends PApplet {
                         int newInd = curZone.getW();
                         curZone = globalZones.get(newInd);
                         Dilet.setLoc(globalZones.get(newInd).enterEast().getX() * resScalar, globalZones.get(newInd).enterEast().getY() * resScalar);
-                        System.out.println("BALLS");
                     }
                 }
             }
@@ -589,7 +617,7 @@ public class Main extends PApplet {
                 if(rflag){
                     Dilet.moveX(5 * resScalar);
                 }
-                if(Dilet.getX() > 625 * resScalar){
+                if(Dilet.getX() > 425 * resScalar){
                     if(curZone.getE() == -1){
                         Dilet.moveX(-5 * resScalar);
                     }
@@ -658,7 +686,7 @@ public class Main extends PApplet {
             System.out.println(i.toString());
         }
         if(curState == 1){
-            if(mouseX >= 610* resScalar && mouseX <= 630* resScalar && mouseY >= 5* resScalar && mouseY <= 25* resScalar){
+            if(mouseX >= 510* resScalar && mouseX <= 570* resScalar && mouseY >= 335* resScalar && mouseY <= 355* resScalar){
                 curState = 2;
                 System.out.println("PAUSED");
                 for(Item i : Dilet.getInventory()){
@@ -689,6 +717,17 @@ public class Main extends PApplet {
                                 }
                                 curState = 3;
                                 curInteractive = i;
+                                if(pastEvs.size() == 6){
+                                    pastEvs.set(0, pastEvs.get(1));
+                                    pastEvs.set(1, pastEvs.get(2));
+                                    pastEvs.set(2, pastEvs.get(3));
+                                    pastEvs.set(3, pastEvs.get(4));
+                                    pastEvs.set(4, pastEvs.get(5));
+                                    pastEvs.set(5, curZone.getEvent(i.msg()).message());
+                                }
+                                else{
+                                    pastEvs.add(curZone.getEvent(i.msg()).message());
+                                }
                             }
                         }
                     }
@@ -704,6 +743,17 @@ public class Main extends PApplet {
                             curState = 4;
                             curNPC = n;
                             curDialogueOption = n.talk();
+                            if(pastEvs.size() == 6){
+                                pastEvs.set(0, pastEvs.get(1));
+                                pastEvs.set(1, pastEvs.get(2));
+                                pastEvs.set(2, pastEvs.get(3));
+                                pastEvs.set(3, pastEvs.get(4));
+                                pastEvs.set(4, pastEvs.get(5));
+                                pastEvs.set(5, "Talked to "+curNPC.getName());
+                            }
+                            else{
+                                pastEvs.add("Talked to "+curNPC.getName());
+                            }
                         }
                     }
                 }
@@ -717,6 +767,17 @@ public class Main extends PApplet {
                             System.out.println("CHEST ACTIVE");
                             curState = 5;
                             curChest = c;
+                            if(pastEvs.size() == 6){
+                                pastEvs.set(0, pastEvs.get(1));
+                                pastEvs.set(1, pastEvs.get(2));
+                                pastEvs.set(2, pastEvs.get(3));
+                                pastEvs.set(3, pastEvs.get(4));
+                                pastEvs.set(4, pastEvs.get(5));
+                                pastEvs.set(5, "Opened chest");
+                            }
+                            else{
+                                pastEvs.add("Opened chest");
+                            }
                         }
                     }
                 }
@@ -724,7 +785,7 @@ public class Main extends PApplet {
             }
         }
         else if(curState == 2){
-            if(mouseX >= 610* resScalar && mouseX <= 630* resScalar && mouseY >= 5* resScalar && mouseY <= 25* resScalar){
+            if(mouseX >= 510* resScalar && mouseX <= 570* resScalar && mouseY >= 335* resScalar && mouseY <= 355* resScalar){
                 curState = 1;
                 System.out.println("UNPAUSED");
             }
@@ -735,9 +796,9 @@ public class Main extends PApplet {
             curState = 1;
         }
         else if(curState == 4){
-            if(mouseX >= 15 * resScalar && mouseX <= 100 * resScalar){
+            if(mouseX >= 450 * resScalar && mouseX <= 630 * resScalar){
                 for(int i = 0; i < curDialogueOption.getAdj().size(); i++){
-                    if(mouseY >= (45 + (15 * i))* resScalar && mouseY <= (55 + (15 * i))* resScalar){
+                    if(mouseY >= (130 + (30 * i))* resScalar && mouseY <= (160 + (30 * i))* resScalar){
                         curDialogueOption = curZone.getDialogue(curDialogueOption.getAdj().get(i), curNPC.getIndex());
                         System.out.println("You selected dialogue option "+i);
                         return;
@@ -756,6 +817,17 @@ public class Main extends PApplet {
                         if(counter < curChest.getContents().size()){
                             if(mouseX >=(125 + (100 * i)) * resScalar && mouseY >= (105 + (100 * j)) * resScalar && mouseX <= (220 + (100 * i)) * resScalar && mouseY <=  (200 + (100 * j)) * resScalar){
                                 System.out.println(i * 2 + j + 1);
+                                if(pastEvs.size() == 6){
+                                    pastEvs.set(0, pastEvs.get(1));
+                                    pastEvs.set(1, pastEvs.get(2));
+                                    pastEvs.set(2, pastEvs.get(3));
+                                    pastEvs.set(3, pastEvs.get(4));
+                                    pastEvs.set(4, pastEvs.get(5));
+                                    pastEvs.set(5, "Obtained "+curChest.getContents().get(counter).getName());
+                                }
+                                else{
+                                    pastEvs.add("Obtained "+curChest.getContents().get(counter).getName());
+                                }
                                 Dilet.addItem(curChest.getContents().get(counter));
                                 curChest.removeItem(curChest.getContents().get(counter));
                             }
@@ -826,5 +898,4 @@ public class Main extends PApplet {
             }
         }
     }
-
 }
