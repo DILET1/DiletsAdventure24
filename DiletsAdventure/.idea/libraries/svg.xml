@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="svg">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../processing-4.3/modes/java/libraries/svg/library/svg.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

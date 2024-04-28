@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="modes">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../processing-4.3/modes" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

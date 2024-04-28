@@ -299,6 +299,7 @@ public class Main extends PApplet {
         size(640* resScalar,360* resScalar);
     }
     public void setup(){
+
         frameRate(60);
         questB = loadImage("baseData/GLOBAL/UI/questlogbutton.png");
         questB.resize(60 * resScalar, 0);
@@ -312,6 +313,8 @@ public class Main extends PApplet {
         butB.resize(200 * resScalar, 0);
         evB = loadImage("baseData/GLOBAL/UI/eventLogBackground.png");
         evB.resize(200 * resScalar, 0);
+        cons = createFont("baseData/CONSOLA.TTF", 10);
+        textFont(cons);
     }
     public void draw(){
         elapsedTime = millis();
@@ -351,27 +354,7 @@ public class Main extends PApplet {
             text(curZone.getEvent(curInteractive.msg()).message(),15 * resScalar,15 * resScalar);
         }
         if(curState == 4){
-            fill(0,0,0);
-            textSize(10 * resScalar);
-            Event i = curDialogueOption.returnTrigger();
-            if(i.returnQuestID() != -1) {
-                globalQuests.get(i.returnQuestID()).progress(i.returnQuestStep());
-                if(globalQuests.get(i.returnQuestID()).questDone()){
-                    questLog.remove(i);
-                }
-            }
-            textMode(CORNERS);
-            text(curDialogueOption.use(), 450 * resScalar,130 * resScalar, 630 * resScalar, 160 * resScalar);
-            int counter = 0;
-            textSize(20 * resScalar);
-            for(int co : curDialogueOption.getAdj()){
-                fill(255,0,127);
-                rect(450 * resScalar,(160 + (30 * counter))* resScalar,630,(190 + (30  * counter))* resScalar);
-                fill(0,0,0);
-                textMode(CORNERS);
-                text(curZone.getDialogue(co, curNPC.getIndex()).returnLabel(),450 * resScalar,(160 + (30 * counter))* resScalar,630,(190 + (30  * counter))* resScalar);
-                counter++;
-            }
+            drawDialogue();
         }
         if(curState == 5){
             chestMenu();
@@ -380,6 +363,31 @@ public class Main extends PApplet {
             inventoryMenu();
         }
 
+    }
+    public void drawDialogue(){
+        fill(0,0,0);
+        textFont(cons);
+        textSize(10 * resScalar);
+        Event i = curDialogueOption.returnTrigger();
+        if(i.returnQuestID() != -1) {
+            globalQuests.get(i.returnQuestID()).progress(i.returnQuestStep());
+            if(globalQuests.get(i.returnQuestID()).questDone()){
+                questLog.remove(i);
+            }
+        }
+        text(curDialogueOption.use(), 450 * resScalar,130 * resScalar, 630 * resScalar, 160 * resScalar);
+        int counter = 0;
+        textSize(20 * resScalar);
+        for(int co : curDialogueOption.getAdj()){
+            fill(255,0,127);
+            rectMode(CORNERS);
+            rect(450 * resScalar,(165 + (35 * counter))* resScalar,630 * resScalar,(195 + (35  * counter))* resScalar);
+            fill(0,0,0);
+            textFont(cons);
+            textSize(10 * resScalar);
+            text(curZone.getDialogue(co, curNPC.getIndex()).returnLabel(),450 * resScalar,(165 + (35 * counter))* resScalar,630 * resScalar,(195 + (35  * counter))* resScalar);
+            counter++;
+        }
     }
     public void drawBanner(){
         textSize(10 * resScalar);

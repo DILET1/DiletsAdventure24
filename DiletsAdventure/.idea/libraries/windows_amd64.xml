@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="windows-amd64">
+    <CLASSES />
+    <JAVADOC />
+    <NATIVE>
+      <root url="file://$PROJECT_DIR$/../processing-4.3/core/library/windows-amd64" />
+    </NATIVE>
+    <SOURCES />
+  </library>
+</component>
