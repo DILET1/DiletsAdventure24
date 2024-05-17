@@ -69,6 +69,7 @@ public class Zone {
     }
     public void loadChest(Chest a){
         allZoneChests.add(a);
+
     }
     public void addInteractable(int a, int x, int y){
         if(!zoneInteractableObjects.contains(allZoneInteractableObject.get(a))){

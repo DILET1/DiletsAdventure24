@@ -7,13 +7,18 @@ import java.util.*;
 public class Main extends PApplet {
     //all of our fun vars
     static ArrayList<Zone> globalZones = new ArrayList<>();
+    ArrayList<Projectile> activeProjectiles = new ArrayList<>();
+    ArrayList<Coordinate> projCoords = new ArrayList<>();
+    ArrayList<Enemy> enemies = new ArrayList<>();
+    ArrayList<Coordinate> ecoords = new ArrayList<>();
+    ArrayList<Integer> curAttk = new ArrayList<>();
     static ArrayList<Item> globalItems = new ArrayList<>();
     static ArrayList<WorldObject> globalObjects = new ArrayList<>();
     static ArrayList<Quest> globalQuests = new ArrayList<>();
     static ArrayList<Quest> questLog = new ArrayList<>();
     public static int resScalar = 2;
     static Player Dilet = new Player(resScalar);
-    static int curState = 1; //state -1 is intro cutscene. state 0 is menu. state 1 is in-game. state 2 is pause menu. state 3 is interacting with an object. state 4 is dialogue. state 5 is chest. state 6 is inventory. state 7 is cutscene, state 8 is inventory, more to come
+    static int curState = 1; //state -1 is intro cutscene. state 0 is menu. state 1 is in-game. state 2 is pause menu. state 3 is interacting with an object. state 4 is dialogue. state 5 is chest. state 6 is inventory. state 7 is cutscene, state 8 is inventory, 9 is combatmore to come
     static Zone curZone = null;
     static InteractableObject curInteractive = null;
     static NPC curNPC = null;
@@ -21,9 +26,11 @@ public class Main extends PApplet {
     static Chest curChest = null;
     static int curCutscene;
     static int elapsedTime;
+    int sinceLastProjectile = 0;
     static int newStart; //updated each time the cutscene state is entered
     static int cutSceneInd;//ditto above
     static boolean up, left, right, down;
+    int health = 100;
     PImage questB, questT, pauseB, itemB, evB, butB;
     ArrayList<String> pastEvs = new ArrayList<>();
     PFont cons;
@@ -113,6 +120,7 @@ public class Main extends PApplet {
             }
             int chests = in.nextInt();
             for(int i = 0; i < chests; i++){
+                System.out.println("ADDING CHEST FR");
                 int id = in.nextInt();
                 int x = in.nextInt();
                 int y = in.nextInt();
@@ -220,6 +228,7 @@ public class Main extends PApplet {
             File f = new File(directory+"NPCS.txt");
             Scanner in = new Scanner(f);
             int n = in.nextInt();
+            System.out.println(n);
             String chaff = in.nextLine();
             for(int i = 0; i < n; i++){
                 String name = in.nextLine();
@@ -281,6 +290,7 @@ public class Main extends PApplet {
                     list.add(globalItems.get(in.nextInt()));
                 }
                 globalZones.get(ind).loadChest(new Chest(x* resScalar,y* resScalar,list,Dilet));
+                System.out.println("loaded a chest");
             }
         }
         catch(FileNotFoundException e){
@@ -291,6 +301,7 @@ public class Main extends PApplet {
     public static void main(String[] args) {
         cutSceneInd = 0;
         newStart = 0;
+        curState = 9;
         globalItems.add(new Item("Feesh", "Glorious"));
         load();
         PApplet.main("Main");
@@ -319,13 +330,13 @@ public class Main extends PApplet {
     public void draw(){
         elapsedTime = millis();
         inputProcess();
-        if(curState != 1){
+        if(curState != 1 && curState != 9){
             up = false;
             down = false;
             left = false;
             right = false;
         }
-        if(curState == 1 || curState == 3 || curState == 4 || curState == 7){
+        if(curState == 1 || curState == 3 || curState == 4 || curState == 7 || curState == 9){
             background(0,255,0);
             noStroke();
             fill(255,255,255);
@@ -361,6 +372,30 @@ public class Main extends PApplet {
         }
         if(curState == 8){
             inventoryMenu();
+        }
+        if(curState == 9){
+            combatDrawer();
+            combatHandler();
+            /**
+             *if(millis() - sinceLastProjectile > 1000){
+                activeProjectiles.add(new Projectile(10, 5, 2, (3 * Math.PI)/4));
+                projCoords.add(new Coordinate(400 ,320));
+                activeProjectiles.add(new Projectile(10, 5, 2, (Math.PI)/4));
+                projCoords.add(new Coordinate(400 ,320));
+                activeProjectiles.add(new Projectile(10, 5, 2, (5 * Math.PI)/4));
+                projCoords.add(new Coordinate(400 ,320));
+                activeProjectiles.add(new Projectile(10, 5, 2, (7 * Math.PI)/4));
+                projCoords.add(new Coordinate(400 ,320));
+                sinceLastProjectile = millis();
+            }
+             **/
+            if(enemies.size() == 0){
+                System.out.println("ADDING BANDIT");
+                enemies.add(new Enemy(20,30,2,5));
+                ecoords.add(new Coordinate(300,500));
+                curAttk.add(0);
+            }
+
         }
 
     }
@@ -473,38 +508,38 @@ public class Main extends PApplet {
         for(WorldObject obj : curZone.getZoneWorldObjects()){
             fill(255,255,255);
             rectMode(CORNERS);
-            rect(curZone.getZoneWorldObjectCoords(ctr).getX(), curZone.getZoneWorldObjectCoords(ctr).getY() ,curZone.getZoneWorldObjectCoords(ctr).getX()+ obj.getLen(),curZone.getZoneWorldObjectCoords(ctr).getY()+ obj.getHeight());
+            rect((float)curZone.getZoneWorldObjectCoords(ctr).getX(), (float)curZone.getZoneWorldObjectCoords(ctr).getY() ,(float)curZone.getZoneWorldObjectCoords(ctr).getX()+ obj.getLen(),(float)curZone.getZoneWorldObjectCoords(ctr).getY()+ obj.getHeight());
             ctr++;
         }
         ctr = 0;
         for(InteractableObject obj : curZone.getZoneInteractableObjects()){
             rectMode(CORNERS);
             fill(0,255,255);
-            rect(curZone.getZoneInteractableObjectCoords(ctr).getX(), curZone.getZoneInteractableObjectCoords(ctr).getY() ,curZone.getZoneInteractableObjectCoords(ctr).getX()+ obj.getLen(),curZone.getZoneInteractableObjectCoords(ctr).getY()+ obj.getHeight());
+            rect((float)curZone.getZoneInteractableObjectCoords(ctr).getX(), (float)curZone.getZoneInteractableObjectCoords(ctr).getY() ,(float)curZone.getZoneInteractableObjectCoords(ctr).getX()+ obj.getLen(),(float)curZone.getZoneInteractableObjectCoords(ctr).getY()+ obj.getHeight());
             ctr++;
         }
         ctr =0;
         for(NPC obj : curZone.getNPCs()){
             rectMode(CORNERS);
             fill(255,0,255);
-            rect(curZone.getZoneNPCCoords(ctr).getX(), curZone.getZoneNPCCoords(ctr).getY() ,curZone.getZoneNPCCoords(ctr).getX()+ obj.getLen(),curZone.getZoneNPCCoords(ctr).getY()+ obj.getHeight());
+            rect((float)curZone.getZoneNPCCoords(ctr).getX(), (float)curZone.getZoneNPCCoords(ctr).getY() ,(float)curZone.getZoneNPCCoords(ctr).getX()+ obj.getLen(),(float)curZone.getZoneNPCCoords(ctr).getY()+ obj.getHeight());
             ctr++;
         }
         ctr=0;
         for(Chest obj : curZone.getZoneChests()){
             rectMode(CORNERS);
             fill(255,255,0);
-            rect(curZone.getZoneChestCoords(ctr).getX(), curZone.getZoneChestCoords(ctr).getY() ,curZone.getZoneChestCoords(ctr).getX()+ obj.getLen(),curZone.getZoneChestCoords(ctr).getY()+ obj.getHeight());
+            rect((float)curZone.getZoneChestCoords(ctr).getX(), (float)curZone.getZoneChestCoords(ctr).getY() ,(float)curZone.getZoneChestCoords(ctr).getX()+ obj.getLen(),(float)curZone.getZoneChestCoords(ctr).getY()+ obj.getHeight());
             ctr++;
         }
     }
     public void drawPlayer() {
         fill(0, 230, 172);
         rectMode(CENTER);
-        rect(Dilet.getX(), Dilet.getY(), 30* resScalar, 30* resScalar);
+        rect((float)Dilet.getX(), (float)Dilet.getY(), 30* resScalar, 30* resScalar);
     }
     public void inputProcess(){
-        if(curState == 1){
+        if(curState == 1 || curState == 9){
             if (up) {
                 boolean uflag = true;
                 int ctr = 0;
@@ -690,6 +725,7 @@ public class Main extends PApplet {
             System.out.println(w.toString());
         }
         System.out.println(curZone.getZoneInteractableObjects().size());
+        System.out.println("CURRENT PROJECTILES: "+ projCoords.size());
         for(InteractableObject i : curZone.getZoneInteractableObjects()){
             System.out.println(i.toString());
         }
@@ -770,8 +806,8 @@ public class Main extends PApplet {
             ctr =0;
             for(Chest c : curZone.getZoneChests()){
                 if(mouseX >= curZone.getZoneChestCoords(ctr).getX() && mouseX <= curZone.getZoneChestCoords(ctr).getX() + c.getLen() && mouseY >= curZone.getZoneChestCoords(ctr).getY() && mouseY <= curZone.getZoneChestCoords(ctr).getY() + c.getHeight()){
-                    if(Math.abs(Dilet.getX() - (curZone.getZoneChestCoords(ctr).getX()+ (c.getLen()/2))) < 60 * resScalar){
-                        if(Math.abs(Dilet.getY() - (curZone.getZoneChestCoords(ctr).getY()+ (c.getHeight()))) < 60 * resScalar){
+                    if(Math.abs(Dilet.getX() - (curZone.getZoneChestCoords(ctr).getX() + (c.getLen()/2))) < (15 + c.getLen()/2 + 30) * resScalar){
+                        if(Math.abs(Dilet.getY() - (curZone.getZoneChestCoords(ctr).getY()+ (c.getHeight()/2))) < (15 + c.getHeight()/2 + 30) * resScalar){
                             System.out.println("CHEST ACTIVE");
                             curState = 5;
                             curChest = c;
@@ -865,9 +901,20 @@ public class Main extends PApplet {
                 }
             }
         }
+        else if(curState == 9){
+            if(millis() - sinceLastProjectile > 500){
+                double angle = Math.atan((mouseY - Dilet.getY())/(mouseX - Dilet.getX()));
+                if(mouseX - Dilet.getX() < 0){
+                    angle+=Math.PI;
+                }
+                activeProjectiles.add(new Projectile(10, 5, 12, angle));
+                projCoords.add(new Coordinate(Dilet.getX() + (2 * Dilet.getRadius() * Math.cos(angle)),Dilet.getY() + (2 * Dilet.getRadius() * Math.sin(angle))));
+                sinceLastProjectile = millis();
+            }
+        }
     }
     public void keyPressed(){
-        if(curState == 1){
+        if(curState == 1 || curState == 9){
             if(key == 'w'){
                 up = true;
             }
@@ -891,7 +938,7 @@ public class Main extends PApplet {
         }
     }
     public void keyReleased(){
-        if(curState == 1){
+        if(curState == 1 || curState == 9){
             if(key == 'w'){
                 up = false;
             }
@@ -904,6 +951,72 @@ public class Main extends PApplet {
             if(key == 'a'){
                 left = false;
             }
+        }
+    }
+    public void combatHandler(){
+        for(int i = 0; i < activeProjectiles.size(); i++){
+            Coordinate c = projCoords.get(i);
+            c.addX(activeProjectiles.get(i).getDX());
+            c.addY(activeProjectiles.get(i).getDY());
+            if(Math.abs(c.getX() - Dilet.getX()) < activeProjectiles.get(i).radius + Dilet.getRadius() && Math.abs(c.getY() - Dilet.getY()) < activeProjectiles.get(i).radius + Dilet.getRadius()){
+                health-=activeProjectiles.get(i).damage;
+                System.out.println("Took damage!");
+                projCoords.remove(i);
+                activeProjectiles.remove(i);
+                i--;
+                continue;
+            }
+            else if(c.getX() > 440 * resScalar || c.getX() < 0 || c.getY() > 360 * resScalar || c.getY() < 0){ //for reasons of computational efficiency, projectiles go through walls
+                projCoords.remove(i);
+                activeProjectiles.remove(i);
+                i--;
+                continue;
+            }
+            for(int j = 0; j < enemies.size(); j++){
+                Enemy e = enemies.get(j);
+                Coordinate ec = ecoords.get(j);
+                if(Math.abs(c.getX() - ec.getX()) < activeProjectiles.get(i).radius + e.getRadius() && Math.abs(c.getY() - ec.getY()) < activeProjectiles.get(i).radius + e.getRadius()){
+                    e.takeDamage(activeProjectiles.get(i).getDamage());
+                    System.out.println("Enemy "+j+" Took damage!");
+                    projCoords.remove(i);
+                    activeProjectiles.remove(i);
+                    i--;
+                }
+            }
+        }
+        for(int i = 0; i < enemies.size(); i++){
+            if(enemies.get(i).getHealth() <= 0){
+                enemies.remove(i);
+                ecoords.remove(i);
+                i--;
+            }
+        }
+//        for(int i = 0; i < enemies.size(); i++){ //enemy movement handling, to be implemented further later
+//            double angle = ((2 *Math.random())) * Math.PI;
+//            System.out.println(angle);
+//            ecoords.get(i).addX(Math.cos(angle) * enemies.get(i).getSpeed());
+//            ecoords.get(i).addY(Math.sin(angle) * enemies.get(i).getSpeed());
+//        }
+        for(int i = 0; i < enemies.size(); i++){
+            if(enemies.get(i).getAtk(0, millis()) != null){
+                activeProjectiles.addAll(enemies.get(i).getAtk(0, millis()));
+            }
+        }
+    }
+    public void combatDrawer(){
+        int ctr = 0;
+        for(Coordinate c : projCoords) {
+            rectMode(CENTER);
+            fill(255, 255, 255);
+            rect((float) c.getX(), (float) c.getY(), activeProjectiles.get(ctr).radius * 2, activeProjectiles.get(ctr).radius * 2);
+            ctr++;
+        }
+        ctr = 0;
+        for(Coordinate c : ecoords){
+            fill(255,0,0);
+            rectMode(CENTER);
+            rect((float)c.getX(), (float)c.getY(), (float)enemies.get(ctr).getRadius() * 2 * resScalar, (float)enemies.get(ctr).getRadius()* 2 * resScalar);
+            ctr++;
         }
     }
 }

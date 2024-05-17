@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 public class Player {
-    private int x, y, radius, scalar;
+    private double x, y, radius, scalar;
     private ArrayList<Item> inventory = new ArrayList<>();
     public Player(int resScalar){
         this.x = 100 * resScalar;
@@ -14,17 +14,17 @@ public class Player {
     public void moveY(int amt){
             this.y+=amt;
     }
-    public void setLoc(int x, int y){
+    public void setLoc(double x, double y){
         this.x = x;
         this.y = y;
     }
-    public int getX(){
+    public double getX(){
         return this.x;
     }
-    public int getRadius(){
+    public double getRadius(){
         return this.radius;
     }
-    public int getY(){
+    public double getY(){
         return this.y;
     }
     public boolean canRight(WorldObject a, Coordinate c){
