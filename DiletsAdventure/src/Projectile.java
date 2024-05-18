@@ -16,4 +16,5 @@ public class Projectile {
     public int getDamage(){
         return this.damage;
     }
+    public double getAngle(){return this.angle;}
 }

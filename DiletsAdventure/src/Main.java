@@ -389,11 +389,29 @@ public class Main extends PApplet {
                 sinceLastProjectile = millis();
             }
              **/
-            if(enemies.size() == 0){
+            if(enemies.isEmpty()){
                 System.out.println("ADDING BANDIT");
                 enemies.add(new Enemy(20,30,2,5));
                 ecoords.add(new Coordinate(300,500));
-                curAttk.add(0);
+                curAttk.add(1);
+                Attack a1 = new Attack();
+                Attack a2 = new Attack();
+                a1.addStep(5000, 500, new ArrayList<Projectile>(){{add(new Projectile(10, 10, 5, Math.PI/4));add(new Projectile(10, 10, 5, 3 * Math.PI/4));add(new Projectile(10, 10, 5, 5 * Math.PI/4));add(new Projectile(10, 10, 5, 7 * Math.PI/4));}});
+                a1.addStep(5000, 250, new ArrayList<Projectile>(){{add(new Projectile(10, 10, 3, Math.PI/2));
+                    add(new Projectile(10, 10, 3, Math.PI));
+                    add(new Projectile(10, 10, 3, 3 * Math.PI/2));
+                    add(new Projectile(10, 10, 3, 2 * Math.PI));}});
+                a2.addStep(2000, 1000, new ArrayList<Projectile>(){{
+                    add(new Projectile(10, 10, 10, -(2 * Math.PI) / 3));
+                    add(new Projectile(10, 10, 10,  -(Math.PI) / 3));
+                    add(new Projectile(10, 10, 10,  -(Math.PI) / 2));
+                    add(new Projectile(10, 10, 10, -(7 * Math.PI) / 12));
+                    add(new Projectile(10, 10, 10, -(5 * Math.PI) / 12));
+                    add(new Projectile(10, 10, 10, -(13 * Math.PI) / 24));
+                    add(new Projectile(10, 10, 10, -(11 * Math.PI) / 24));
+                }});
+                enemies.get(0).addAtk(a1);
+                enemies.get(0).addAtk(a2);
             }
 
         }
@@ -902,7 +920,7 @@ public class Main extends PApplet {
             }
         }
         else if(curState == 9){
-            if(millis() - sinceLastProjectile > 500){
+            if(millis() - sinceLastProjectile > 100){
                 double angle = Math.atan((mouseY - Dilet.getY())/(mouseX - Dilet.getX()));
                 if(mouseX - Dilet.getX() < 0){
                     angle+=Math.PI;
@@ -954,6 +972,25 @@ public class Main extends PApplet {
         }
     }
     public void combatHandler(){
+        for(int i = 0; i < enemies.size(); i++){
+            ArrayList<Projectile> atk = enemies.get(i).getAtk(curAttk.get(i), millis());
+            if(atk != null){
+                activeProjectiles.addAll(atk);
+                for(Projectile p : atk){
+                    projCoords.add(new Coordinate(ecoords.get(i).getX() + 2 * (enemies.get(i).getRadius() * Math.cos(p.getAngle())), ecoords.get(i).getY() + 2 * (enemies.get(i).getRadius() * Math.sin(p.getAngle()))));
+                }
+            }
+            else if(enemies.get(i).attackOver){
+                int newAttack = (int)(Math.random() * enemies.get(i).getPatterns());
+                if(enemies.get(i).getPatterns() > 1){
+                    while(newAttack == curAttk.get(i)){
+                        newAttack = (int)(Math.random() * enemies.get(i).getPatterns());
+                    }
+                }
+                curAttk.set(i, newAttack);
+                System.out.println("New Attack: "+i);
+            }
+        }
         for(int i = 0; i < activeProjectiles.size(); i++){
             Coordinate c = projCoords.get(i);
             c.addX(activeProjectiles.get(i).getDX());
@@ -988,6 +1025,7 @@ public class Main extends PApplet {
             if(enemies.get(i).getHealth() <= 0){
                 enemies.remove(i);
                 ecoords.remove(i);
+                curAttk.remove(i);
                 i--;
             }
         }
@@ -997,11 +1035,7 @@ public class Main extends PApplet {
 //            ecoords.get(i).addX(Math.cos(angle) * enemies.get(i).getSpeed());
 //            ecoords.get(i).addY(Math.sin(angle) * enemies.get(i).getSpeed());
 //        }
-        for(int i = 0; i < enemies.size(); i++){
-            if(enemies.get(i).getAtk(0, millis()) != null){
-                activeProjectiles.addAll(enemies.get(i).getAtk(0, millis()));
-            }
-        }
+
     }
     public void combatDrawer(){
         int ctr = 0;
