@@ -4,6 +4,8 @@ public class Zone {
     private ArrayList<WorldObject> zoneWorldObjects = new ArrayList<>();
     private ArrayList<InteractableObject> zoneInteractableObjects = new ArrayList<>();
     private ArrayList<InteractableObject> allZoneInteractableObject = new ArrayList<>();
+    private ArrayList<Enemy> allZoneEnemies = new ArrayList<>();
+    private ArrayList<Enemy> zoneEnemies = new ArrayList<>();
     private ArrayList<NPC> zoneNPCs = new ArrayList<>();
     private ArrayList<NPC> allZoneNPCs = new ArrayList<>();
     private ArrayList<Chest> zoneChests = new ArrayList<>();
@@ -275,6 +277,14 @@ public class Zone {
     public Coordinate enterWest(){
         return new Coordinate(wx, wy);
     }
+    public void clearContents(){
+        zoneChests.clear();
+        zoneChestCoords.clear();
+        zoneInteractableObjectCoords.clear();
+        zoneInteractableObjects.clear();
+        zoneEnemies.clear();
+
+    }
     public Zone(int n, int e, int s, int w, int nx, int ny, int ex, int ey, int sx, int sy, int wx, int wy){
         this.n = n;
         this.s = s;
@@ -289,4 +299,5 @@ public class Zone {
         this.wx = wx;
         this.wy = wy;
     }
+
 }

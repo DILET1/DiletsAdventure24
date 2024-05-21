@@ -301,9 +301,35 @@ public class Main extends PApplet {
     public static void main(String[] args) {
         cutSceneInd = 0;
         newStart = 0;
-        curState = 9;
-        globalItems.add(new Item("Feesh", "Glorious"));
-        load();
+        curState = 1;
+        /**SPECIAL ENGLISH PROJECT PART BEGINS!**/
+        //generate five zones
+        //it doesn't work... so it works.
+        globalZones.add(new Zone(1,2,3,4,220,30,400,180,220,320,40,180));
+        globalZones.get(0).addEvent(new Event("Pressed button", false, Dilet, 2, 0));
+        globalZones.add(new Zone(-1,-1,-1,0,0,0,0,0,0,0,40,180));
+        globalZones.get(1).addEvent(new Event("Pressed button", false, Dilet, 2, 0));
+        globalZones.add(new Zone(0,-1,-1,-1,220,30,0,0,0,0,0,0));
+        globalZones.get(2).addEvent(new Event("Pressed button", false, Dilet, 2, 0));
+        globalZones.add(new Zone(-1,0,-1,-1,0,0,400,180,0,0,0,0));
+        globalZones.get(3).addEvent(new Event("Pressed button", false, Dilet, 2, 0));
+        globalZones.add(new Zone(-1,-1,0,-1,0,0,0,0,220,320,-1,-1));
+        globalZones.get(4).addEvent(new Event("Pressed button", false, Dilet, 2, 0));
+        curZone = globalZones.get(0);
+        //preset quest frameworks
+        globalQuests.add(new Quest("Neutralize Target"));
+        globalQuests.get(0).addStep("Destroy the target in your zone.");
+        globalQuests.add(new Quest("Obtain Item"));
+        globalQuests.get(1).addStep("Go to the zone and get the item.");
+        globalItems.add(new Item("Item", "an item you were sent to get.",1,0));
+        globalQuests.add(new Quest("Activate Button"));
+        globalQuests.get(2).addStep("Go to the zone and push the button.");
+
+        //randomly generating quests
+
+
+
+        //load();
         PApplet.main("Main");
     }
     public void settings(){
@@ -328,6 +354,7 @@ public class Main extends PApplet {
         textFont(cons);
     }
     public void draw(){
+        System.out.println(globalZones.indexOf(curZone));
         elapsedTime = millis();
         inputProcess();
         if(curState != 1 && curState != 9){
@@ -342,6 +369,11 @@ public class Main extends PApplet {
             fill(255,255,255);
             drawPlayer();
             drawZone();
+        }
+        if(curState == 1){
+            if(!enemies.isEmpty()){
+                curState = 9;
+            }
         }
         if(curState == 2){
             menu();
@@ -374,6 +406,9 @@ public class Main extends PApplet {
             inventoryMenu();
         }
         if(curState == 9){
+            if(enemies.isEmpty()){
+                curState = 1;
+            }
             combatDrawer();
             combatHandler();
             /**
@@ -389,15 +424,50 @@ public class Main extends PApplet {
                 sinceLastProjectile = millis();
             }
              **/
-            if(enemies.size() == 0){
-                System.out.println("ADDING BANDIT");
-                enemies.add(new Enemy(20,30,2,5));
-                ecoords.add(new Coordinate(300,500));
-                curAttk.add(0);
-            }
 
         }
+        if(questLog.isEmpty()){
+            //remove all
+            globalZones.get(0).clearContents();
+            for(int ld = 0; ld < 5; ld++){
+                globalZones.get(ld).loadChest(new Chest(70,30, new ArrayList<Item>(), Dilet));
+                globalZones.get(ld).loadInteractable(new InteractableObject(50,50,0));
+            }
+            globalZones.get(1).clearContents();
+            globalZones.get(2).clearContents();
+            globalZones.get(3).clearContents();
+            globalZones.get(4).clearContents();
 
+            //types of quests: kill, fetch, push
+            int type = (int)(Math.random() * 3);
+
+            //location of quest, 0-4.
+            int loc = (int)(Math.random() * 5);
+            if(type == 0){
+                //kill quest
+                System.out.println("ADDING BANDIT");
+                enemies.add(new Enemy(20,30,2,5, 0,0));
+                ecoords.add(new Coordinate(300,500));
+                globalQuests.get(0).resetQuest();
+                globalQuests.get(0).setName("Engage and destroy the target.");
+
+            }
+            else if(type == 1){
+                //fetch quest
+                globalZones.get(loc).addChest(0, 370 * resScalar, 75 * resScalar);
+                globalZones.get(loc).getZoneChests().get(0).addItem(globalItems.get(0));
+                globalQuests.get(1).resetQuest();
+                globalQuests.get(1).setName("Obtain Item in Zone "+loc);
+                questLog.add(globalQuests.get(1));
+            }
+            else if(type == 2){
+                //push quest, easiest to implement
+                globalZones.get(loc).addInteractable(0, 240 * resScalar, 185 * resScalar);
+                globalQuests.get(2).resetQuest();
+                globalQuests.get(2).setName("Activate Button in Zone "+loc);
+                questLog.add(globalQuests.get(2));
+            }
+        }
     }
     public void drawDialogue(){
         fill(0,0,0);
@@ -873,7 +943,16 @@ public class Main extends PApplet {
                                     pastEvs.add("Obtained "+curChest.getContents().get(counter).getName());
                                 }
                                 Dilet.addItem(curChest.getContents().get(counter));
+                                System.out.println("DATYA IS: "+curChest.getContents().get(counter).getQuestid());
+                                if(curChest.getContents().get(counter).getQuestid() != -1){
+                                    System.out.println("HI!");
+                                    globalQuests.get((curChest.getContents().get(counter)).getQuestid()).progress((curChest.getContents().get(counter)).getStep());
+                                    if(globalQuests.get((curChest.getContents()).get(counter).getQuestid()).questDone()){
+                                        questLog.remove(globalQuests.get((curChest.getContents()).get(counter).getQuestid()));
+                                    }
+                                }
                                 curChest.removeItem(curChest.getContents().get(counter));
+
                             }
                             counter++;
                         }
@@ -986,6 +1065,10 @@ public class Main extends PApplet {
         }
         for(int i = 0; i < enemies.size(); i++){
             if(enemies.get(i).getHealth() <= 0){
+                globalQuests.get(enemies.get(i).questID).progress(enemies.get(i).step);
+                if(globalQuests.get(enemies.get(i).questID).questDone()){
+                    questLog.remove(globalQuests.get(enemies.get(i).questID));
+                }
                 enemies.remove(i);
                 ecoords.remove(i);
                 i--;
@@ -997,11 +1080,7 @@ public class Main extends PApplet {
 //            ecoords.get(i).addX(Math.cos(angle) * enemies.get(i).getSpeed());
 //            ecoords.get(i).addY(Math.sin(angle) * enemies.get(i).getSpeed());
 //        }
-        for(int i = 0; i < enemies.size(); i++){
-            if(enemies.get(i).getAtk(0, millis()) != null){
-                activeProjectiles.addAll(enemies.get(i).getAtk(0, millis()));
-            }
-        }
+
     }
     public void combatDrawer(){
         int ctr = 0;

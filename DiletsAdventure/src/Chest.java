@@ -20,4 +20,7 @@ public class Chest extends InteractableObject{
     public void removeItem(Item i){
         this.contents.remove(i);
     }
+    public void addItem(Item i){
+        this.contents.add(i);
+    }
 }

@@ -7,6 +7,19 @@ public class Item {
         this.name = name;
         this.description = description;
     }
+    int questid = -1, step = -1;
+    public Item(String name, String description, int questid, int step){
+        this.name = name;
+        this.description = description;
+        this.questid = questid;
+        this.step = step;
+    }
+    public int getQuestid(){
+        return questid;
+    }
+    public int getStep(){
+        return step;
+    }
     public String getName(){
         return name;
     }

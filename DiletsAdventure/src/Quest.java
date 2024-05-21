@@ -34,5 +34,10 @@ public class Quest {
     public boolean questDone(){
         return done;
     }
-
+    public void resetQuest(){
+        flags.replaceAll(ignored -> false);
+    }
+    public void setName(String newName){
+        name = newName;
+    }
 }

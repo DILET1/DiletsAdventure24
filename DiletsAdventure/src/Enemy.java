@@ -6,12 +6,16 @@ public class Enemy {
     int startMillis;
     boolean started = false;
     int atkctr = 0;
+    public int questID = -1;
+    public int step = -1;
     ArrayList<Attack> atkpt = new ArrayList<>();
-    public Enemy(int radius, int health, int resScalar, int speed){
+    public Enemy(int radius, int health, int resScalar, int speed, int id, int s){
         this.radius = radius;
         this.health = health;
         this.resScalar = resScalar;
         this.speed = speed;
+        this.questID = id;
+        this.step = s;
     }
     public double getRadius(){
         return this.radius;

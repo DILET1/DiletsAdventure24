@@ -40,4 +40,7 @@ public class Event {
     public int returnQuestStep(){
         return questStep;
     }
+    public void setMessage(String nmessage){
+        message = nmessage;
+    }
 }
