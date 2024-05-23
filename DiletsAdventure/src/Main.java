@@ -12,6 +12,8 @@ public class Main extends PApplet {
     ArrayList<Enemy> enemies = new ArrayList<>();
     ArrayList<Coordinate> ecoords = new ArrayList<>();
     ArrayList<Integer> curAttk = new ArrayList<>();
+    ArrayList<Integer> moveTill = new ArrayList<>();
+    ArrayList<Double> moveAngle = new ArrayList<>();
     static ArrayList<Item> globalItems = new ArrayList<>();
     static ArrayList<WorldObject> globalObjects = new ArrayList<>();
     static ArrayList<Quest> globalQuests = new ArrayList<>();
@@ -391,7 +393,7 @@ public class Main extends PApplet {
              **/
             if(enemies.isEmpty()){
                 System.out.println("ADDING BANDIT");
-                enemies.add(new Enemy(20,30,2,5));
+                enemies.add(new Enemy(20,30,2,2));
                 ecoords.add(new Coordinate(300,500));
                 curAttk.add(1);
                 Attack a1 = new Attack();
@@ -412,6 +414,15 @@ public class Main extends PApplet {
                 }});
                 enemies.get(0).addAtk(a1);
                 enemies.get(0).addAtk(a2);
+                moveTill.add(millis() + (int)(Math.random() * 10000) + 1000);
+                moveAngle.add(((2 *Math.random())) * Math.PI);
+                enemies.add(new Enemy(20,30,2,2));
+                ecoords.add(new Coordinate(100,300));
+                curAttk.add(0);
+                enemies.get(1).addAtk(a1);
+                enemies.get(1).addAtk(a2);
+                moveTill.add(millis() + (int)(Math.random() * 10000) + 1000);
+                moveAngle.add(((2 *Math.random())) * Math.PI);
             }
 
         }
@@ -1026,15 +1037,27 @@ public class Main extends PApplet {
                 enemies.remove(i);
                 ecoords.remove(i);
                 curAttk.remove(i);
+                moveTill.remove(i);
+                moveAngle.remove(i);
                 i--;
             }
         }
-//        for(int i = 0; i < enemies.size(); i++){ //enemy movement handling, to be implemented further later
-//            double angle = ((2 *Math.random())) * Math.PI;
-//            System.out.println(angle);
-//            ecoords.get(i).addX(Math.cos(angle) * enemies.get(i).getSpeed());
-//            ecoords.get(i).addY(Math.sin(angle) * enemies.get(i).getSpeed());
-//        }
+        for(int i = 0; i < enemies.size(); i++){ //enemy movement handling
+            if(moveTill.get(i) <= millis()){
+                moveTill.set(i,millis() + (int)(Math.random() * 10000) + 1000);
+                moveAngle.set(i,((2 *Math.random())) * Math.PI);
+            }
+            double angle = moveAngle.get(i);
+            System.out.println(angle);
+            if(ecoords.get(i).getX() + Math.cos(angle) * enemies.get(i).getSpeed() >= 0 && ecoords.get(i).getX() + Math.cos(angle) * enemies.get(i).getSpeed() <= 440 * resScalar && ecoords.get(i).getY() + Math.sin(angle) * enemies.get(i).getSpeed() >= 0 && ecoords.get(i).getY() + Math.sin(angle) * enemies.get(i).getSpeed() <= 360* resScalar){
+                ecoords.get(i).addX(Math.cos(angle) * enemies.get(i).getSpeed());
+                ecoords.get(i).addY(Math.sin(angle) * enemies.get(i).getSpeed());
+            }
+            else{
+                moveTill.set(i,millis() + (int)(Math.random() * 10000) + 1000);
+                moveAngle.set(i,((2 *Math.random())) * Math.PI);
+            }
+        }
 
     }
     public void combatDrawer(){
