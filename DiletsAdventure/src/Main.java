@@ -1029,6 +1029,7 @@ public class Main extends PApplet {
                     projCoords.remove(i);
                     activeProjectiles.remove(i);
                     i--;
+                    break; //prevents checking other enemies when the projectile is gone, potentially leads to out of bound error
                 }
             }
         }
