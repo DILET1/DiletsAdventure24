@@ -18,6 +18,7 @@ public class Main extends PApplet {
     static ArrayList<WorldObject> globalObjects = new ArrayList<>();
     static ArrayList<Quest> globalQuests = new ArrayList<>();
     static ArrayList<Quest> questLog = new ArrayList<>();
+    static ArrayList<Quest> finishedQuests = new ArrayList<>();
     public static int resScalar = 2;
     static Player Dilet = new Player(resScalar);
     static int curState = 1; //state -1 is intro cutscene. state 0 is menu. state 1 is in-game. state 2 is pause menu. state 3 is interacting with an object. state 4 is dialogue. state 5 is chest. state 6 is inventory. state 7 is cutscene, state 8 is inventory, 9 is combatmore to come
@@ -146,7 +147,11 @@ public class Main extends PApplet {
                 chaff = in.nextLine();
                 String message = in.nextLine();
                 int isSilent = in.nextInt();
-                if(type == 1){
+                if(type == 13){
+                    int id = in.nextInt();
+                    globalZones.get(ind).addEvent(new giveQuest(Dilet, isSilent == 1, message, id, finishedQuests, questLog, globalQuests));
+                }
+                else if(type == 1){
                     globalZones.get(ind).addEvent(new Event(message, isSilent == 1, Dilet, questID, questStep));
                     System.out.println(message+" "+isSilent+" "+questID+" "+questStep);
                 }
@@ -303,7 +308,7 @@ public class Main extends PApplet {
     public static void main(String[] args) {
         cutSceneInd = 0;
         newStart = 0;
-        curState = 9;
+        curState = 1;
         globalItems.add(new Item("Feesh", "Glorious"));
         load();
         PApplet.main("Main");
@@ -392,37 +397,38 @@ public class Main extends PApplet {
             }
              **/
             if(enemies.isEmpty()){
-                System.out.println("ADDING BANDIT");
-                enemies.add(new Enemy(20,30,2,2));
-                ecoords.add(new Coordinate(300,500));
-                curAttk.add(1);
-                Attack a1 = new Attack();
-                Attack a2 = new Attack();
-                a1.addStep(5000, 500, new ArrayList<Projectile>(){{add(new Projectile(10, 10, 5, Math.PI/4));add(new Projectile(10, 10, 5, 3 * Math.PI/4));add(new Projectile(10, 10, 5, 5 * Math.PI/4));add(new Projectile(10, 10, 5, 7 * Math.PI/4));}});
-                a1.addStep(5000, 250, new ArrayList<Projectile>(){{add(new Projectile(10, 10, 3, Math.PI/2));
-                    add(new Projectile(10, 10, 3, Math.PI));
-                    add(new Projectile(10, 10, 3, 3 * Math.PI/2));
-                    add(new Projectile(10, 10, 3, 2 * Math.PI));}});
-                a2.addStep(2000, 1000, new ArrayList<Projectile>(){{
-                    add(new Projectile(10, 10, 10, -(2 * Math.PI) / 3));
-                    add(new Projectile(10, 10, 10,  -(Math.PI) / 3));
-                    add(new Projectile(10, 10, 10,  -(Math.PI) / 2));
-                    add(new Projectile(10, 10, 10, -(7 * Math.PI) / 12));
-                    add(new Projectile(10, 10, 10, -(5 * Math.PI) / 12));
-                    add(new Projectile(10, 10, 10, -(13 * Math.PI) / 24));
-                    add(new Projectile(10, 10, 10, -(11 * Math.PI) / 24));
-                }});
-                enemies.get(0).addAtk(a1);
-                enemies.get(0).addAtk(a2);
-                moveTill.add(millis() + (int)(Math.random() * 10000) + 1000);
-                moveAngle.add(((2 *Math.random())) * Math.PI);
-                enemies.add(new Enemy(20,30,2,2));
-                ecoords.add(new Coordinate(100,300));
-                curAttk.add(0);
-                enemies.get(1).addAtk(a1);
-                enemies.get(1).addAtk(a2);
-                moveTill.add(millis() + (int)(Math.random() * 10000) + 1000);
-                moveAngle.add(((2 *Math.random())) * Math.PI);
+//                System.out.println("ADDING BANDIT");
+//                enemies.add(new Enemy(20,30,2,2));
+//                ecoords.add(new Coordinate(300,500));
+//                curAttk.add(1);
+//                Attack a1 = new Attack();
+//                Attack a2 = new Attack();
+//                a1.addStep(5000, 500, new ArrayList<Projectile>(){{add(new Projectile(10, 10, 5, Math.PI/4));add(new Projectile(10, 10, 5, 3 * Math.PI/4));add(new Projectile(10, 10, 5, 5 * Math.PI/4));add(new Projectile(10, 10, 5, 7 * Math.PI/4));}});
+//                a1.addStep(5000, 250, new ArrayList<Projectile>(){{add(new Projectile(10, 10, 3, Math.PI/2));
+//                    add(new Projectile(10, 10, 3, Math.PI));
+//                    add(new Projectile(10, 10, 3, 3 * Math.PI/2));
+//                    add(new Projectile(10, 10, 3, 2 * Math.PI));}});
+//                a2.addStep(2000, 1000, new ArrayList<Projectile>(){{
+//                    add(new Projectile(10, 10, 10, -(2 * Math.PI) / 3));
+//                    add(new Projectile(10, 10, 10,  -(Math.PI) / 3));
+//                    add(new Projectile(10, 10, 10,  -(Math.PI) / 2));
+//                    add(new Projectile(10, 10, 10, -(7 * Math.PI) / 12));
+//                    add(new Projectile(10, 10, 10, -(5 * Math.PI) / 12));
+//                    add(new Projectile(10, 10, 10, -(13 * Math.PI) / 24));
+//                    add(new Projectile(10, 10, 10, -(11 * Math.PI) / 24));
+//                }});
+//                enemies.get(0).addAtk(a1);
+//                enemies.get(0).addAtk(a2);
+//                moveTill.add(millis() + (int)(Math.random() * 10000) + 1000);
+//                moveAngle.add(((2 *Math.random())) * Math.PI);
+//                enemies.add(new Enemy(20,30,2,2));
+//                ecoords.add(new Coordinate(100,300));
+//                curAttk.add(0);
+//                enemies.get(1).addAtk(a1);
+//                enemies.get(1).addAtk(a2);
+//                moveTill.add(millis() + (int)(Math.random() * 10000) + 1000);
+//                moveAngle.add(((2 *Math.random())) * Math.PI);
+                curState = 1;
             }
 
         }
@@ -431,12 +437,13 @@ public class Main extends PApplet {
     public void drawDialogue(){
         fill(0,0,0);
         textFont(cons);
-        textSize(10 * resScalar);
+        textSize(7 * resScalar);
         Event i = curDialogueOption.returnTrigger();
         if(i.returnQuestID() != -1) {
             globalQuests.get(i.returnQuestID()).progress(i.returnQuestStep());
             if(globalQuests.get(i.returnQuestID()).questDone()){
-                questLog.remove(i);
+                finishedQuests.add(globalQuests.get(i.returnQuestID()));
+                questLog.remove(globalQuests.get(i.returnQuestID()));
             }
         }
         text(curDialogueOption.use(), 450 * resScalar,130 * resScalar, 630 * resScalar, 160 * resScalar);
@@ -786,6 +793,7 @@ public class Main extends PApplet {
                                     globalQuests.get(curZone.getEvent(i.msg()).returnQuestID()).progress(curZone.getEvent(i.msg()).returnQuestStep());
                                     if(globalQuests.get(curZone.getEvent(i.msg()).returnQuestID()).questDone()){
                                         questLog.remove(globalQuests.get(curZone.getEvent(i.msg()).returnQuestID()));
+                                        finishedQuests.add(globalQuests.get(curZone.getEvent(i.msg()).returnQuestID()));
                                     }
                                 }
                                 curState = 3;
@@ -871,7 +879,7 @@ public class Main extends PApplet {
         else if(curState == 4){
             if(mouseX >= 450 * resScalar && mouseX <= 630 * resScalar){
                 for(int i = 0; i < curDialogueOption.getAdj().size(); i++){
-                    if(mouseY >= (130 + (30 * i))* resScalar && mouseY <= (160 + (30 * i))* resScalar){
+                    if(mouseY >= (165 + (35 * i))* resScalar && mouseY <= (195 + (35 * i))* resScalar){
                         curDialogueOption = curZone.getDialogue(curDialogueOption.getAdj().get(i), curNPC.getIndex());
                         System.out.println("You selected dialogue option "+i);
                         return;
@@ -1014,7 +1022,7 @@ public class Main extends PApplet {
                 i--;
                 continue;
             }
-            else if(c.getX() > 440 * resScalar || c.getX() < 0 || c.getY() > 360 * resScalar || c.getY() < 0){ //for reasons of computational efficiency, projectiles go through walls
+            else if(c.getX() > (440) * resScalar || c.getX() < 0 || c.getY() > 360 * resScalar || c.getY() < 0){ //for reasons of computational efficiency, projectiles go through walls
                 projCoords.remove(i);
                 activeProjectiles.remove(i);
                 i--;
@@ -1050,7 +1058,7 @@ public class Main extends PApplet {
             }
             double angle = moveAngle.get(i);
             System.out.println(angle);
-            if(ecoords.get(i).getX() + Math.cos(angle) * enemies.get(i).getSpeed() >= 0 && ecoords.get(i).getX() + Math.cos(angle) * enemies.get(i).getSpeed() <= 440 * resScalar && ecoords.get(i).getY() + Math.sin(angle) * enemies.get(i).getSpeed() >= 0 && ecoords.get(i).getY() + Math.sin(angle) * enemies.get(i).getSpeed() <= 360* resScalar){
+            if(ecoords.get(i).getX() + Math.cos(angle) * enemies.get(i).getSpeed() >= (0 + enemies.get(i).getRadius())*resScalar && ecoords.get(i).getX() + Math.cos(angle) * enemies.get(i).getSpeed() <= (440 -enemies.get(i).getRadius()) * resScalar && ecoords.get(i).getY() + Math.sin(angle) * enemies.get(i).getSpeed() >= 0 && ecoords.get(i).getY() + Math.sin(angle) * enemies.get(i).getSpeed() <= 360* resScalar){
                 ecoords.get(i).addX(Math.cos(angle) * enemies.get(i).getSpeed());
                 ecoords.get(i).addY(Math.sin(angle) * enemies.get(i).getSpeed());
             }

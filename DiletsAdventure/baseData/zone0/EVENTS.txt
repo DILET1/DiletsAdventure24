@@ -1,1 +1,22 @@
+5
+1
+-1 -1
+Hello, Dilet. Welcome to the test zone.
+0
+13
+-1 -1
+You've hit the first dialogue option. Here's the quest, by the way.
+0
+0
+1
+-1 -1
+You've got the second dialogue option.
+0
+1
+-1 -1
+Alright, be seeing you.
+0
+1
+-1 -1
+Sure, back to the start.
 0

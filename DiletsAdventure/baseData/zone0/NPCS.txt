@@ -1,1 +1,18 @@
+1
+NPC1
+30 30 0 5
+3 1 2 3
 0
+Label1
+1 4
+1
+First branch
+1 4
+2
+Second Branch
+0
+3
+Leave
+3 1 2 3
+4
+Back to Start
