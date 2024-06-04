@@ -113,6 +113,7 @@ public class Main extends PApplet {
                 for(int j = 0; j < na; j++){
                     int attkIndex = in.nextInt();
                     globalEnemies.get(i).addAtk(attacks.get(attkIndex));
+                    System.out.println("ATTACK ADDED");
                 }
 
             }
@@ -169,7 +170,9 @@ public class Main extends PApplet {
             }
             int enemies = in.nextInt();
             for(int i = 0; i < enemies; i++){
-                globalZones.get(ind).addEnemy(in.nextInt(), in.nextInt(), in.nextInt());
+                int id = in.nextInt();
+                globalZones.get(ind).addEnemy(id, in.nextInt(), in.nextInt());
+                System.out.println("ENEMY "+ id+" ADDED");
             }
         }
         catch(FileNotFoundException e){
@@ -382,6 +385,9 @@ public class Main extends PApplet {
     public void draw(){
         elapsedTime = millis();
         inputProcess();
+        if(curState == 1 && !enemies.isEmpty()){
+            curState = 9;
+        }
         if(curState != 1 && curState != 9){
             up = false;
             down = false;
@@ -619,6 +625,10 @@ public class Main extends PApplet {
             for(int i = 0; i < index.size(); i++){
                 enemies.add(globalEnemies.get(index.get(i)));
                 ecoords.add(coords.get(i));
+                curAttk.add(0);
+                moveTill.add(0);
+                moveAngle.add(0.0);
+                System.out.println("ADDED BANDIT");
             }
             addedEnemies = true;
         }

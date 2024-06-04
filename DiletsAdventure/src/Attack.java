@@ -8,6 +8,7 @@ public class Attack {
         delays.add(delay);
         this.lengths.add(length);
         projectiles.add(p);
+        System.out.println("Added step!");
     }
     public int getSize(){
         return projectiles.size();

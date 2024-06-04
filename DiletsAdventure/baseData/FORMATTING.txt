@@ -33,7 +33,7 @@ For each enemy:
 For Attacks:
 1st line is number of steps
 For each step:
-1st line - Duration and fire rate
+1st line - fire rate and duration
 2nd line - number of projectiles
 next lines: angle of projectiles (in pi radians), speed, damage, and radius
 
