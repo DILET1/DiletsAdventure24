@@ -9,8 +9,9 @@ public class Main extends PApplet {
     static ArrayList<Zone> globalZones = new ArrayList<>();
     ArrayList<Projectile> activeProjectiles = new ArrayList<>();
     ArrayList<Coordinate> projCoords = new ArrayList<>();
-    ArrayList<Enemy> enemies = new ArrayList<>();
-    ArrayList<Coordinate> ecoords = new ArrayList<>();
+    static ArrayList<Enemy> enemies = new ArrayList<>();
+    static ArrayList<Enemy> globalEnemies = new ArrayList<>();
+    static ArrayList<Coordinate> ecoords = new ArrayList<>();
     ArrayList<Integer> curAttk = new ArrayList<>();
     ArrayList<Integer> moveTill = new ArrayList<>();
     ArrayList<Double> moveAngle = new ArrayList<>();
@@ -19,6 +20,7 @@ public class Main extends PApplet {
     static ArrayList<Quest> globalQuests = new ArrayList<>();
     static ArrayList<Quest> questLog = new ArrayList<>();
     static ArrayList<Quest> finishedQuests = new ArrayList<>();
+    static ArrayList<Attack> attacks = new ArrayList<>();
     public static int resScalar = 2;
     static Player Dilet = new Player(resScalar);
     static int curState = 1; //state -1 is intro cutscene. state 0 is menu. state 1 is in-game. state 2 is pause menu. state 3 is interacting with an object. state 4 is dialogue. state 5 is chest. state 6 is inventory. state 7 is cutscene, state 8 is inventory, 9 is combatmore to come
@@ -33,6 +35,7 @@ public class Main extends PApplet {
     static int newStart; //updated each time the cutscene state is entered
     static int cutSceneInd;//ditto above
     static boolean up, left, right, down;
+    static boolean addedEnemies = false;
     int health = 100;
     PImage questB, questT, pauseB, itemB, evB, butB;
     ArrayList<String> pastEvs = new ArrayList<>();
@@ -77,6 +80,41 @@ public class Main extends PApplet {
             String chaff = in.nextLine();
             for(int i = 0; i < n; i++){
                 globalItems.add(new Item(in.nextLine(), in.nextLine()));
+            }
+            File attks = new File("baseData/GLOBAL/ATTACKS.txt");
+            in = new Scanner(attks);
+            n = in.nextInt();
+            for(int i = 0; i < n; i++){
+                attacks.add(new Attack());
+                int numPhase = in.nextInt();
+                for(int j = 0; j < numPhase; j++){
+                    ArrayList<Projectile> phase = new ArrayList<>();
+                    int duration = in.nextInt(); int rate = in.nextInt();
+                    int projectiles = in.nextInt();
+                    for(int k = 0; k < projectiles; k++){
+                        double angle = in.nextDouble();
+                        int speed = in.nextInt();
+                        int damage = in.nextInt();
+                        int radius = in.nextInt();
+                        phase.add(new Projectile(radius, damage, speed, angle * Math.PI));
+                        System.out.println(radius + " "+ damage+" "+speed+" "+angle);
+                    }
+                    attacks.get(i).addStep(rate, duration, phase);
+                }
+            }
+            File enemies = new File("baseData/GLOBAL/ENEMIES.txt");
+            in = new Scanner(enemies);
+            n = in.nextInt();
+            for(int i = 0; i < n; i++){
+                int radius = in.nextInt(); int hp = in.nextInt(); int speed= in.nextInt();
+                int questId = in.nextInt(); int questStep = in.nextInt();
+                globalEnemies.add(new Enemy(radius, hp, resScalar, speed, questId, questStep));
+                int na = in.nextInt();
+                for(int j = 0; j < na; j++){
+                    int attkIndex = in.nextInt();
+                    globalEnemies.get(i).addAtk(attacks.get(attkIndex));
+                }
+
             }
         }
         catch(FileNotFoundException e){
@@ -128,6 +166,10 @@ public class Main extends PApplet {
                 int x = in.nextInt();
                 int y = in.nextInt();
                 globalZones.get(ind).addChest(id, x* resScalar, y* resScalar);
+            }
+            int enemies = in.nextInt();
+            for(int i = 0; i < enemies; i++){
+                globalZones.get(ind).addEnemy(in.nextInt(), in.nextInt(), in.nextInt());
             }
         }
         catch(FileNotFoundException e){
@@ -196,6 +238,9 @@ public class Main extends PApplet {
                         globalZones.get(ind).addEvent(new moveNPC(Dilet, zone, index, dx,dy,speed,-1,-1,globalZones));
                     }
                     System.out.println(message+" "+isSilent+" "+questID+" "+questStep+" "+zone+" "+index+" "+dx+" "+dy+" "+speed);
+                }
+                else if(type == 14){
+                    globalZones.get(ind).addEvent(new placeEnemy(message, isSilent == 1, Dilet, questID, questStep, in.nextInt(), globalEnemies, enemies, ecoords, in.nextInt(), in.nextInt()));
                 }
                 else{
                     int ta = in.nextInt();
@@ -567,6 +612,15 @@ public class Main extends PApplet {
             fill(255,255,0);
             rect((float)curZone.getZoneChestCoords(ctr).getX(), (float)curZone.getZoneChestCoords(ctr).getY() ,(float)curZone.getZoneChestCoords(ctr).getX()+ obj.getLen(),(float)curZone.getZoneChestCoords(ctr).getY()+ obj.getHeight());
             ctr++;
+        }
+        if(!addedEnemies){
+            ArrayList<Integer> index = curZone.getSpawnEnemies();
+            ArrayList<Coordinate> coords = curZone.getEnemyCoords();
+            for(int i = 0; i < index.size(); i++){
+                enemies.add(globalEnemies.get(index.get(i)));
+                ecoords.add(coords.get(i));
+            }
+            addedEnemies = true;
         }
     }
     public void drawPlayer() {

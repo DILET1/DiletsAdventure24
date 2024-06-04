@@ -15,6 +15,8 @@ public class Zone {
     private ArrayList<Event> zoneEvents = new ArrayList<>();
     private ArrayList<ArrayList<DialogueOption>> zoneDialogue = new ArrayList<>();
     private ArrayList<Cutscene> zoneCutscenes = new ArrayList<>();
+    private ArrayList<Integer> spawnEnemies = new ArrayList<>(); //the indices of the enemies that are in the zone immediately upon entering
+    private ArrayList<Coordinate> enemyCoords = new ArrayList<>();
 
     public Coordinate getZoneWorldObjectCoords(int a){
         return zoneWorldObjectCoords.get(a);
@@ -28,7 +30,10 @@ public class Zone {
     public Coordinate getZoneChestCoords(int a){
         return zoneChestCoords.get(a);
     }
-
+    public void addEnemy(int i, int x, int y){
+        this.spawnEnemies.add(i);
+        this.enemyCoords.add(new Coordinate(x,y));
+    }
     public ArrayList<Coordinate> getZoneWorldObjectCoords(){
         return zoneWorldObjectCoords;
     }
@@ -41,7 +46,12 @@ public class Zone {
     public ArrayList<Coordinate> getZoneChestCoords(){
         return zoneChestCoords;
     }
-
+    public ArrayList<Integer> getSpawnEnemies(){
+        return spawnEnemies;
+    }
+    public ArrayList<Coordinate> getEnemyCoords(){
+        return enemyCoords;
+    }
     public void wmoveX(WorldObject w, int amt){
         zoneWorldObjectCoords.get(zoneWorldObjects.indexOf(w)).addX(amt);
     }

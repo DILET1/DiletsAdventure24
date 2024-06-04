@@ -5,6 +5,8 @@ In it:
 - WorldObject list
 - Quest list
 - Item list
+- Enemy list
+- Attack list
 
 For WorldObjects:
 1st line is the number of WorldObjects
@@ -20,6 +22,20 @@ For Items:
 1st line is number of items.
 For each item:
 Two lines, on one the name, the other has the description.
+
+For Enemies:
+1st line is number of enemies.
+For each enemy:
+1st line - radius, health points, speed.
+2nd line - questid and queststep to trigger upon death.
+3rd line - number of attacks, followed by index of attacks.
+
+For Attacks:
+1st line is number of steps
+For each step:
+1st line - Duration and fire rate
+2nd line - number of projectiles
+next lines: angle of projectiles (in pi radians), speed, damage, and radius
 
 Each zone(x) folder corresponds to one zone.
 In each folder:
@@ -37,7 +53,7 @@ For the adjacent zones:
 For Events:
 1st line is how many events there are
 For each event:
-1st line is the type of event. 1 is a standard event, 2 is a place event, 3 is place interactable, 4 place npc, 5 remove event, 6 remove interactable, 7 remove npc, 8 is a move event, 9 is move interactable, 10 is move npc, 11 is give, 12 is take, 13 is givequest
+1st line is the type of event. 1 is a standard event, 2 is a place event, 3 is place interactable, 4 place npc, 5 remove event, 6 remove interactable, 7 remove npc, 8 is a move event, 9 is move interactable, 10 is move npc, 11 is give, 12 is take, 13 is givequest, 14 is addEnemy
 2nd line is the quest id, followed by quest step. (except for giveEvent)
 3rd line is the message (2nd for giveQuest)
 4th line is a 1 or 0, denoting silence (3rd for giveQuest)
@@ -49,6 +65,9 @@ for give/take events:
 5th line is the id of the item to give/take
 For giveQuest:
 4th line is the id of the quest.
+For add enemy:
+5th line is id of the enemy and the x/y coordinate to place it at.
+
 For Interactables:
 
 1st line is how many interactables there are
@@ -85,4 +104,4 @@ For layout:
 1st line holds the number of WorldObjects, they each get a line.
 For each WorldObject, its line has the ID and coordinates of the upper left corner.
 
-After that, one line per coordinate for all the Interactables, NPCs, and Chests.
+After that, one line per coordinate for all the Interactables, NPCs, Chests, and enemies.

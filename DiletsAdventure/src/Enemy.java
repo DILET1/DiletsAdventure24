@@ -9,11 +9,15 @@ public class Enemy {
     int sinceLast = 0;
     boolean attackOver = false;
     ArrayList<Attack> atkpt = new ArrayList<>();
-    public Enemy(int radius, int health, int resScalar, int speed){
+    int questID;
+    int questStep;
+    public Enemy(int radius, int health, int resScalar, int speed, int questID, int questStep){
         this.radius = radius;
         this.health = health;
         this.resScalar = resScalar;
         this.speed = speed;
+        this.questID = questID;
+        this.questStep = questStep;
     }
     public double getRadius(){
         return this.radius;
@@ -61,4 +65,10 @@ public class Enemy {
         return this.speed;
     }
     public int getPatterns(){return this.atkpt.size();}
+    public int getQuestID() {
+        return questID;
+    }
+    public int getQuestStep(){
+        return questStep;
+    }
 }
