@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="library2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/processing-4.3/modes/java/libraries/svg/library/svg.jar!/" />
+      <root url="jar://$PROJECT_DIR$/processing-4.3/modes/java/libraries/svg/library/batik.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

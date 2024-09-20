@@ -43,11 +43,11 @@ public class Main extends PApplet {
     public static void load(){
         loadBase();
         try{
-            File manifest = new File("baseData/MANIFEST.txt");
+            File manifest = new File("DiletsAdventure/baseData/MANIFEST.txt");
             Scanner in = new Scanner(manifest);
             int numFiles = in.nextInt();
             for(int i = 0; i < numFiles; i++){
-                loadZone("baseData/zone"+i+"/", i);
+                loadZone("DiletsAdventure/baseData/zone"+i+"/", i);
             }
         }
         catch(FileNotFoundException e){
@@ -57,13 +57,13 @@ public class Main extends PApplet {
     }
     public static void loadBase(){
         try{
-            File obj = new File("baseData/GLOBAL/WO.txt");
+            File obj = new File("DiletsAdventure/baseData/GLOBAL/WO.txt");
             Scanner in = new Scanner(obj);
             int n = in.nextInt();
             for(int i = 0; i < n; i++){
                 globalObjects.add(new WorldObject(in.nextInt() * resScalar, in.nextInt()* resScalar));
             }
-            File quests = new File("baseData/GLOBAL/QUESTS.txt");
+            File quests = new File("DiletsAdventure/baseData/GLOBAL/QUESTS.txt");
             in = new Scanner(quests);
             n = in.nextInt();
             for(int i = 0; i < n; i++){
@@ -74,14 +74,14 @@ public class Main extends PApplet {
                 }
                 globalQuests.add(q);
             }
-            File items = new File("baseData/GLOBAL/ITEMS.txt");
+            File items = new File("DiletsAdventure/baseData/GLOBAL/ITEMS.txt");
             in = new Scanner(items);
             n = in.nextInt();
             String chaff = in.nextLine();
             for(int i = 0; i < n; i++){
                 globalItems.add(new Item(in.nextLine(), in.nextLine()));
             }
-            File attks = new File("baseData/GLOBAL/ATTACKS.txt");
+            File attks = new File("DiletsAdventure/baseData/GLOBAL/ATTACKS.txt");
             in = new Scanner(attks);
             n = in.nextInt();
             for(int i = 0; i < n; i++){
@@ -102,7 +102,7 @@ public class Main extends PApplet {
                     attacks.get(i).addStep(rate, duration, phase);
                 }
             }
-            File enemies = new File("baseData/GLOBAL/ENEMIES.txt");
+            File enemies = new File("DiletsAdventure/baseData/GLOBAL/ENEMIES.txt");
             in = new Scanner(enemies);
             n = in.nextInt();
             for(int i = 0; i < n; i++){
@@ -367,19 +367,19 @@ public class Main extends PApplet {
     public void setup(){
 
         frameRate(60);
-        questB = loadImage("baseData/GLOBAL/UI/questlogbutton.png");
+        questB = loadImage("DiletsAdventure/baseData/GLOBAL/UI/questlogbutton.png");
         questB.resize(60 * resScalar, 0);
-        questT = loadImage("baseData/GLOBAL/UI/questTabBackground.png");
+        questT = loadImage("DiletsAdventure/baseData/GLOBAL/UI/questTabBackground.png");
         questT.resize(200 * resScalar, 0);
-        itemB = loadImage("baseData/GLOBAL/UI/itembutton.png");
+        itemB = loadImage("DiletsAdventure/baseData/GLOBAL/UI/itembutton.png");
         itemB.resize(60 * resScalar, 0);
-        pauseB = loadImage("baseData/GLOBAL/UI/pausebutton.png");
+        pauseB = loadImage("DiletsAdventure/baseData/GLOBAL/UI/pausebutton.png");
         pauseB.resize(60 * resScalar, 0);
-        butB = loadImage("baseData/GLOBAL/UI/bottomBarBackground.png");
+        butB = loadImage("DiletsAdventure/baseData/GLOBAL/UI/bottomBarBackground.png");
         butB.resize(200 * resScalar, 0);
-        evB = loadImage("baseData/GLOBAL/UI/eventLogBackground.png");
+        evB = loadImage("DiletsAdventure/baseData/GLOBAL/UI/eventLogBackground.png");
         evB.resize(200 * resScalar, 0);
-        cons = createFont("baseData/CONSOLA.TTF", 10);
+        cons = createFont("DiletsAdventure/baseData/CONSOLA.TTF", 10);
         textFont(cons);
     }
     public void draw(){

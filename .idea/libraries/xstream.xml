@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="xstream">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/processing-4.3/modes/java/application/launch4j/lib/xstream.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

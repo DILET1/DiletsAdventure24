@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="launch4j">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/processing-4.3/modes/java/application/launch4j/launch4j.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

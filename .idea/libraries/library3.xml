@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="library3">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/processing-4.3/modes/java/libraries/pdf/library/itext.jar!/" />
+      <root url="jar://$PROJECT_DIR$/processing-4.3/modes/java/libraries/pdf/library/pdf.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

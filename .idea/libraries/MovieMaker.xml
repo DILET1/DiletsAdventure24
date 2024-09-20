@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="MovieMaker">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/processing-4.3/tools/MovieMaker/tool/MovieMaker.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
