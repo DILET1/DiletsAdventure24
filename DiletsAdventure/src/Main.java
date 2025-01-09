@@ -232,13 +232,13 @@ public class Main extends PApplet {
                     int dy = in.nextInt();
                     int speed = in.nextInt();
                     if(type == 8){
-                        globalZones.get(ind).addEvent(new moveObject(Dilet, zone, index, dx,dy,speed,-1,-1,globalZones,globalObjects));
+                        globalZones.get(ind).addEvent(new moveObject(Dilet, zone, index, dx,dy,speed,questID,questStep,globalZones,globalObjects));
                     }
                     if(type == 9){
-                        globalZones.get(ind).addEvent(new moveInteractable(Dilet, zone, index, dx,dy,speed,-1,-1,globalZones));
+                        globalZones.get(ind).addEvent(new moveInteractable(Dilet, zone, index, dx,dy,speed,questID,questStep,globalZones));
                     }
                     if(type == 10){
-                        globalZones.get(ind).addEvent(new moveNPC(Dilet, zone, index, dx,dy,speed,-1,-1,globalZones));
+                        globalZones.get(ind).addEvent(new moveNPC(Dilet, zone, index, dx,dy,speed,questID,questStep,globalZones));
                     }
                     System.out.println(message+" "+isSilent+" "+questID+" "+questStep+" "+zone+" "+index+" "+dx+" "+dy+" "+speed);
                 }
@@ -356,7 +356,7 @@ public class Main extends PApplet {
     public static void main(String[] args) {
         cutSceneInd = 0;
         newStart = 0;
-        curState = 1;
+        curState = 9;
         globalItems.add(new Item("Feesh", "Glorious"));
         load();
         PApplet.main("Main");
@@ -842,6 +842,7 @@ public class Main extends PApplet {
                 if(mouseX >= curZone.getZoneInteractableObjectCoords(ctr).getX() && mouseX <= curZone.getZoneInteractableObjectCoords(ctr).getX() + i.getLen() && mouseY >= curZone.getZoneInteractableObjectCoords(ctr).getY() && mouseY <= curZone.getZoneInteractableObjectCoords(ctr).getY() + i.getHeight()){
                     if(Math.abs(Dilet.getX() - (curZone.getZoneInteractableObjectCoords(ctr).getX()+ (i.getLen()/2))) < 60 * resScalar){
                         if(Math.abs(Dilet.getY() - (curZone.getZoneInteractableObjectCoords(ctr).getY()+ (i.getHeight()))) < 60 * resScalar){
+                            System.out.println("EVENT QUEST STEP: "+ curZone.getEvent(i.msg()).returnQuestStep());
                             if(curZone.getEvent(i.msg()).isCutscene()){
                                 curState = 7;
                                 newStart = millis();
@@ -855,6 +856,7 @@ public class Main extends PApplet {
                             else{
                                 if(curZone.getEvent(i.msg()).returnQuestID() != -1){
                                     globalQuests.get(curZone.getEvent(i.msg()).returnQuestID()).progress(curZone.getEvent(i.msg()).returnQuestStep());
+                                    System.out.println("CURSTEP: "+globalQuests.get(curZone.getEvent(i.msg()).returnQuestID()).curStep());
                                     if(globalQuests.get(curZone.getEvent(i.msg()).returnQuestID()).questDone()){
                                         questLog.remove(globalQuests.get(curZone.getEvent(i.msg()).returnQuestID()));
                                         finishedQuests.add(globalQuests.get(curZone.getEvent(i.msg()).returnQuestID()));

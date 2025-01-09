@@ -1,7 +1,7 @@
-5
+7
 1
 -1 -1
-Hello, Dilet. Welcome to the test zone.
+Hello, Ethan. Welcome to the test zone.
 0
 13
 -1 -1
@@ -20,3 +20,12 @@ Alright, be seeing you.
 -1 -1
 Sure, back to the start.
 0
+1
+0 0
+First quest step triggered. Finish the quest for a truly *epic* cutscene!
+0
+10
+0 1
+You finished the very epic quest! Enjoy the cinematic.
+0
+0 0 50 25 1
